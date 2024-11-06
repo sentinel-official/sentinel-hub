@@ -10,7 +10,14 @@ import (
 	base "github.com/sentinel-official/hub/v12/types"
 )
 
-func (m *Lease) RefundAmount() sdk.Coin {
+func (m *Lease) Deposit() sdk.Coin {
+	return sdk.NewCoin(
+		m.Price.Denom,
+		m.Price.Amount.MulRaw(m.MaxHours),
+	)
+}
+
+func (m *Lease) Refund() sdk.Coin {
 	hours := m.MaxHours - m.Hours
 	return sdk.NewCoin(
 		m.Price.Denom,
@@ -47,12 +54,6 @@ func (m *Lease) Validate() error {
 	}
 	if m.Price.IsZero() {
 		return fmt.Errorf("price cannot be zero")
-	}
-	if !m.Deposit.IsValid() {
-		return fmt.Errorf("deposit must be valid")
-	}
-	if m.Deposit.IsZero() {
-		return fmt.Errorf("deposit cannot be zero")
 	}
 	if m.Hours <= 0 {
 		return fmt.Errorf("hours must be greater than zero")

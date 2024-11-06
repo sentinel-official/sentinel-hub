@@ -665,6 +665,7 @@ func _MsgService_MsgSubscribe_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+var MsgService_serviceDesc = _MsgService_serviceDesc
 var _MsgService_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "sentinel.plan.v2.MsgService",
 	HandlerType: (*MsgServiceServer)(nil),

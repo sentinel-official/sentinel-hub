@@ -27,8 +27,8 @@ func (k *Keeper) HandleMsgEndLease(ctx sdk.Context, msg *v1.MsgEndLeaseRequest) 
 		return nil, err
 	}
 
-	amount := lease.RefundAmount()
-	if err := k.SubtractDeposit(ctx, provAddr.Bytes(), amount); err != nil {
+	refund := lease.Refund()
+	if err := k.SubtractDeposit(ctx, provAddr.Bytes(), refund); err != nil {
 		return nil, err
 	}
 
@@ -36,7 +36,7 @@ func (k *Keeper) HandleMsgEndLease(ctx sdk.Context, msg *v1.MsgEndLeaseRequest) 
 		&v1.EventRefund{
 			ID:          lease.ID,
 			ProvAddress: lease.ProvAddress,
-			Amount:      amount.String(),
+			Amount:      refund.String(),
 		},
 	)
 
@@ -108,8 +108,8 @@ func (k *Keeper) HandleMsgRenewLease(ctx sdk.Context, msg *v1.MsgRenewLeaseReque
 		return nil, types.NewErrorPriceNotFound(msg.Denom)
 	}
 
-	amount := lease.RefundAmount()
-	if err := k.SubtractDeposit(ctx, provAddr.Bytes(), amount); err != nil {
+	refund := lease.Refund()
+	if err := k.SubtractDeposit(ctx, provAddr.Bytes(), refund); err != nil {
 		return nil, err
 	}
 
@@ -117,7 +117,7 @@ func (k *Keeper) HandleMsgRenewLease(ctx sdk.Context, msg *v1.MsgRenewLeaseReque
 		&v1.EventRefund{
 			ID:          lease.ID,
 			ProvAddress: lease.ProvAddress,
-			Amount:      amount.String(),
+			Amount:      refund.String(),
 		},
 	)
 
@@ -130,18 +130,15 @@ func (k *Keeper) HandleMsgRenewLease(ctx sdk.Context, msg *v1.MsgRenewLeaseReque
 		ProvAddress: lease.ProvAddress,
 		NodeAddress: lease.NodeAddress,
 		Price:       price,
-		Deposit: sdk.NewCoin(
-			price.Denom,
-			price.Amount.MulRaw(msg.Hours),
-		),
-		Hours:      0,
-		MaxHours:   msg.Hours,
-		Renewable:  lease.Renewable,
-		InactiveAt: ctx.BlockTime().Add(msg.GetHours()),
-		PayoutAt:   ctx.BlockTime(),
+		Hours:       0,
+		MaxHours:    msg.Hours,
+		Renewable:   lease.Renewable,
+		InactiveAt:  ctx.BlockTime().Add(msg.GetHours()),
+		PayoutAt:    ctx.BlockTime(),
 	}
 
-	if err := k.AddDeposit(ctx, provAddr.Bytes(), lease.Deposit); err != nil {
+	deposit := lease.Deposit()
+	if err := k.AddDeposit(ctx, provAddr.Bytes(), deposit); err != nil {
 		return nil, err
 	}
 
@@ -157,7 +154,7 @@ func (k *Keeper) HandleMsgRenewLease(ctx sdk.Context, msg *v1.MsgRenewLeaseReque
 			ProvAddress: lease.ProvAddress,
 			MaxHours:    lease.MaxHours,
 			Price:       lease.Price.String(),
-			Deposit:     lease.Deposit.String(),
+			Deposit:     deposit.String(),
 		},
 	)
 
@@ -210,18 +207,15 @@ func (k *Keeper) HandleMsgStartLease(ctx sdk.Context, msg *v1.MsgStartLeaseReque
 		ProvAddress: provAddr.String(),
 		NodeAddress: nodeAddr.String(),
 		Price:       price,
-		Deposit: sdk.NewCoin(
-			price.Denom,
-			price.Amount.MulRaw(msg.Hours),
-		),
-		Hours:      0,
-		MaxHours:   msg.Hours,
-		Renewable:  msg.Renewable,
-		InactiveAt: ctx.BlockTime().Add(msg.GetHours()),
-		PayoutAt:   ctx.BlockTime(),
+		Hours:       0,
+		MaxHours:    msg.Hours,
+		Renewable:   msg.Renewable,
+		InactiveAt:  ctx.BlockTime().Add(msg.GetHours()),
+		PayoutAt:    ctx.BlockTime(),
 	}
 
-	if err := k.AddDeposit(ctx, provAddr.Bytes(), lease.Deposit); err != nil {
+	deposit := lease.Deposit()
+	if err := k.AddDeposit(ctx, provAddr.Bytes(), deposit); err != nil {
 		return nil, err
 	}
 
@@ -241,7 +235,7 @@ func (k *Keeper) HandleMsgStartLease(ctx sdk.Context, msg *v1.MsgStartLeaseReque
 			ProvAddress: lease.ProvAddress,
 			MaxHours:    lease.MaxHours,
 			Price:       lease.Price.String(),
-			Deposit:     lease.Deposit.String(),
+			Deposit:     deposit.String(),
 		},
 	)
 

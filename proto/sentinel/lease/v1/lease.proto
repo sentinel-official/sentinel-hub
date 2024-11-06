@@ -14,15 +14,14 @@ message Lease {
   string prov_address = 2;
   string node_address = 3;
   cosmos.base.v1beta1.Coin price = 4 [(gogoproto.nullable) = false];
-  cosmos.base.v1beta1.Coin deposit = 5 [(gogoproto.nullable) = false];
-  int64 hours = 6;
-  int64 max_hours = 7;
-  bool renewable = 8;
-  google.protobuf.Timestamp inactive_at = 9 [
+  int64 hours = 5;
+  int64 max_hours = 6;
+  bool renewable = 7;
+  google.protobuf.Timestamp inactive_at = 8 [
     (gogoproto.nullable) = false,
     (gogoproto.stdtime) = true
   ];
-  google.protobuf.Timestamp payout_at = 10 [
+  google.protobuf.Timestamp payout_at = 9 [
     (gogoproto.nullable) = false,
     (gogoproto.stdtime) = true
   ];

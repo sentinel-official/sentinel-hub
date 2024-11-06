@@ -657,6 +657,7 @@ func _MsgService_MsgUpdateQuota_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+var MsgService_serviceDesc = _MsgService_serviceDesc
 var _MsgService_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "sentinel.subscription.v1.MsgService",
 	HandlerType: (*MsgServiceServer)(nil),

@@ -320,6 +320,7 @@ func _QueryService_QueryDeposit_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+var QueryService_serviceDesc = _QueryService_serviceDesc
 var _QueryService_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "sentinel.deposit.v1.QueryService",
 	HandlerType: (*QueryServiceServer)(nil),

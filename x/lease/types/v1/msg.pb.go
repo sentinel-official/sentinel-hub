@@ -653,6 +653,7 @@ func _MsgService_MsgUpdateParams_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+var MsgService_serviceDesc = _MsgService_serviceDesc
 var _MsgService_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "sentinel.lease.v1.MsgService",
 	HandlerType: (*MsgServiceServer)(nil),

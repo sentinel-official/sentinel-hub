@@ -440,6 +440,7 @@ func _QueryService_QueryPlan_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+var QueryService_serviceDesc = _QueryService_serviceDesc
 var _QueryService_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "sentinel.plan.v3.QueryService",
 	HandlerType: (*QueryServiceServer)(nil),

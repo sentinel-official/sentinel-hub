@@ -204,6 +204,7 @@ func _MsgService_MsgSwap_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
+var MsgService_serviceDesc = _MsgService_serviceDesc
 var _MsgService_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "sentinel.swap.v1.MsgService",
 	HandlerType: (*MsgServiceServer)(nil),
