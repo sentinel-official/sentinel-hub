@@ -196,12 +196,11 @@ func (k *Keeper) HandleMsgStartSession(ctx sdk.Context, msg *v3.MsgStartSessionR
 			AccAddress:    accAddr.String(),
 			NodeAddress:   nodeAddr.String(),
 			Price:         sdk.Coin{},
-			Deposit:       sdk.Coin{},
 			DownloadBytes: sdkmath.ZeroInt(),
 			UploadBytes:   sdkmath.ZeroInt(),
-			MaxBytes:      sdkmath.ZeroInt(),
+			MaxGigabytes:  msg.Gigabytes,
 			Duration:      0,
-			MaxDuration:   0,
+			MaxHours:      msg.Hours,
 			Status:        v1base.StatusActive,
 			InactiveAt:    ctx.BlockTime().Add(delay),
 			StatusAt:      ctx.BlockTime(),
@@ -209,33 +208,20 @@ func (k *Keeper) HandleMsgStartSession(ctx sdk.Context, msg *v3.MsgStartSessionR
 	)
 
 	if msg.Gigabytes != 0 {
-		price, found := node.GigabytePrice(msg.Denom)
+		session.Price, found = node.GigabytePrice(msg.Denom)
 		if !found {
 			return nil, types.NewErrorPriceNotFound(msg.Denom)
 		}
-
-		session.Price = price
-		session.Deposit = sdk.NewCoin(
-			price.Denom,
-			price.Amount.MulRaw(msg.Gigabytes),
-		)
-		session.MaxBytes = base.Gigabyte.MulRaw(msg.Gigabytes)
 	}
 	if msg.Hours != 0 {
-		price, found := node.HourlyPrice(msg.Denom)
+		session.Price, found = node.HourlyPrice(msg.Denom)
 		if !found {
 			return nil, types.NewErrorPriceNotFound(msg.Denom)
 		}
-
-		session.Price = price
-		session.Deposit = sdk.NewCoin(
-			price.Denom,
-			price.Amount.MulRaw(msg.Hours),
-		)
-		session.MaxDuration = time.Duration(msg.Hours) * time.Hour
 	}
 
-	if err := k.AddDeposit(ctx, accAddr, session.Deposit); err != nil {
+	deposit := session.DepositAmount()
+	if err := k.AddDeposit(ctx, accAddr, deposit); err != nil {
 		return nil, err
 	}
 
@@ -247,13 +233,12 @@ func (k *Keeper) HandleMsgStartSession(ctx sdk.Context, msg *v3.MsgStartSessionR
 
 	ctx.EventManager().EmitTypedEvent(
 		&v3.EventCreateSession{
-			ID:          session.ID,
-			AccAddress:  session.AccAddress,
-			NodeAddress: session.NodeAddress,
-			Price:       session.Price.String(),
-			Deposit:     session.Deposit.String(),
-			MaxBytes:    session.MaxBytes.String(),
-			MaxDuration: session.MaxDuration,
+			ID:           session.ID,
+			AccAddress:   session.AccAddress,
+			NodeAddress:  session.NodeAddress,
+			Price:        session.Price.String(),
+			MaxGigabytes: session.MaxGigabytes,
+			MaxHours:     session.MaxHours,
 		},
 	)
 

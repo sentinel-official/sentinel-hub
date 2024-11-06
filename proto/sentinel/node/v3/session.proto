@@ -15,33 +15,26 @@ message Session {
   string acc_address = 2;
   string node_address = 3;
   cosmos.base.v1beta1.Coin price = 4 [(gogoproto.nullable) = false];
-  cosmos.base.v1beta1.Coin deposit = 5 [(gogoproto.nullable) = false];
-  string download_bytes = 6 [
+  string download_bytes = 5 [
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
-  string upload_bytes = 7 [
+  string upload_bytes = 6 [
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
-  string max_bytes = 8 [
-    (gogoproto.customtype) = "cosmossdk.io/math.Int",
-    (gogoproto.nullable) = false
-  ];
-  google.protobuf.Duration duration = 9 [
+  int64 max_gigabytes = 7 ;
+  google.protobuf.Duration duration = 8 [
     (gogoproto.nullable) = false,
     (gogoproto.stdduration) = true
   ];
-  google.protobuf.Duration max_duration = 10 [
-    (gogoproto.nullable) = false,
-    (gogoproto.stdduration) = true
-  ];
-  sentinel.types.v1.Status status = 11;
-  google.protobuf.Timestamp inactive_at = 12 [
+  int64 max_hours = 9;
+  sentinel.types.v1.Status status = 10;
+  google.protobuf.Timestamp inactive_at = 11 [
     (gogoproto.nullable) = false,
     (gogoproto.stdtime) = true
   ];
-  google.protobuf.Timestamp status_at = 13 [
+  google.protobuf.Timestamp status_at = 12 [
     (gogoproto.nullable) = false,
     (gogoproto.stdtime) = true
   ];
