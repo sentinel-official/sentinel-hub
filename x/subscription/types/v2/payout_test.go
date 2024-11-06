@@ -33,7 +33,7 @@ func TestPayout_Validate(t *testing.T) {
 			fields{
 				ID:     1000,
 				Hours:  1000,
-				Price:  base.TestCoinPositiveAmount,
+				Price:  base.TestCoinOnePos,
 				NextAt: base.TestTimeNow,
 			},
 			false,
@@ -59,7 +59,7 @@ func TestPayout_Validate(t *testing.T) {
 			fields{
 				ID:    1000,
 				Hours: 1000,
-				Price: base.TestCoinPositiveAmount,
+				Price: base.TestCoinOnePos,
 			},
 			false,
 		},
@@ -68,7 +68,7 @@ func TestPayout_Validate(t *testing.T) {
 			fields{
 				ID:    1000,
 				Hours: 1000,
-				Price: base.TestCoinEmpty,
+				Price: base.TestCoinEmptyZero,
 			},
 			true,
 		},
@@ -77,7 +77,7 @@ func TestPayout_Validate(t *testing.T) {
 			fields{
 				ID:    1000,
 				Hours: 1000,
-				Price: base.TestCoinEmpty,
+				Price: base.TestCoinEmptyZero,
 			},
 			true,
 		},
@@ -86,7 +86,7 @@ func TestPayout_Validate(t *testing.T) {
 			fields{
 				ID:    1000,
 				Hours: 1000,
-				Price: base.TestCoinInvalidDenom,
+				Price: base.TestCoinInvalidPos,
 			},
 			true,
 		},
@@ -95,7 +95,7 @@ func TestPayout_Validate(t *testing.T) {
 			fields{
 				ID:    1000,
 				Hours: 1000,
-				Price: base.TestCoinEmptyAmount,
+				Price: base.TestCoinOneEmpty,
 			},
 			true,
 		},
@@ -104,7 +104,7 @@ func TestPayout_Validate(t *testing.T) {
 			fields{
 				ID:    1000,
 				Hours: 1000,
-				Price: base.TestCoinNegativeAmount,
+				Price: base.TestCoinOneNeg,
 			},
 			true,
 		},
@@ -113,7 +113,7 @@ func TestPayout_Validate(t *testing.T) {
 			fields{
 				ID:    1000,
 				Hours: 1000,
-				Price: base.TestCoinZeroAmount,
+				Price: base.TestCoinOneZero,
 			},
 			true,
 		},
@@ -122,7 +122,7 @@ func TestPayout_Validate(t *testing.T) {
 			fields{
 				ID:    1000,
 				Hours: 1000,
-				Price: base.TestCoinPositiveAmount,
+				Price: base.TestCoinOnePos,
 			},
 			false,
 		},
@@ -131,7 +131,7 @@ func TestPayout_Validate(t *testing.T) {
 			fields{
 				ID:     1000,
 				Hours:  1000,
-				Price:  base.TestCoinPositiveAmount,
+				Price:  base.TestCoinOnePos,
 				NextAt: base.TestTimeZero,
 			},
 			false,
@@ -141,7 +141,7 @@ func TestPayout_Validate(t *testing.T) {
 			fields{
 				ID:     1000,
 				Hours:  1000,
-				Price:  base.TestCoinPositiveAmount,
+				Price:  base.TestCoinOnePos,
 				NextAt: base.TestTimeNow,
 			},
 			false,

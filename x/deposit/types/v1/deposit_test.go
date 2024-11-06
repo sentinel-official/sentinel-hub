@@ -80,7 +80,7 @@ func TestDeposit_Validate(t *testing.T) {
 			"10 bytes address",
 			fields{
 				Address: base.TestBech32AccAddr10Bytes,
-				Coins:   base.TestCoinsPositiveAmount,
+				Coins:   base.TestCoinsOnePos,
 			},
 			false,
 		},
@@ -88,7 +88,7 @@ func TestDeposit_Validate(t *testing.T) {
 			"20 bytes address",
 			fields{
 				Address: base.TestBech32AccAddr20Bytes,
-				Coins:   base.TestCoinsPositiveAmount,
+				Coins:   base.TestCoinsOnePos,
 			},
 			false,
 		},
@@ -96,7 +96,7 @@ func TestDeposit_Validate(t *testing.T) {
 			"30 bytes address",
 			fields{
 				Address: base.TestBech32AccAddr30Bytes,
-				Coins:   base.TestCoinsPositiveAmount,
+				Coins:   base.TestCoinsOnePos,
 			},
 			false,
 		},
@@ -120,7 +120,7 @@ func TestDeposit_Validate(t *testing.T) {
 			"empty denom coins",
 			fields{
 				Address: base.TestBech32AccAddr20Bytes,
-				Coins:   base.TestCoinsEmptyDenom,
+				Coins:   base.TestCoinsEmptyPos,
 			},
 			true,
 		},
@@ -128,7 +128,7 @@ func TestDeposit_Validate(t *testing.T) {
 			"invalid denom coins",
 			fields{
 				Address: base.TestBech32AccAddr20Bytes,
-				Coins:   base.TestCoinsInvalidDenom,
+				Coins:   base.TestCoinsInvalidPos,
 			},
 			true,
 		},
@@ -136,7 +136,7 @@ func TestDeposit_Validate(t *testing.T) {
 			"nil amount coins",
 			fields{
 				Address: base.TestBech32AccAddr20Bytes,
-				Coins:   base.TestCoinsEmptyAmount,
+				Coins:   base.TestCoinsOneEmpty,
 			},
 			true,
 		},
@@ -144,7 +144,7 @@ func TestDeposit_Validate(t *testing.T) {
 			"negative amount coins",
 			fields{
 				Address: base.TestBech32AccAddr20Bytes,
-				Coins:   base.TestCoinsNegativeAmount,
+				Coins:   base.TestCoinsOneNeg,
 			},
 			true,
 		},
@@ -152,7 +152,7 @@ func TestDeposit_Validate(t *testing.T) {
 			"zero amount coins",
 			fields{
 				Address: base.TestBech32AccAddr20Bytes,
-				Coins:   base.TestCoinsZeroAmount,
+				Coins:   base.TestCoinsOneZero,
 			},
 			true,
 		},
@@ -160,7 +160,7 @@ func TestDeposit_Validate(t *testing.T) {
 			"positive amount coins",
 			fields{
 				Address: base.TestBech32AccAddr20Bytes,
-				Coins:   base.TestCoinsPositiveAmount,
+				Coins:   base.TestCoinsOnePos,
 			},
 			false,
 		},

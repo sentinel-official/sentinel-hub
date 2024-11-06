@@ -316,7 +316,7 @@ func TestNodeSubscription_Validate(t *testing.T) {
 			fields{
 				NodeAddress: base.TestBech32NodeAddr10Bytes,
 				Gigabytes:   1000,
-				Deposit:     base.TestCoinPositiveAmount,
+				Deposit:     base.TestCoinOnePos,
 			},
 			false,
 		},
@@ -325,7 +325,7 @@ func TestNodeSubscription_Validate(t *testing.T) {
 			fields{
 				NodeAddress: base.TestBech32NodeAddr20Bytes,
 				Gigabytes:   1000,
-				Deposit:     base.TestCoinPositiveAmount,
+				Deposit:     base.TestCoinOnePos,
 			},
 			false,
 		},
@@ -334,7 +334,7 @@ func TestNodeSubscription_Validate(t *testing.T) {
 			fields{
 				NodeAddress: base.TestBech32NodeAddr30Bytes,
 				Gigabytes:   1000,
-				Deposit:     base.TestCoinPositiveAmount,
+				Deposit:     base.TestCoinOnePos,
 			},
 			false,
 		},
@@ -369,7 +369,7 @@ func TestNodeSubscription_Validate(t *testing.T) {
 			fields{
 				NodeAddress: base.TestBech32NodeAddr20Bytes,
 				Gigabytes:   1000,
-				Deposit:     base.TestCoinPositiveAmount,
+				Deposit:     base.TestCoinOnePos,
 			},
 			false,
 		},
@@ -386,7 +386,7 @@ func TestNodeSubscription_Validate(t *testing.T) {
 			fields{
 				NodeAddress: base.TestBech32NodeAddr20Bytes,
 				Hours:       1000,
-				Deposit:     base.TestCoinPositiveAmount,
+				Deposit:     base.TestCoinOnePos,
 			},
 			false,
 		},
@@ -395,7 +395,7 @@ func TestNodeSubscription_Validate(t *testing.T) {
 			fields{
 				NodeAddress: base.TestBech32NodeAddr20Bytes,
 				Gigabytes:   1000,
-				Deposit:     base.TestCoinEmpty,
+				Deposit:     base.TestCoinEmptyZero,
 			},
 			true,
 		},
@@ -404,7 +404,7 @@ func TestNodeSubscription_Validate(t *testing.T) {
 			fields{
 				NodeAddress: base.TestBech32NodeAddr20Bytes,
 				Gigabytes:   1000,
-				Deposit:     base.TestCoinEmptyDenom,
+				Deposit:     base.TestCoinEmptyPos,
 			},
 			true,
 		},
@@ -413,7 +413,7 @@ func TestNodeSubscription_Validate(t *testing.T) {
 			fields{
 				NodeAddress: base.TestBech32NodeAddr20Bytes,
 				Gigabytes:   1000,
-				Deposit:     base.TestCoinInvalidDenom,
+				Deposit:     base.TestCoinInvalidPos,
 			},
 			true,
 		},
@@ -422,7 +422,7 @@ func TestNodeSubscription_Validate(t *testing.T) {
 			fields{
 				NodeAddress: base.TestBech32NodeAddr20Bytes,
 				Gigabytes:   1000,
-				Deposit:     base.TestCoinEmptyAmount,
+				Deposit:     base.TestCoinOneEmpty,
 			},
 			true,
 		},
@@ -431,7 +431,7 @@ func TestNodeSubscription_Validate(t *testing.T) {
 			fields{
 				NodeAddress: base.TestBech32NodeAddr20Bytes,
 				Gigabytes:   1000,
-				Deposit:     base.TestCoinNegativeAmount,
+				Deposit:     base.TestCoinOneNeg,
 			},
 			true,
 		},
@@ -440,7 +440,7 @@ func TestNodeSubscription_Validate(t *testing.T) {
 			fields{
 				NodeAddress: base.TestBech32NodeAddr20Bytes,
 				Gigabytes:   1000,
-				Deposit:     base.TestCoinZeroAmount,
+				Deposit:     base.TestCoinOneZero,
 			},
 			true,
 		},
@@ -449,7 +449,7 @@ func TestNodeSubscription_Validate(t *testing.T) {
 			fields{
 				NodeAddress: base.TestBech32NodeAddr20Bytes,
 				Gigabytes:   1000,
-				Deposit:     base.TestCoinPositiveAmount,
+				Deposit:     base.TestCoinOnePos,
 			},
 			false,
 		},

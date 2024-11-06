@@ -22,35 +22,35 @@ func TestParams_Validate(t *testing.T) {
 		{
 			"empty denom deposit",
 			fields{
-				Deposit: base.TestCoinEmptyDenom,
+				Deposit: base.TestCoinEmptyPos,
 			},
 			true,
 		},
 		{
 			"invalid denom deposit",
 			fields{
-				Deposit: base.TestCoinInvalidDenom,
+				Deposit: base.TestCoinInvalidPos,
 			},
 			true,
 		},
 		{
 			"empty amount deposit",
 			fields{
-				Deposit: base.TestCoinEmptyAmount,
+				Deposit: base.TestCoinOneEmpty,
 			},
 			true,
 		},
 		{
 			"negative amount deposit",
 			fields{
-				Deposit: base.TestCoinNegativeAmount,
+				Deposit: base.TestCoinOneNeg,
 			},
 			true,
 		},
 		{
 			"zero amount deposit",
 			fields{
-				Deposit:      base.TestCoinZeroAmount,
+				Deposit:      base.TestCoinOneZero,
 				StakingShare: sdkmath.LegacyNewDec(0),
 			},
 			false,
@@ -58,7 +58,7 @@ func TestParams_Validate(t *testing.T) {
 		{
 			"positive amount deposit",
 			fields{
-				Deposit:      base.TestCoinPositiveAmount,
+				Deposit:      base.TestCoinOnePos,
 				StakingShare: sdkmath.LegacyNewDec(0),
 			},
 			false,
@@ -66,7 +66,7 @@ func TestParams_Validate(t *testing.T) {
 		{
 			"empty staking share",
 			fields{
-				Deposit:      base.TestCoinPositiveAmount,
+				Deposit:      base.TestCoinOnePos,
 				StakingShare: sdkmath.LegacyDec{},
 			},
 			true,
@@ -74,7 +74,7 @@ func TestParams_Validate(t *testing.T) {
 		{
 			"less than 0 staking share",
 			fields{
-				Deposit:      base.TestCoinPositiveAmount,
+				Deposit:      base.TestCoinOnePos,
 				StakingShare: sdkmath.LegacyNewDec(-1),
 			},
 			true,
@@ -82,7 +82,7 @@ func TestParams_Validate(t *testing.T) {
 		{
 			"equals to 0 staking share",
 			fields{
-				Deposit:      base.TestCoinPositiveAmount,
+				Deposit:      base.TestCoinOnePos,
 				StakingShare: sdkmath.LegacyNewDec(0),
 			},
 			false,
@@ -90,7 +90,7 @@ func TestParams_Validate(t *testing.T) {
 		{
 			"less than 1 staking share",
 			fields{
-				Deposit:      base.TestCoinPositiveAmount,
+				Deposit:      base.TestCoinOnePos,
 				StakingShare: sdkmath.LegacyNewDecWithPrec(1, 1),
 			},
 			false,
@@ -98,7 +98,7 @@ func TestParams_Validate(t *testing.T) {
 		{
 			"equals to 1 staking share",
 			fields{
-				Deposit:      base.TestCoinPositiveAmount,
+				Deposit:      base.TestCoinOnePos,
 				StakingShare: sdkmath.LegacyNewDec(1),
 			},
 			false,
@@ -106,7 +106,7 @@ func TestParams_Validate(t *testing.T) {
 		{
 			"greater than 1 staking share",
 			fields{
-				Deposit:      base.TestCoinPositiveAmount,
+				Deposit:      base.TestCoinOnePos,
 				StakingShare: sdkmath.LegacyNewDec(2),
 			},
 			true,

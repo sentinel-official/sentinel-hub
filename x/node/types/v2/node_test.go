@@ -70,8 +70,8 @@ func TestNode_GigabytePrice(t *testing.T) {
 			args{
 				denom: base.TestDenomEmpty,
 			},
-			base.TestCoinEmpty,
-			false,
+			base.TestCoinEmptyZero,
+			true,
 		},
 		{
 			"gigabyte_prices empty and denom empty",
@@ -81,18 +81,18 @@ func TestNode_GigabytePrice(t *testing.T) {
 			args{
 				denom: base.TestDenomEmpty,
 			},
-			base.TestCoinEmpty,
-			false,
+			base.TestCoinEmptyZero,
+			true,
 		},
 		{
 			"gigabyte_prices 1000one and denom empty",
 			fields{
-				GigabytePrices: base.TestCoinsPositiveAmount,
+				GigabytePrices: base.TestCoinsOnePos,
 			},
 			args{
 				denom: base.TestDenomEmpty,
 			},
-			base.TestCoinEmpty,
+			base.TestCoinEmptyZero,
 			false,
 		},
 		{
@@ -103,7 +103,7 @@ func TestNode_GigabytePrice(t *testing.T) {
 			args{
 				denom: base.TestDenomOne,
 			},
-			base.TestCoinEmpty,
+			base.TestCoinEmptyZero,
 			false,
 		},
 		{
@@ -114,18 +114,18 @@ func TestNode_GigabytePrice(t *testing.T) {
 			args{
 				denom: base.TestDenomOne,
 			},
-			base.TestCoinEmpty,
+			base.TestCoinEmptyZero,
 			false,
 		},
 		{
 			"gigabyte_prices 1000one and denom one",
 			fields{
-				GigabytePrices: base.TestCoinsPositiveAmount,
+				GigabytePrices: base.TestCoinsOnePos,
 			},
 			args{
 				denom: base.TestDenomOne,
 			},
-			base.TestCoinPositiveAmount,
+			base.TestCoinOnePos,
 			true,
 		},
 		{
@@ -136,7 +136,7 @@ func TestNode_GigabytePrice(t *testing.T) {
 			args{
 				denom: base.TestDenomTwo,
 			},
-			base.TestCoinEmpty,
+			base.TestCoinEmptyZero,
 			false,
 		},
 		{
@@ -147,18 +147,18 @@ func TestNode_GigabytePrice(t *testing.T) {
 			args{
 				denom: base.TestDenomTwo,
 			},
-			base.TestCoinEmpty,
+			base.TestCoinEmptyZero,
 			false,
 		},
 		{
 			"gigabyte_prices 1000one and denom two",
 			fields{
-				GigabytePrices: base.TestCoinsPositiveAmount,
+				GigabytePrices: base.TestCoinsOnePos,
 			},
 			args{
 				denom: base.TestDenomTwo,
 			},
-			base.TestCoinEmpty,
+			base.TestCoinEmptyZero,
 			false,
 		},
 	}
@@ -200,8 +200,8 @@ func TestNode_HourlyPrice(t *testing.T) {
 			args{
 				denom: base.TestDenomEmpty,
 			},
-			base.TestCoinEmpty,
-			false,
+			base.TestCoinEmptyZero,
+			true,
 		},
 		{
 			"hourly_prices empty and denom empty",
@@ -211,18 +211,18 @@ func TestNode_HourlyPrice(t *testing.T) {
 			args{
 				denom: base.TestDenomEmpty,
 			},
-			base.TestCoinEmpty,
-			false,
+			base.TestCoinEmptyZero,
+			true,
 		},
 		{
 			"hourly_prices 1000one and denom empty",
 			fields{
-				HourlyPrices: base.TestCoinsPositiveAmount,
+				HourlyPrices: base.TestCoinsOnePos,
 			},
 			args{
 				denom: base.TestDenomEmpty,
 			},
-			base.TestCoinEmpty,
+			base.TestCoinEmptyZero,
 			false,
 		},
 		{
@@ -233,7 +233,7 @@ func TestNode_HourlyPrice(t *testing.T) {
 			args{
 				denom: base.TestDenomOne,
 			},
-			base.TestCoinEmpty,
+			base.TestCoinEmptyZero,
 			false,
 		},
 		{
@@ -244,18 +244,18 @@ func TestNode_HourlyPrice(t *testing.T) {
 			args{
 				denom: base.TestDenomOne,
 			},
-			base.TestCoinEmpty,
+			base.TestCoinEmptyZero,
 			false,
 		},
 		{
 			"hourly_prices 1000one and denom one",
 			fields{
-				HourlyPrices: base.TestCoinsPositiveAmount,
+				HourlyPrices: base.TestCoinsOnePos,
 			},
 			args{
 				denom: base.TestDenomOne,
 			},
-			base.TestCoinPositiveAmount,
+			base.TestCoinOnePos,
 			true,
 		},
 		{
@@ -266,7 +266,7 @@ func TestNode_HourlyPrice(t *testing.T) {
 			args{
 				denom: base.TestDenomTwo,
 			},
-			base.TestCoinEmpty,
+			base.TestCoinEmptyZero,
 			false,
 		},
 		{
@@ -277,18 +277,18 @@ func TestNode_HourlyPrice(t *testing.T) {
 			args{
 				denom: base.TestDenomTwo,
 			},
-			base.TestCoinEmpty,
+			base.TestCoinEmptyZero,
 			false,
 		},
 		{
 			"hourly_prices 1000one and denom two",
 			fields{
-				HourlyPrices: base.TestCoinsPositiveAmount,
+				HourlyPrices: base.TestCoinsOnePos,
 			},
 			args{
 				denom: base.TestDenomTwo,
 			},
-			base.TestCoinEmpty,
+			base.TestCoinEmptyZero,
 			false,
 		},
 	}
@@ -348,8 +348,8 @@ func TestNode_Validate(t *testing.T) {
 			"address 10 bytes",
 			fields{
 				Address:        base.TestBech32NodeAddr10Bytes,
-				GigabytePrices: base.TestCoinsPositiveAmount,
-				HourlyPrices:   base.TestCoinsPositiveAmount,
+				GigabytePrices: base.TestCoinsOnePos,
+				HourlyPrices:   base.TestCoinsOnePos,
 				RemoteURL:      "https://remote.url:443",
 				InactiveAt:     base.TestTimeNow,
 				Status:         v1base.StatusActive,
@@ -361,8 +361,8 @@ func TestNode_Validate(t *testing.T) {
 			"address 20 bytes",
 			fields{
 				Address:        base.TestBech32NodeAddr20Bytes,
-				GigabytePrices: base.TestCoinsPositiveAmount,
-				HourlyPrices:   base.TestCoinsPositiveAmount,
+				GigabytePrices: base.TestCoinsOnePos,
+				HourlyPrices:   base.TestCoinsOnePos,
 				RemoteURL:      "https://remote.url:443",
 				InactiveAt:     base.TestTimeNow,
 				Status:         v1base.StatusActive,
@@ -374,8 +374,8 @@ func TestNode_Validate(t *testing.T) {
 			"address 30 bytes",
 			fields{
 				Address:        base.TestBech32NodeAddr30Bytes,
-				GigabytePrices: base.TestCoinsPositiveAmount,
-				HourlyPrices:   base.TestCoinsPositiveAmount,
+				GigabytePrices: base.TestCoinsOnePos,
+				HourlyPrices:   base.TestCoinsOnePos,
 				RemoteURL:      "https://remote.url:443",
 				InactiveAt:     base.TestTimeNow,
 				Status:         v1base.StatusActive,
@@ -388,7 +388,7 @@ func TestNode_Validate(t *testing.T) {
 			fields{
 				Address:        base.TestBech32NodeAddr20Bytes,
 				GigabytePrices: base.TestCoinsNil,
-				HourlyPrices:   base.TestCoinsPositiveAmount,
+				HourlyPrices:   base.TestCoinsOnePos,
 				RemoteURL:      "https://remote.url:443",
 				InactiveAt:     base.TestTimeNow,
 				Status:         v1base.StatusActive,
@@ -408,7 +408,7 @@ func TestNode_Validate(t *testing.T) {
 			"gigabyte_prices empty denom",
 			fields{
 				Address:        base.TestBech32NodeAddr20Bytes,
-				GigabytePrices: base.TestCoinsEmptyDenom,
+				GigabytePrices: base.TestCoinsEmptyPos,
 			},
 			true,
 		},
@@ -416,7 +416,7 @@ func TestNode_Validate(t *testing.T) {
 			"gigabyte_prices invalid denom",
 			fields{
 				Address:        base.TestBech32NodeAddr20Bytes,
-				GigabytePrices: base.TestCoinsInvalidDenom,
+				GigabytePrices: base.TestCoinsInvalidPos,
 			},
 			true,
 		},
@@ -424,7 +424,7 @@ func TestNode_Validate(t *testing.T) {
 			"gigabyte_prices empty amount",
 			fields{
 				Address:        base.TestBech32NodeAddr20Bytes,
-				GigabytePrices: base.TestCoinsEmptyAmount,
+				GigabytePrices: base.TestCoinsOneEmpty,
 			},
 			true,
 		},
@@ -432,7 +432,7 @@ func TestNode_Validate(t *testing.T) {
 			"gigabyte_prices negative amount",
 			fields{
 				Address:        base.TestBech32NodeAddr20Bytes,
-				GigabytePrices: base.TestCoinsNegativeAmount,
+				GigabytePrices: base.TestCoinsOneNeg,
 			},
 			true,
 		},
@@ -440,7 +440,7 @@ func TestNode_Validate(t *testing.T) {
 			"gigabyte_prices zero amount",
 			fields{
 				Address:        base.TestBech32NodeAddr20Bytes,
-				GigabytePrices: base.TestCoinsZeroAmount,
+				GigabytePrices: base.TestCoinsOneZero,
 			},
 			true,
 		},
@@ -448,8 +448,8 @@ func TestNode_Validate(t *testing.T) {
 			"gigabyte_prices positive amount",
 			fields{
 				Address:        base.TestBech32NodeAddr20Bytes,
-				GigabytePrices: base.TestCoinsPositiveAmount,
-				HourlyPrices:   base.TestCoinsPositiveAmount,
+				GigabytePrices: base.TestCoinsOnePos,
+				HourlyPrices:   base.TestCoinsOnePos,
 				RemoteURL:      "https://remote.url:443",
 				InactiveAt:     base.TestTimeNow,
 				Status:         v1base.StatusActive,
@@ -461,7 +461,7 @@ func TestNode_Validate(t *testing.T) {
 			"hourly_prices nil",
 			fields{
 				Address:        base.TestBech32NodeAddr20Bytes,
-				GigabytePrices: base.TestCoinsPositiveAmount,
+				GigabytePrices: base.TestCoinsOnePos,
 				HourlyPrices:   base.TestCoinsNil,
 				RemoteURL:      "https://remote.url:443",
 				InactiveAt:     base.TestTimeNow,
@@ -474,7 +474,7 @@ func TestNode_Validate(t *testing.T) {
 			"hourly_prices empty",
 			fields{
 				Address:        base.TestBech32NodeAddr20Bytes,
-				GigabytePrices: base.TestCoinsPositiveAmount,
+				GigabytePrices: base.TestCoinsOnePos,
 				HourlyPrices:   base.TestCoinsEmpty,
 			},
 			true,
@@ -483,8 +483,8 @@ func TestNode_Validate(t *testing.T) {
 			"hourly_prices empty denom",
 			fields{
 				Address:        base.TestBech32NodeAddr20Bytes,
-				GigabytePrices: base.TestCoinsPositiveAmount,
-				HourlyPrices:   base.TestCoinsEmptyDenom,
+				GigabytePrices: base.TestCoinsOnePos,
+				HourlyPrices:   base.TestCoinsEmptyPos,
 			},
 			true,
 		},
@@ -492,8 +492,8 @@ func TestNode_Validate(t *testing.T) {
 			"hourly_prices invalid denom",
 			fields{
 				Address:        base.TestBech32NodeAddr20Bytes,
-				GigabytePrices: base.TestCoinsPositiveAmount,
-				HourlyPrices:   base.TestCoinsInvalidDenom,
+				GigabytePrices: base.TestCoinsOnePos,
+				HourlyPrices:   base.TestCoinsInvalidPos,
 			},
 			true,
 		},
@@ -501,8 +501,8 @@ func TestNode_Validate(t *testing.T) {
 			"hourly_prices empty amount",
 			fields{
 				Address:        base.TestBech32NodeAddr20Bytes,
-				GigabytePrices: base.TestCoinsPositiveAmount,
-				HourlyPrices:   base.TestCoinsEmptyAmount,
+				GigabytePrices: base.TestCoinsOnePos,
+				HourlyPrices:   base.TestCoinsOneEmpty,
 			},
 			true,
 		},
@@ -510,8 +510,8 @@ func TestNode_Validate(t *testing.T) {
 			"hourly_prices negative amount",
 			fields{
 				Address:        base.TestBech32NodeAddr20Bytes,
-				GigabytePrices: base.TestCoinsPositiveAmount,
-				HourlyPrices:   base.TestCoinsNegativeAmount,
+				GigabytePrices: base.TestCoinsOnePos,
+				HourlyPrices:   base.TestCoinsOneNeg,
 			},
 			true,
 		},
@@ -519,8 +519,8 @@ func TestNode_Validate(t *testing.T) {
 			"hourly_prices zero amount",
 			fields{
 				Address:        base.TestBech32NodeAddr20Bytes,
-				GigabytePrices: base.TestCoinsPositiveAmount,
-				HourlyPrices:   base.TestCoinsZeroAmount,
+				GigabytePrices: base.TestCoinsOnePos,
+				HourlyPrices:   base.TestCoinsOneZero,
 			},
 			true,
 		},
@@ -528,8 +528,8 @@ func TestNode_Validate(t *testing.T) {
 			"hourly_prices positive amount",
 			fields{
 				Address:        base.TestBech32NodeAddr20Bytes,
-				GigabytePrices: base.TestCoinsPositiveAmount,
-				HourlyPrices:   base.TestCoinsPositiveAmount,
+				GigabytePrices: base.TestCoinsOnePos,
+				HourlyPrices:   base.TestCoinsOnePos,
 				RemoteURL:      "https://remote.url:443",
 				InactiveAt:     base.TestTimeNow,
 				Status:         v1base.StatusActive,
@@ -541,8 +541,8 @@ func TestNode_Validate(t *testing.T) {
 			"remote_url empty",
 			fields{
 				Address:        base.TestBech32NodeAddr20Bytes,
-				GigabytePrices: base.TestCoinsPositiveAmount,
-				HourlyPrices:   base.TestCoinsPositiveAmount,
+				GigabytePrices: base.TestCoinsOnePos,
+				HourlyPrices:   base.TestCoinsOnePos,
 				RemoteURL:      "",
 			},
 			true,
@@ -551,8 +551,8 @@ func TestNode_Validate(t *testing.T) {
 			"remote_url 72 chars",
 			fields{
 				Address:        base.TestBech32NodeAddr20Bytes,
-				GigabytePrices: base.TestCoinsPositiveAmount,
-				HourlyPrices:   base.TestCoinsPositiveAmount,
+				GigabytePrices: base.TestCoinsOnePos,
+				HourlyPrices:   base.TestCoinsOnePos,
 				RemoteURL:      strings.Repeat("r", 72),
 			},
 			true,
@@ -561,8 +561,8 @@ func TestNode_Validate(t *testing.T) {
 			"remote_url invalid",
 			fields{
 				Address:        base.TestBech32NodeAddr20Bytes,
-				GigabytePrices: base.TestCoinsPositiveAmount,
-				HourlyPrices:   base.TestCoinsPositiveAmount,
+				GigabytePrices: base.TestCoinsOnePos,
+				HourlyPrices:   base.TestCoinsOnePos,
 				RemoteURL:      "invalid",
 			},
 			true,
@@ -571,8 +571,8 @@ func TestNode_Validate(t *testing.T) {
 			"remote_url invalid scheme",
 			fields{
 				Address:        base.TestBech32NodeAddr20Bytes,
-				GigabytePrices: base.TestCoinsPositiveAmount,
-				HourlyPrices:   base.TestCoinsPositiveAmount,
+				GigabytePrices: base.TestCoinsOnePos,
+				HourlyPrices:   base.TestCoinsOnePos,
 				RemoteURL:      "tcp://remote.url:80",
 			},
 			true,
@@ -581,8 +581,8 @@ func TestNode_Validate(t *testing.T) {
 			"remote_url without port",
 			fields{
 				Address:        base.TestBech32NodeAddr20Bytes,
-				GigabytePrices: base.TestCoinsPositiveAmount,
-				HourlyPrices:   base.TestCoinsPositiveAmount,
+				GigabytePrices: base.TestCoinsOnePos,
+				HourlyPrices:   base.TestCoinsOnePos,
 				RemoteURL:      "https://remote.url",
 			},
 			true,
@@ -591,8 +591,8 @@ func TestNode_Validate(t *testing.T) {
 			"remote_url with port",
 			fields{
 				Address:        base.TestBech32NodeAddr20Bytes,
-				GigabytePrices: base.TestCoinsPositiveAmount,
-				HourlyPrices:   base.TestCoinsPositiveAmount,
+				GigabytePrices: base.TestCoinsOnePos,
+				HourlyPrices:   base.TestCoinsOnePos,
 				RemoteURL:      "https://remote.url:443",
 				InactiveAt:     base.TestTimeNow,
 				Status:         v1base.StatusActive,
@@ -604,8 +604,8 @@ func TestNode_Validate(t *testing.T) {
 			"inactive_at empty",
 			fields{
 				Address:        base.TestBech32NodeAddr20Bytes,
-				GigabytePrices: base.TestCoinsPositiveAmount,
-				HourlyPrices:   base.TestCoinsPositiveAmount,
+				GigabytePrices: base.TestCoinsOnePos,
+				HourlyPrices:   base.TestCoinsOnePos,
 				RemoteURL:      "https://remote.url:443",
 				InactiveAt:     base.TestTimeZero,
 			},
@@ -615,8 +615,8 @@ func TestNode_Validate(t *testing.T) {
 			"inactive_at now",
 			fields{
 				Address:        base.TestBech32NodeAddr20Bytes,
-				GigabytePrices: base.TestCoinsPositiveAmount,
-				HourlyPrices:   base.TestCoinsPositiveAmount,
+				GigabytePrices: base.TestCoinsOnePos,
+				HourlyPrices:   base.TestCoinsOnePos,
 				RemoteURL:      "https://remote.url:443",
 				InactiveAt:     base.TestTimeNow,
 				Status:         v1base.StatusActive,
@@ -628,8 +628,8 @@ func TestNode_Validate(t *testing.T) {
 			"status unspecified",
 			fields{
 				Address:        base.TestBech32NodeAddr20Bytes,
-				GigabytePrices: base.TestCoinsPositiveAmount,
-				HourlyPrices:   base.TestCoinsPositiveAmount,
+				GigabytePrices: base.TestCoinsOnePos,
+				HourlyPrices:   base.TestCoinsOnePos,
 				RemoteURL:      "https://remote.url:443",
 				InactiveAt:     base.TestTimeNow,
 				Status:         v1base.StatusUnspecified,
@@ -640,8 +640,8 @@ func TestNode_Validate(t *testing.T) {
 			"status active",
 			fields{
 				Address:        base.TestBech32NodeAddr20Bytes,
-				GigabytePrices: base.TestCoinsPositiveAmount,
-				HourlyPrices:   base.TestCoinsPositiveAmount,
+				GigabytePrices: base.TestCoinsOnePos,
+				HourlyPrices:   base.TestCoinsOnePos,
 				RemoteURL:      "https://remote.url:443",
 				InactiveAt:     base.TestTimeNow,
 				Status:         v1base.StatusActive,
@@ -653,8 +653,8 @@ func TestNode_Validate(t *testing.T) {
 			"status inactive_pending",
 			fields{
 				Address:        base.TestBech32NodeAddr20Bytes,
-				GigabytePrices: base.TestCoinsPositiveAmount,
-				HourlyPrices:   base.TestCoinsPositiveAmount,
+				GigabytePrices: base.TestCoinsOnePos,
+				HourlyPrices:   base.TestCoinsOnePos,
 				RemoteURL:      "https://remote.url:443",
 				InactiveAt:     base.TestTimeNow,
 				Status:         v1base.StatusInactivePending,
@@ -665,8 +665,8 @@ func TestNode_Validate(t *testing.T) {
 			"status inactive",
 			fields{
 				Address:        base.TestBech32NodeAddr20Bytes,
-				GigabytePrices: base.TestCoinsPositiveAmount,
-				HourlyPrices:   base.TestCoinsPositiveAmount,
+				GigabytePrices: base.TestCoinsOnePos,
+				HourlyPrices:   base.TestCoinsOnePos,
 				RemoteURL:      "https://remote.url:443",
 				InactiveAt:     base.TestTimeZero,
 				Status:         v1base.StatusInactive,
@@ -678,8 +678,8 @@ func TestNode_Validate(t *testing.T) {
 			"status_at empty",
 			fields{
 				Address:        base.TestBech32NodeAddr20Bytes,
-				GigabytePrices: base.TestCoinsPositiveAmount,
-				HourlyPrices:   base.TestCoinsPositiveAmount,
+				GigabytePrices: base.TestCoinsOnePos,
+				HourlyPrices:   base.TestCoinsOnePos,
 				RemoteURL:      "https://remote.url:443",
 				InactiveAt:     base.TestTimeNow,
 				Status:         v1base.StatusActive,
@@ -691,8 +691,8 @@ func TestNode_Validate(t *testing.T) {
 			"status_at now",
 			fields{
 				Address:        base.TestBech32NodeAddr20Bytes,
-				GigabytePrices: base.TestCoinsPositiveAmount,
-				HourlyPrices:   base.TestCoinsPositiveAmount,
+				GigabytePrices: base.TestCoinsOnePos,
+				HourlyPrices:   base.TestCoinsOnePos,
 				RemoteURL:      "https://remote.url:443",
 				InactiveAt:     base.TestTimeNow,
 				Status:         v1base.StatusActive,
