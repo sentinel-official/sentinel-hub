@@ -23,7 +23,7 @@ message Session {
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
-  int64 max_gigabytes = 7 ;
+  int64 max_gigabytes = 7;
   google.protobuf.Duration duration = 8 [
     (gogoproto.nullable) = false,
     (gogoproto.stdduration) = true

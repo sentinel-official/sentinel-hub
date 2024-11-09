@@ -54,7 +54,7 @@ func (k *Keeper) HandleMsgRegisterNode(ctx sdk.Context, msg *v3.MsgRegisterNodeR
 			NodeAddress:    node.Address,
 			GigabytePrices: node.GigabytePrices.String(),
 			HourlyPrices:   node.HourlyPrices.String(),
-			RemoteUrl:      node.RemoteURL,
+			RemoteURL:      node.RemoteURL,
 		},
 	)
 
@@ -99,7 +99,7 @@ func (k *Keeper) HandleMsgUpdateNodeDetails(ctx sdk.Context, msg *v3.MsgUpdateNo
 			NodeAddress:    node.Address,
 			GigabytePrices: node.GigabytePrices.String(),
 			HourlyPrices:   node.HourlyPrices.String(),
-			RemoteUrl:      node.RemoteURL,
+			RemoteURL:      node.RemoteURL,
 		},
 	)
 
@@ -296,7 +296,7 @@ func (k *Keeper) HandleMsgUpdateParams(ctx sdk.Context, msg *v3.MsgUpdateParamsR
 					NodeAddress:    item.Address,
 					GigabytePrices: item.GigabytePrices.String(),
 					HourlyPrices:   item.HourlyPrices.String(),
-					RemoteUrl:      item.RemoteURL,
+					RemoteURL:      item.RemoteURL,
 				},
 			)
 

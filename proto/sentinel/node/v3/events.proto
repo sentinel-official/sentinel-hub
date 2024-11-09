@@ -12,7 +12,7 @@ message EventCreate {
   string node_address = 1;
   string gigabyte_prices = 2;
   string hourly_prices = 3;
-  string remote_url = 4;
+  string remote_url = 4 [(gogoproto.customname) = "RemoteURL"];
 }
 
 message EventPay {
@@ -33,7 +33,7 @@ message EventUpdateDetails {
   string node_address = 1;
   string gigabyte_prices = 2;
   string hourly_prices = 3;
-  string remote_url = 4;
+  string remote_url = 4 [(gogoproto.customname) = "RemoteURL"];
 }
 
 message EventUpdateStatus {
