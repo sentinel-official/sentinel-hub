@@ -28,6 +28,126 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
+type MsgAddAssetRequest struct {
+	From            string `protobuf:"bytes,1,opt,name=from,proto3" json:"from,omitempty"`
+	Denom           string `protobuf:"bytes,2,opt,name=denom,proto3" json:"denom,omitempty"`
+	Decimals        int64  `protobuf:"varint,3,opt,name=decimals,proto3" json:"decimals,omitempty"`
+	BaseAssetDenom  string `protobuf:"bytes,4,opt,name=base_asset_denom,json=baseAssetDenom,proto3" json:"base_asset_denom,omitempty"`
+	QuoteAssetDenom string `protobuf:"bytes,5,opt,name=quote_asset_denom,json=quoteAssetDenom,proto3" json:"quote_asset_denom,omitempty"`
+}
+
+func (m *MsgAddAssetRequest) Reset()         { *m = MsgAddAssetRequest{} }
+func (m *MsgAddAssetRequest) String() string { return proto.CompactTextString(m) }
+func (*MsgAddAssetRequest) ProtoMessage()    {}
+func (*MsgAddAssetRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_b67b95f425ef3bb9, []int{0}
+}
+func (m *MsgAddAssetRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgAddAssetRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgAddAssetRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgAddAssetRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgAddAssetRequest.Merge(m, src)
+}
+func (m *MsgAddAssetRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgAddAssetRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgAddAssetRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgAddAssetRequest proto.InternalMessageInfo
+
+type MsgDeleteAssetRequest struct {
+	From  string `protobuf:"bytes,1,opt,name=from,proto3" json:"from,omitempty"`
+	Denom string `protobuf:"bytes,2,opt,name=denom,proto3" json:"denom,omitempty"`
+}
+
+func (m *MsgDeleteAssetRequest) Reset()         { *m = MsgDeleteAssetRequest{} }
+func (m *MsgDeleteAssetRequest) String() string { return proto.CompactTextString(m) }
+func (*MsgDeleteAssetRequest) ProtoMessage()    {}
+func (*MsgDeleteAssetRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_b67b95f425ef3bb9, []int{1}
+}
+func (m *MsgDeleteAssetRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgDeleteAssetRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgDeleteAssetRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgDeleteAssetRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgDeleteAssetRequest.Merge(m, src)
+}
+func (m *MsgDeleteAssetRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgDeleteAssetRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgDeleteAssetRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgDeleteAssetRequest proto.InternalMessageInfo
+
+type MsgUpdateAssetRequest struct {
+	From            string `protobuf:"bytes,1,opt,name=from,proto3" json:"from,omitempty"`
+	Denom           string `protobuf:"bytes,2,opt,name=denom,proto3" json:"denom,omitempty"`
+	Decimals        int64  `protobuf:"varint,3,opt,name=decimals,proto3" json:"decimals,omitempty"`
+	BaseAssetDenom  string `protobuf:"bytes,4,opt,name=base_asset_denom,json=baseAssetDenom,proto3" json:"base_asset_denom,omitempty"`
+	QuoteAssetDenom string `protobuf:"bytes,5,opt,name=quote_asset_denom,json=quoteAssetDenom,proto3" json:"quote_asset_denom,omitempty"`
+}
+
+func (m *MsgUpdateAssetRequest) Reset()         { *m = MsgUpdateAssetRequest{} }
+func (m *MsgUpdateAssetRequest) String() string { return proto.CompactTextString(m) }
+func (*MsgUpdateAssetRequest) ProtoMessage()    {}
+func (*MsgUpdateAssetRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_b67b95f425ef3bb9, []int{2}
+}
+func (m *MsgUpdateAssetRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgUpdateAssetRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgUpdateAssetRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgUpdateAssetRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUpdateAssetRequest.Merge(m, src)
+}
+func (m *MsgUpdateAssetRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgUpdateAssetRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUpdateAssetRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgUpdateAssetRequest proto.InternalMessageInfo
+
 type MsgUpdateParamsRequest struct {
 	From   string `protobuf:"bytes,1,opt,name=from,proto3" json:"from,omitempty"`
 	Params Params `protobuf:"bytes,2,opt,name=params,proto3" json:"params"`
@@ -37,7 +157,7 @@ func (m *MsgUpdateParamsRequest) Reset()         { *m = MsgUpdateParamsRequest{}
 func (m *MsgUpdateParamsRequest) String() string { return proto.CompactTextString(m) }
 func (*MsgUpdateParamsRequest) ProtoMessage()    {}
 func (*MsgUpdateParamsRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b67b95f425ef3bb9, []int{0}
+	return fileDescriptor_b67b95f425ef3bb9, []int{3}
 }
 func (m *MsgUpdateParamsRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -66,6 +186,114 @@ func (m *MsgUpdateParamsRequest) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgUpdateParamsRequest proto.InternalMessageInfo
 
+type MsgAddAssetResponse struct {
+}
+
+func (m *MsgAddAssetResponse) Reset()         { *m = MsgAddAssetResponse{} }
+func (m *MsgAddAssetResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgAddAssetResponse) ProtoMessage()    {}
+func (*MsgAddAssetResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_b67b95f425ef3bb9, []int{4}
+}
+func (m *MsgAddAssetResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgAddAssetResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgAddAssetResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgAddAssetResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgAddAssetResponse.Merge(m, src)
+}
+func (m *MsgAddAssetResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgAddAssetResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgAddAssetResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgAddAssetResponse proto.InternalMessageInfo
+
+type MsgDeleteAssetResponse struct {
+}
+
+func (m *MsgDeleteAssetResponse) Reset()         { *m = MsgDeleteAssetResponse{} }
+func (m *MsgDeleteAssetResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgDeleteAssetResponse) ProtoMessage()    {}
+func (*MsgDeleteAssetResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_b67b95f425ef3bb9, []int{5}
+}
+func (m *MsgDeleteAssetResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgDeleteAssetResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgDeleteAssetResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgDeleteAssetResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgDeleteAssetResponse.Merge(m, src)
+}
+func (m *MsgDeleteAssetResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgDeleteAssetResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgDeleteAssetResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgDeleteAssetResponse proto.InternalMessageInfo
+
+type MsgUpdateAssetResponse struct {
+}
+
+func (m *MsgUpdateAssetResponse) Reset()         { *m = MsgUpdateAssetResponse{} }
+func (m *MsgUpdateAssetResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgUpdateAssetResponse) ProtoMessage()    {}
+func (*MsgUpdateAssetResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_b67b95f425ef3bb9, []int{6}
+}
+func (m *MsgUpdateAssetResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgUpdateAssetResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgUpdateAssetResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgUpdateAssetResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUpdateAssetResponse.Merge(m, src)
+}
+func (m *MsgUpdateAssetResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgUpdateAssetResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUpdateAssetResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgUpdateAssetResponse proto.InternalMessageInfo
+
 type MsgUpdateParamsResponse struct {
 }
 
@@ -73,7 +301,7 @@ func (m *MsgUpdateParamsResponse) Reset()         { *m = MsgUpdateParamsResponse
 func (m *MsgUpdateParamsResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgUpdateParamsResponse) ProtoMessage()    {}
 func (*MsgUpdateParamsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b67b95f425ef3bb9, []int{1}
+	return fileDescriptor_b67b95f425ef3bb9, []int{7}
 }
 func (m *MsgUpdateParamsResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -103,33 +331,50 @@ func (m *MsgUpdateParamsResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgUpdateParamsResponse proto.InternalMessageInfo
 
 func init() {
+	proto.RegisterType((*MsgAddAssetRequest)(nil), "sentinel.oracle.v1.MsgAddAssetRequest")
+	proto.RegisterType((*MsgDeleteAssetRequest)(nil), "sentinel.oracle.v1.MsgDeleteAssetRequest")
+	proto.RegisterType((*MsgUpdateAssetRequest)(nil), "sentinel.oracle.v1.MsgUpdateAssetRequest")
 	proto.RegisterType((*MsgUpdateParamsRequest)(nil), "sentinel.oracle.v1.MsgUpdateParamsRequest")
+	proto.RegisterType((*MsgAddAssetResponse)(nil), "sentinel.oracle.v1.MsgAddAssetResponse")
+	proto.RegisterType((*MsgDeleteAssetResponse)(nil), "sentinel.oracle.v1.MsgDeleteAssetResponse")
+	proto.RegisterType((*MsgUpdateAssetResponse)(nil), "sentinel.oracle.v1.MsgUpdateAssetResponse")
 	proto.RegisterType((*MsgUpdateParamsResponse)(nil), "sentinel.oracle.v1.MsgUpdateParamsResponse")
 }
 
 func init() { proto.RegisterFile("sentinel/oracle/v1/msg.proto", fileDescriptor_b67b95f425ef3bb9) }
 
 var fileDescriptor_b67b95f425ef3bb9 = []byte{
-	// 290 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x92, 0x29, 0x4e, 0xcd, 0x2b,
-	0xc9, 0xcc, 0x4b, 0xcd, 0xd1, 0xcf, 0x2f, 0x4a, 0x4c, 0xce, 0x49, 0xd5, 0x2f, 0x33, 0xd4, 0xcf,
-	0x2d, 0x4e, 0xd7, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x12, 0x82, 0xc9, 0xea, 0x41, 0x64, 0xf5,
-	0xca, 0x0c, 0xa5, 0x44, 0xd2, 0xf3, 0xd3, 0xf3, 0xc1, 0xd2, 0xfa, 0x20, 0x16, 0x44, 0xa5, 0x94,
-	0x3c, 0x16, 0x73, 0x0a, 0x12, 0x8b, 0x12, 0x73, 0x8b, 0x21, 0x0a, 0x94, 0xd2, 0xb8, 0xc4, 0x7c,
-	0x8b, 0xd3, 0x43, 0x0b, 0x52, 0x12, 0x4b, 0x52, 0x03, 0xc0, 0x12, 0x41, 0xa9, 0x85, 0xa5, 0xa9,
-	0xc5, 0x25, 0x42, 0x42, 0x5c, 0x2c, 0x69, 0x45, 0xf9, 0xb9, 0x12, 0x8c, 0x0a, 0x8c, 0x1a, 0x9c,
-	0x41, 0x60, 0xb6, 0x90, 0x05, 0x17, 0x1b, 0x44, 0xb7, 0x04, 0x93, 0x02, 0xa3, 0x06, 0xb7, 0x91,
-	0x94, 0x1e, 0xa6, 0x4b, 0xf4, 0x20, 0xc6, 0x38, 0xb1, 0x9c, 0xb8, 0x27, 0xcf, 0x10, 0x04, 0x55,
-	0xaf, 0x24, 0xc9, 0x25, 0x8e, 0x61, 0x4f, 0x71, 0x41, 0x7e, 0x5e, 0x71, 0xaa, 0x51, 0x05, 0x17,
-	0x97, 0x6f, 0x71, 0x7a, 0x70, 0x6a, 0x51, 0x59, 0x66, 0x72, 0xaa, 0x50, 0x16, 0x17, 0x3f, 0x9a,
-	0x42, 0x21, 0x2d, 0x6c, 0xb6, 0x60, 0x77, 0xb5, 0x94, 0x36, 0x51, 0x6a, 0x21, 0x36, 0x3b, 0x45,
-	0x9c, 0x78, 0x28, 0xc7, 0xb0, 0xe2, 0x91, 0x1c, 0xc3, 0x89, 0x47, 0x72, 0x8c, 0x17, 0x1e, 0xc9,
-	0x31, 0x3e, 0x78, 0x24, 0xc7, 0x38, 0xe1, 0xb1, 0x1c, 0xc3, 0x85, 0xc7, 0x72, 0x0c, 0x37, 0x1e,
-	0xcb, 0x31, 0x44, 0x99, 0xa5, 0x67, 0x96, 0x64, 0x94, 0x26, 0xe9, 0x25, 0xe7, 0xe7, 0xea, 0xc3,
-	0x0c, 0xd6, 0xcd, 0x4f, 0x4b, 0xcb, 0x4c, 0xce, 0x4c, 0xcc, 0xd1, 0xcf, 0x28, 0x4d, 0xd2, 0x2f,
-	0x33, 0x34, 0xd2, 0xaf, 0x80, 0x85, 0x6e, 0x49, 0x65, 0x41, 0x6a, 0xb1, 0x7e, 0x99, 0x61, 0x12,
-	0x1b, 0x38, 0x74, 0x8d, 0x01, 0x01, 0x00, 0x00, 0xff, 0xff, 0xae, 0xcb, 0xff, 0x1f, 0xc8, 0x01,
-	0x00, 0x00,
+	// 472 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xc4, 0x54, 0x41, 0x6f, 0xd3, 0x30,
+	0x14, 0x8e, 0x69, 0x37, 0xc1, 0x9b, 0xb4, 0x81, 0xd9, 0xa0, 0x44, 0xc8, 0x9b, 0x72, 0x80, 0x32,
+	0x44, 0xac, 0x16, 0x09, 0x71, 0xed, 0xb4, 0x6b, 0x25, 0x54, 0x84, 0x84, 0x38, 0x30, 0xb9, 0x89,
+	0xeb, 0x05, 0x25, 0x75, 0x16, 0x27, 0x11, 0xfc, 0x0b, 0x7e, 0x06, 0xe2, 0x84, 0xc4, 0x9f, 0xe8,
+	0x71, 0x47, 0x4e, 0x08, 0xd2, 0x3f, 0x82, 0x6a, 0xb7, 0x63, 0x26, 0xed, 0x18, 0x5c, 0x76, 0x8b,
+	0xdf, 0xf7, 0xbd, 0xef, 0xfb, 0xf2, 0xfc, 0x64, 0xb8, 0xaf, 0xf8, 0x38, 0x8f, 0xc6, 0x3c, 0xa6,
+	0x32, 0x63, 0x41, 0xcc, 0x69, 0xd9, 0xa1, 0x89, 0x12, 0x7e, 0x9a, 0xc9, 0x5c, 0x62, 0xbc, 0x40,
+	0x7d, 0x83, 0xfa, 0x65, 0xc7, 0xdd, 0x16, 0x52, 0x48, 0x0d, 0xd3, 0xd9, 0x97, 0x61, 0xba, 0xbb,
+	0x4b, 0x74, 0x52, 0x96, 0xb1, 0x44, 0x19, 0x82, 0xf7, 0x05, 0x01, 0xee, 0x2b, 0xd1, 0x0b, 0xc3,
+	0x9e, 0x52, 0x3c, 0x1f, 0xf0, 0x93, 0x82, 0xab, 0x1c, 0x63, 0x68, 0x8e, 0x32, 0x99, 0xb4, 0xd0,
+	0x1e, 0x6a, 0xdf, 0x18, 0xe8, 0x6f, 0xbc, 0x0d, 0x6b, 0x21, 0x1f, 0xcb, 0xa4, 0x75, 0x4d, 0x17,
+	0xcd, 0x01, 0xbb, 0x70, 0x3d, 0xe4, 0x41, 0x94, 0xb0, 0x58, 0xb5, 0x1a, 0x7b, 0xa8, 0xdd, 0x18,
+	0x9c, 0x9d, 0x71, 0x1b, 0x6e, 0x0e, 0x99, 0xe2, 0x47, 0x6c, 0x26, 0x7d, 0x64, 0x9a, 0x9b, 0xba,
+	0x79, 0x73, 0x56, 0xd7, 0x8e, 0x87, 0x5a, 0x65, 0x1f, 0x6e, 0x9d, 0x14, 0x32, 0xb7, 0xa9, 0x6b,
+	0x9a, 0xba, 0xa5, 0x81, 0xdf, 0x5c, 0xaf, 0x07, 0x3b, 0x7d, 0x25, 0x0e, 0x79, 0xcc, 0xe7, 0xe5,
+	0x7f, 0x0e, 0xed, 0x7d, 0x45, 0x5a, 0xe3, 0x55, 0x1a, 0xb2, 0xff, 0xd5, 0xb8, 0x82, 0x1f, 0x1f,
+	0xc1, 0x9d, 0xb3, 0xd0, 0x2f, 0xf4, 0x25, 0x5e, 0x94, 0xfa, 0x39, 0xac, 0x9b, 0x9b, 0xd6, 0xb1,
+	0x37, 0xba, 0xae, 0x5f, 0xdf, 0x1a, 0xdf, 0xc8, 0x1c, 0x34, 0x27, 0xdf, 0x77, 0x9d, 0xc1, 0x9c,
+	0xef, 0xed, 0xc0, 0x6d, 0x6b, 0x25, 0x54, 0x2a, 0xc7, 0x8a, 0x7b, 0x2d, 0x6d, 0x6f, 0xcd, 0xdd,
+	0x42, 0xac, 0x69, 0xce, 0x91, 0x7b, 0x70, 0xb7, 0x16, 0xd9, 0x40, 0xdd, 0xcf, 0x0d, 0x80, 0xbe,
+	0x12, 0x2f, 0x79, 0x56, 0x46, 0x01, 0xc7, 0x6f, 0x61, 0xe3, 0x9c, 0x29, 0x7e, 0xb0, 0x2c, 0x6d,
+	0x7d, 0x51, 0xdd, 0x87, 0x7f, 0xe5, 0x19, 0x3b, 0x2c, 0x60, 0xd3, 0x4e, 0x8f, 0x1f, 0xad, 0x68,
+	0xad, 0x6f, 0x96, 0xbb, 0x7f, 0x19, 0xaa, 0x65, 0x74, 0x6e, 0x18, 0x2b, 0x8d, 0xea, 0xeb, 0xb7,
+	0xd2, 0x68, 0xc9, 0x6c, 0xf1, 0x3b, 0xd8, 0xfa, 0x63, 0xb6, 0xf8, 0xe2, 0x76, 0x6b, 0x67, 0xdc,
+	0xc7, 0x97, 0xe2, 0x1a, 0xaf, 0x83, 0xd7, 0x93, 0x9f, 0xc4, 0xf9, 0x54, 0x11, 0x67, 0x52, 0x11,
+	0x74, 0x5a, 0x11, 0xf4, 0xa3, 0x22, 0xe8, 0xe3, 0x94, 0x38, 0xa7, 0x53, 0xe2, 0x7c, 0x9b, 0x12,
+	0xe7, 0xcd, 0x33, 0x11, 0xe5, 0xc7, 0xc5, 0xd0, 0x0f, 0x64, 0x42, 0x17, 0xc2, 0x4f, 0xe4, 0x68,
+	0x14, 0x05, 0x11, 0x8b, 0xe9, 0x71, 0x31, 0xa4, 0x65, 0xa7, 0x4b, 0xdf, 0x2f, 0xde, 0xa1, 0xfc,
+	0x43, 0xca, 0x15, 0x2d, 0x3b, 0xc3, 0x75, 0xfd, 0x0e, 0x3d, 0xfd, 0x15, 0x00, 0x00, 0xff, 0xff,
+	0x0e, 0x3f, 0x64, 0x3a, 0xf2, 0x04, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -144,6 +389,9 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type MsgServiceClient interface {
+	MsgAddAsset(ctx context.Context, in *MsgAddAssetRequest, opts ...grpc.CallOption) (*MsgAddAssetResponse, error)
+	MsgDeleteAsset(ctx context.Context, in *MsgDeleteAssetRequest, opts ...grpc.CallOption) (*MsgDeleteAssetResponse, error)
+	MsgUpdateAsset(ctx context.Context, in *MsgUpdateAssetRequest, opts ...grpc.CallOption) (*MsgUpdateAssetResponse, error)
 	MsgUpdateParams(ctx context.Context, in *MsgUpdateParamsRequest, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 }
 
@@ -153,6 +401,33 @@ type msgServiceClient struct {
 
 func NewMsgServiceClient(cc grpc1.ClientConn) MsgServiceClient {
 	return &msgServiceClient{cc}
+}
+
+func (c *msgServiceClient) MsgAddAsset(ctx context.Context, in *MsgAddAssetRequest, opts ...grpc.CallOption) (*MsgAddAssetResponse, error) {
+	out := new(MsgAddAssetResponse)
+	err := c.cc.Invoke(ctx, "/sentinel.oracle.v1.MsgService/MsgAddAsset", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgServiceClient) MsgDeleteAsset(ctx context.Context, in *MsgDeleteAssetRequest, opts ...grpc.CallOption) (*MsgDeleteAssetResponse, error) {
+	out := new(MsgDeleteAssetResponse)
+	err := c.cc.Invoke(ctx, "/sentinel.oracle.v1.MsgService/MsgDeleteAsset", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgServiceClient) MsgUpdateAsset(ctx context.Context, in *MsgUpdateAssetRequest, opts ...grpc.CallOption) (*MsgUpdateAssetResponse, error) {
+	out := new(MsgUpdateAssetResponse)
+	err := c.cc.Invoke(ctx, "/sentinel.oracle.v1.MsgService/MsgUpdateAsset", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *msgServiceClient) MsgUpdateParams(ctx context.Context, in *MsgUpdateParamsRequest, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
@@ -166,6 +441,9 @@ func (c *msgServiceClient) MsgUpdateParams(ctx context.Context, in *MsgUpdatePar
 
 // MsgServiceServer is the server API for MsgService service.
 type MsgServiceServer interface {
+	MsgAddAsset(context.Context, *MsgAddAssetRequest) (*MsgAddAssetResponse, error)
+	MsgDeleteAsset(context.Context, *MsgDeleteAssetRequest) (*MsgDeleteAssetResponse, error)
+	MsgUpdateAsset(context.Context, *MsgUpdateAssetRequest) (*MsgUpdateAssetResponse, error)
 	MsgUpdateParams(context.Context, *MsgUpdateParamsRequest) (*MsgUpdateParamsResponse, error)
 }
 
@@ -173,12 +451,75 @@ type MsgServiceServer interface {
 type UnimplementedMsgServiceServer struct {
 }
 
+func (*UnimplementedMsgServiceServer) MsgAddAsset(ctx context.Context, req *MsgAddAssetRequest) (*MsgAddAssetResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MsgAddAsset not implemented")
+}
+func (*UnimplementedMsgServiceServer) MsgDeleteAsset(ctx context.Context, req *MsgDeleteAssetRequest) (*MsgDeleteAssetResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MsgDeleteAsset not implemented")
+}
+func (*UnimplementedMsgServiceServer) MsgUpdateAsset(ctx context.Context, req *MsgUpdateAssetRequest) (*MsgUpdateAssetResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MsgUpdateAsset not implemented")
+}
 func (*UnimplementedMsgServiceServer) MsgUpdateParams(ctx context.Context, req *MsgUpdateParamsRequest) (*MsgUpdateParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method MsgUpdateParams not implemented")
 }
 
 func RegisterMsgServiceServer(s grpc1.Server, srv MsgServiceServer) {
 	s.RegisterService(&_MsgService_serviceDesc, srv)
+}
+
+func _MsgService_MsgAddAsset_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgAddAssetRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServiceServer).MsgAddAsset(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sentinel.oracle.v1.MsgService/MsgAddAsset",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServiceServer).MsgAddAsset(ctx, req.(*MsgAddAssetRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MsgService_MsgDeleteAsset_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgDeleteAssetRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServiceServer).MsgDeleteAsset(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sentinel.oracle.v1.MsgService/MsgDeleteAsset",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServiceServer).MsgDeleteAsset(ctx, req.(*MsgDeleteAssetRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MsgService_MsgUpdateAsset_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateAssetRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServiceServer).MsgUpdateAsset(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sentinel.oracle.v1.MsgService/MsgUpdateAsset",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServiceServer).MsgUpdateAsset(ctx, req.(*MsgUpdateAssetRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _MsgService_MsgUpdateParams_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -205,12 +546,173 @@ var _MsgService_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*MsgServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
+			MethodName: "MsgAddAsset",
+			Handler:    _MsgService_MsgAddAsset_Handler,
+		},
+		{
+			MethodName: "MsgDeleteAsset",
+			Handler:    _MsgService_MsgDeleteAsset_Handler,
+		},
+		{
+			MethodName: "MsgUpdateAsset",
+			Handler:    _MsgService_MsgUpdateAsset_Handler,
+		},
+		{
 			MethodName: "MsgUpdateParams",
 			Handler:    _MsgService_MsgUpdateParams_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "sentinel/oracle/v1/msg.proto",
+}
+
+func (m *MsgAddAssetRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgAddAssetRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgAddAssetRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.QuoteAssetDenom) > 0 {
+		i -= len(m.QuoteAssetDenom)
+		copy(dAtA[i:], m.QuoteAssetDenom)
+		i = encodeVarintMsg(dAtA, i, uint64(len(m.QuoteAssetDenom)))
+		i--
+		dAtA[i] = 0x2a
+	}
+	if len(m.BaseAssetDenom) > 0 {
+		i -= len(m.BaseAssetDenom)
+		copy(dAtA[i:], m.BaseAssetDenom)
+		i = encodeVarintMsg(dAtA, i, uint64(len(m.BaseAssetDenom)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if m.Decimals != 0 {
+		i = encodeVarintMsg(dAtA, i, uint64(m.Decimals))
+		i--
+		dAtA[i] = 0x18
+	}
+	if len(m.Denom) > 0 {
+		i -= len(m.Denom)
+		copy(dAtA[i:], m.Denom)
+		i = encodeVarintMsg(dAtA, i, uint64(len(m.Denom)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.From) > 0 {
+		i -= len(m.From)
+		copy(dAtA[i:], m.From)
+		i = encodeVarintMsg(dAtA, i, uint64(len(m.From)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgDeleteAssetRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgDeleteAssetRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgDeleteAssetRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Denom) > 0 {
+		i -= len(m.Denom)
+		copy(dAtA[i:], m.Denom)
+		i = encodeVarintMsg(dAtA, i, uint64(len(m.Denom)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.From) > 0 {
+		i -= len(m.From)
+		copy(dAtA[i:], m.From)
+		i = encodeVarintMsg(dAtA, i, uint64(len(m.From)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgUpdateAssetRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgUpdateAssetRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgUpdateAssetRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.QuoteAssetDenom) > 0 {
+		i -= len(m.QuoteAssetDenom)
+		copy(dAtA[i:], m.QuoteAssetDenom)
+		i = encodeVarintMsg(dAtA, i, uint64(len(m.QuoteAssetDenom)))
+		i--
+		dAtA[i] = 0x2a
+	}
+	if len(m.BaseAssetDenom) > 0 {
+		i -= len(m.BaseAssetDenom)
+		copy(dAtA[i:], m.BaseAssetDenom)
+		i = encodeVarintMsg(dAtA, i, uint64(len(m.BaseAssetDenom)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if m.Decimals != 0 {
+		i = encodeVarintMsg(dAtA, i, uint64(m.Decimals))
+		i--
+		dAtA[i] = 0x18
+	}
+	if len(m.Denom) > 0 {
+		i -= len(m.Denom)
+		copy(dAtA[i:], m.Denom)
+		i = encodeVarintMsg(dAtA, i, uint64(len(m.Denom)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.From) > 0 {
+		i -= len(m.From)
+		copy(dAtA[i:], m.From)
+		i = encodeVarintMsg(dAtA, i, uint64(len(m.From)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *MsgUpdateParamsRequest) Marshal() (dAtA []byte, err error) {
@@ -253,6 +755,75 @@ func (m *MsgUpdateParamsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) 
 	return len(dAtA) - i, nil
 }
 
+func (m *MsgAddAssetResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgAddAssetResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgAddAssetResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgDeleteAssetResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgDeleteAssetResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgDeleteAssetResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgUpdateAssetResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgUpdateAssetResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgUpdateAssetResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
 func (m *MsgUpdateParamsResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -287,6 +858,79 @@ func encodeVarintMsg(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
+func (m *MsgAddAssetRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.From)
+	if l > 0 {
+		n += 1 + l + sovMsg(uint64(l))
+	}
+	l = len(m.Denom)
+	if l > 0 {
+		n += 1 + l + sovMsg(uint64(l))
+	}
+	if m.Decimals != 0 {
+		n += 1 + sovMsg(uint64(m.Decimals))
+	}
+	l = len(m.BaseAssetDenom)
+	if l > 0 {
+		n += 1 + l + sovMsg(uint64(l))
+	}
+	l = len(m.QuoteAssetDenom)
+	if l > 0 {
+		n += 1 + l + sovMsg(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgDeleteAssetRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.From)
+	if l > 0 {
+		n += 1 + l + sovMsg(uint64(l))
+	}
+	l = len(m.Denom)
+	if l > 0 {
+		n += 1 + l + sovMsg(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgUpdateAssetRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.From)
+	if l > 0 {
+		n += 1 + l + sovMsg(uint64(l))
+	}
+	l = len(m.Denom)
+	if l > 0 {
+		n += 1 + l + sovMsg(uint64(l))
+	}
+	if m.Decimals != 0 {
+		n += 1 + sovMsg(uint64(m.Decimals))
+	}
+	l = len(m.BaseAssetDenom)
+	if l > 0 {
+		n += 1 + l + sovMsg(uint64(l))
+	}
+	l = len(m.QuoteAssetDenom)
+	if l > 0 {
+		n += 1 + l + sovMsg(uint64(l))
+	}
+	return n
+}
+
 func (m *MsgUpdateParamsRequest) Size() (n int) {
 	if m == nil {
 		return 0
@@ -299,6 +943,33 @@ func (m *MsgUpdateParamsRequest) Size() (n int) {
 	}
 	l = m.Params.Size()
 	n += 1 + l + sovMsg(uint64(l))
+	return n
+}
+
+func (m *MsgAddAssetResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *MsgDeleteAssetResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *MsgUpdateAssetResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
 	return n
 }
 
@@ -316,6 +987,514 @@ func sovMsg(x uint64) (n int) {
 }
 func sozMsg(x uint64) (n int) {
 	return sovMsg(uint64((x << 1) ^ uint64((int64(x) >> 63))))
+}
+func (m *MsgAddAssetRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowMsg
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgAddAssetRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgAddAssetRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field From", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowMsg
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthMsg
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthMsg
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.From = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Denom", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowMsg
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthMsg
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthMsg
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Denom = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Decimals", wireType)
+			}
+			m.Decimals = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowMsg
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Decimals |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BaseAssetDenom", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowMsg
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthMsg
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthMsg
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.BaseAssetDenom = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field QuoteAssetDenom", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowMsg
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthMsg
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthMsg
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.QuoteAssetDenom = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipMsg(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthMsg
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgDeleteAssetRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowMsg
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgDeleteAssetRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgDeleteAssetRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field From", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowMsg
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthMsg
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthMsg
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.From = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Denom", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowMsg
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthMsg
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthMsg
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Denom = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipMsg(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthMsg
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgUpdateAssetRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowMsg
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgUpdateAssetRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgUpdateAssetRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field From", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowMsg
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthMsg
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthMsg
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.From = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Denom", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowMsg
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthMsg
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthMsg
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Denom = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Decimals", wireType)
+			}
+			m.Decimals = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowMsg
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Decimals |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BaseAssetDenom", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowMsg
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthMsg
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthMsg
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.BaseAssetDenom = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field QuoteAssetDenom", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowMsg
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthMsg
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthMsg
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.QuoteAssetDenom = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipMsg(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthMsg
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
 }
 func (m *MsgUpdateParamsRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
@@ -411,6 +1590,156 @@ func (m *MsgUpdateParamsRequest) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipMsg(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthMsg
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgAddAssetResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowMsg
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgAddAssetResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgAddAssetResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipMsg(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthMsg
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgDeleteAssetResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowMsg
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgDeleteAssetResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgDeleteAssetResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipMsg(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthMsg
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgUpdateAssetResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowMsg
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgUpdateAssetResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgUpdateAssetResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
 		default:
 			iNdEx = preIndex
 			skippy, err := skipMsg(dAtA[iNdEx:])

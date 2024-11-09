@@ -8,13 +8,43 @@ option go_package = "github.com/sentinel-official/hub/v12/x/oracle/types/v1";
 option (gogoproto.equal_all) = false;
 option (gogoproto.goproto_getters_all) = false;
 
+message MsgAddAssetRequest {
+  string from = 1;
+  string denom = 2;
+  int64 decimals = 3;
+  string base_asset_denom = 4;
+  string quote_asset_denom = 5;
+}
+
+message MsgDeleteAssetRequest {
+  string from = 1;
+  string denom = 2;
+}
+
+message MsgUpdateAssetRequest {
+  string from = 1;
+  string denom = 2;
+  int64 decimals = 3;
+  string base_asset_denom = 4;
+  string quote_asset_denom = 5;
+}
+
 message MsgUpdateParamsRequest {
   string from = 1;
   Params params = 2 [(gogoproto.nullable) = false];
 }
 
+message MsgAddAssetResponse {}
+
+message MsgDeleteAssetResponse {}
+
+message MsgUpdateAssetResponse {}
+
 message MsgUpdateParamsResponse {}
 
 service MsgService {
+  rpc MsgAddAsset(MsgAddAssetRequest) returns (MsgAddAssetResponse);
+  rpc MsgDeleteAsset(MsgDeleteAssetRequest) returns (MsgDeleteAssetResponse);
+  rpc MsgUpdateAsset(MsgUpdateAssetRequest) returns (MsgUpdateAssetResponse);
   rpc MsgUpdateParams(MsgUpdateParamsRequest) returns (MsgUpdateParamsResponse);
 }

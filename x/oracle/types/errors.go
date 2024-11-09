@@ -11,8 +11,9 @@ import (
 var (
 	ErrorInvalidMessage = sdkerrors.Register(ModuleName, 101, "invalid message")
 
-	ErrorAssetNotFound = sdkerrors.Register(ModuleName, 201, "asset not found")
-	ErrorDenomNotFound = sdkerrors.Register(ModuleName, 202, "denom not found")
+	ErrorAssetNotFound  = sdkerrors.Register(ModuleName, 201, "asset not found")
+	ErrorDenomNotFound  = sdkerrors.Register(ModuleName, 202, "denom not found")
+	ErrorDuplicateAsset = sdkerrors.Register(ModuleName, 203, "duplicate asset")
 )
 
 func NewErrorInvalidVersion(version, expected string) error {
@@ -41,4 +42,8 @@ func NewErrorDenomtNotFound(portID, channelID string, sequence uint64) error {
 
 func NewErrorInvalidSigner(from, expected string) error {
 	return sdkerrors.Wrapf(govtypes.ErrInvalidSigner, "invalid authority %s; expected %s", from, expected)
+}
+
+func NewErrorDuplicateAsset(denom string) error {
+	return sdkerrors.Wrapf(ErrorDuplicateAsset, "asset %s already exists", denom)
 }

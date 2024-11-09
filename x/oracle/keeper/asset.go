@@ -33,6 +33,14 @@ func (k *Keeper) GetAsset(ctx sdk.Context, denom string) (v v1.Asset, found bool
 	return v, true
 }
 
+// HasAsset checks if an asset with the given denomination exists in the module's KVStore.
+func (k *Keeper) HasAsset(ctx sdk.Context, denom string) bool {
+	store := k.Store(ctx)
+	key := types.AssetKey(denom)
+
+	return store.Has(key)
+}
+
 // DeleteAsset removes an asset from the module's KVStore based on the asset denomination.
 func (k *Keeper) DeleteAsset(ctx sdk.Context, denom string) {
 	store := k.Store(ctx)
