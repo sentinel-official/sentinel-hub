@@ -100,7 +100,7 @@ func (k *Keeper) processSpotPriceResponse(ctx sdk.Context, portID, channelID str
 		return err
 	}
 
-	asset.Price = spotPrice.MulInt(asset.Multiplier).TruncateInt()
+	asset.Price = spotPrice.MulInt(asset.Exponent()).TruncateInt()
 	k.SetAsset(ctx, asset)
 
 	return nil

@@ -9,10 +9,7 @@ option (gogoproto.goproto_getters_all) = false;
 
 message Asset {
   string denom = 1;
-  string multiplier = 2 [
-    (gogoproto.customtype) = "cosmossdk.io/math.Int",
-    (gogoproto.nullable) = false
-  ];
+  int64 decimals = 2;
   uint64 pool_id = 3 [(gogoproto.customname) = "PoolID"];
   string base_asset_denom = 4;
   string quote_asset_denom = 5;
