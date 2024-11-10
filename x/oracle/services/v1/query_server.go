@@ -1,0 +1,35 @@
+package v1
+
+import (
+	"context"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/sentinel-official/hub/v12/x/oracle/keeper"
+	"github.com/sentinel-official/hub/v12/x/oracle/types/v1"
+)
+
+var (
+	_ v1.QueryServiceServer = (*queryServer)(nil)
+)
+
+type queryServer struct {
+	keeper.Keeper
+}
+
+func NewQueryServiceServer(k keeper.Keeper) v1.QueryServiceServer {
+	return &queryServer{k}
+}
+
+func (q *queryServer) QueryAssets(c context.Context, req *v1.QueryAssetsRequest) (*v1.QueryAssetsResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+	return q.HandleQueryAssets(ctx, req)
+}
+
+func (q *queryServer) QueryAsset(c context.Context, req *v1.QueryAssetRequest) (*v1.QueryAssetResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+	return q.HandleQueryAsset(ctx, req)
+}
+
+func (q *queryServer) QueryParams(c context.Context, req *v1.QueryParamsRequest) (*v1.QueryParamsResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+	return q.HandleQueryParams(ctx, req)
+}
