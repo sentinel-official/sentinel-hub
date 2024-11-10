@@ -8,7 +8,7 @@ option go_package = "github.com/sentinel-official/hub/v12/x/oracle/types/v1";
 option (gogoproto.equal_all) = false;
 option (gogoproto.goproto_getters_all) = false;
 
-message MsgAddAssetRequest {
+message MsgCreateAssetRequest {
   string from = 1;
   string denom = 2;
   int64 decimals = 3;
@@ -34,7 +34,7 @@ message MsgUpdateParamsRequest {
   Params params = 2 [(gogoproto.nullable) = false];
 }
 
-message MsgAddAssetResponse {}
+message MsgCreateAssetResponse {}
 
 message MsgDeleteAssetResponse {}
 
@@ -43,7 +43,7 @@ message MsgUpdateAssetResponse {}
 message MsgUpdateParamsResponse {}
 
 service MsgService {
-  rpc MsgAddAsset(MsgAddAssetRequest) returns (MsgAddAssetResponse);
+  rpc MsgCreateAsset(MsgCreateAssetRequest) returns (MsgCreateAssetResponse);
   rpc MsgDeleteAsset(MsgDeleteAssetRequest) returns (MsgDeleteAssetResponse);
   rpc MsgUpdateAsset(MsgUpdateAssetRequest) returns (MsgUpdateAssetResponse);
   rpc MsgUpdateParams(MsgUpdateParamsRequest) returns (MsgUpdateParamsResponse);

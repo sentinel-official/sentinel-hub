@@ -8,7 +8,7 @@ import (
 	"github.com/sentinel-official/hub/v12/x/oracle/types/v1"
 )
 
-func (k *Keeper) HandleMsgAddAsset(ctx sdk.Context, msg *v1.MsgAddAssetRequest) (*v1.MsgAddAssetResponse, error) {
+func (k *Keeper) HandleMsgCreateAsset(ctx sdk.Context, msg *v1.MsgCreateAssetRequest) (*v1.MsgCreateAssetResponse, error) {
 	authority := k.GetAuthority()
 	if msg.From != authority {
 		return nil, types.NewErrorInvalidSigner(msg.From, authority)
@@ -28,8 +28,16 @@ func (k *Keeper) HandleMsgAddAsset(ctx sdk.Context, msg *v1.MsgAddAssetRequest) 
 	}
 
 	k.SetAsset(ctx, asset)
+	ctx.EventManager().EmitTypedEvent(
+		&v1.EventCreate{
+			Denom:           asset.Denom,
+			Decimals:        asset.Decimals,
+			BaseAssetDenom:  asset.BaseAssetDenom,
+			QuoteAssetDenom: asset.QuoteAssetDenom,
+		},
+	)
 
-	return &v1.MsgAddAssetResponse{}, nil
+	return &v1.MsgCreateAssetResponse{}, nil
 }
 
 func (k *Keeper) HandleMsgDeleteAsset(ctx sdk.Context, msg *v1.MsgDeleteAssetRequest) (*v1.MsgDeleteAssetResponse, error) {
@@ -38,7 +46,16 @@ func (k *Keeper) HandleMsgDeleteAsset(ctx sdk.Context, msg *v1.MsgDeleteAssetReq
 		return nil, types.NewErrorInvalidSigner(msg.From, authority)
 	}
 
+	if !k.HasAsset(ctx, msg.Denom) {
+		return nil, types.NewErrorAssetNotFound(msg.Denom)
+	}
+
 	k.DeleteAsset(ctx, msg.Denom)
+	ctx.EventManager().EmitTypedEvent(
+		&v1.EventDelete{
+			Denom: msg.Denom,
+		},
+	)
 
 	return &v1.MsgDeleteAssetResponse{}, nil
 }
@@ -59,6 +76,14 @@ func (k *Keeper) HandleMsgUpdateAsset(ctx sdk.Context, msg *v1.MsgUpdateAssetReq
 	asset.QuoteAssetDenom = msg.QuoteAssetDenom
 
 	k.SetAsset(ctx, asset)
+	ctx.EventManager().EmitTypedEvent(
+		&v1.EventUpdate{
+			Denom:           asset.Denom,
+			Decimals:        asset.Decimals,
+			BaseAssetDenom:  asset.BaseAssetDenom,
+			QuoteAssetDenom: asset.QuoteAssetDenom,
+		},
+	)
 
 	return &v1.MsgUpdateAssetResponse{}, nil
 }

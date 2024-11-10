@@ -8,13 +8,13 @@ import (
 )
 
 var (
-	_ sdk.Msg = (*MsgAddAssetRequest)(nil)
+	_ sdk.Msg = (*MsgCreateAssetRequest)(nil)
 	_ sdk.Msg = (*MsgDeleteAssetRequest)(nil)
 	_ sdk.Msg = (*MsgUpdateAssetRequest)(nil)
 	_ sdk.Msg = (*MsgUpdateParamsRequest)(nil)
 )
 
-func (m *MsgAddAssetRequest) ValidateBasic() error {
+func (m *MsgCreateAssetRequest) ValidateBasic() error {
 	if m.From == "" {
 		return sdkerrors.Wrap(types.ErrorInvalidMessage, "from cannot be empty")
 	}
@@ -37,7 +37,7 @@ func (m *MsgAddAssetRequest) ValidateBasic() error {
 	return nil
 }
 
-func (m *MsgAddAssetRequest) GetSigners() []sdk.AccAddress {
+func (m *MsgCreateAssetRequest) GetSigners() []sdk.AccAddress {
 	from, err := sdk.AccAddressFromBech32(m.From)
 	if err != nil {
 		panic(err)

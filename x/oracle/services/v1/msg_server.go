@@ -21,9 +21,9 @@ func NewMsgServiceServer(k keeper.Keeper) v1.MsgServiceServer {
 	return &msgServer{k}
 }
 
-func (m *msgServer) MsgAddAsset(c context.Context, req *v1.MsgAddAssetRequest) (*v1.MsgAddAssetResponse, error) {
+func (m *msgServer) MsgCreateAsset(c context.Context, req *v1.MsgCreateAssetRequest) (*v1.MsgCreateAssetResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-	return m.HandleMsgAddAsset(ctx, req)
+	return m.HandleMsgCreateAsset(ctx, req)
 }
 
 func (m *msgServer) MsgDeleteAsset(c context.Context, req *v1.MsgDeleteAssetRequest) (*v1.MsgDeleteAssetResponse, error) {
