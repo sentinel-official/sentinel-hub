@@ -12,10 +12,6 @@ import (
 )
 
 func (k *Keeper) HandleQueryAssets(ctx sdk.Context, req *v1.QueryAssetsRequest) (res *v1.QueryAssetsResponse, err error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "empty request")
-	}
-
 	var (
 		items []v1.Asset
 		store = prefix.NewStore(k.Store(ctx), types.AssetKeyPrefix)
@@ -39,10 +35,6 @@ func (k *Keeper) HandleQueryAssets(ctx sdk.Context, req *v1.QueryAssetsRequest) 
 }
 
 func (k *Keeper) HandleQueryAsset(ctx sdk.Context, req *v1.QueryAssetRequest) (*v1.QueryAssetResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "empty request")
-	}
-
 	item, found := k.GetAsset(ctx, req.Denom)
 	if !found {
 		return nil, status.Errorf(codes.NotFound, "asset %s does not exist", req.Denom)

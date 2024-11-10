@@ -23,6 +23,15 @@ func NewQueryServiceServer(k keeper.Keeper) v2.QueryServiceServer {
 	return &queryServer{k}
 }
 
+func (q *queryServer) QueryParams(c context.Context, req *v2.QueryParamsRequest) (*v2.QueryParamsResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "empty request")
+	}
+
+	ctx := sdk.UnwrapSDKContext(c)
+	return q.HandleQueryParams(ctx, req)
+}
+
 func (q *queryServer) QuerySession(_ context.Context, _ *v2.QuerySessionRequest) (*v2.QuerySessionResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "")
 }
@@ -45,13 +54,4 @@ func (q *queryServer) QuerySessionsForSubscription(_ context.Context, _ *v2.Quer
 
 func (q *queryServer) QuerySessionsForAllocation(_ context.Context, _ *v2.QuerySessionsForAllocationRequest) (*v2.QuerySessionsForAllocationResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "")
-}
-
-func (q *queryServer) QueryParams(c context.Context, req *v2.QueryParamsRequest) (*v2.QueryParamsResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "empty request")
-	}
-
-	ctx := sdk.UnwrapSDKContext(c)
-	return q.HandleQueryParams(ctx, req)
 }
