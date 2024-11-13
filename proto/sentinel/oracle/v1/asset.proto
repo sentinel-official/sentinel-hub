@@ -17,4 +17,5 @@ message Asset {
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
+  int64 height = 7;
 }

@@ -38,13 +38,12 @@ func (k *Keeper) GetPortID(ctx sdk.Context) string {
 	return k.GetParams(ctx).PortID
 }
 
-// GetTimeoutDuration retrieves the TimeoutDuration parameter from the module's parameters.
-func (k *Keeper) GetTimeoutDuration(ctx sdk.Context) time.Duration {
-	return k.GetParams(ctx).TimeoutDuration
+// GetTimeout retrieves the Timeout parameter from the module's parameters.
+func (k *Keeper) GetTimeout(ctx sdk.Context) time.Duration {
+	return k.GetParams(ctx).Timeout
 }
 
-// GetTimeout calculates and returns the timeout time in UnixNano format based on the current block time and the TimeoutDuration parameter.
-func (k *Keeper) GetTimeout(ctx sdk.Context) int64 {
-	duration := k.GetTimeoutDuration(ctx)
-	return ctx.BlockTime().Add(duration).UnixNano()
+// GetQueryTimeout returns the current block time adjusted by the module's timeout parameter in Unix nanoseconds.
+func (k *Keeper) GetQueryTimeout(ctx sdk.Context) int64 {
+	return ctx.BlockTime().Add(k.GetTimeout(ctx)).UnixNano()
 }

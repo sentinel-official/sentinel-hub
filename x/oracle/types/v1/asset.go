@@ -1,12 +1,13 @@
 package v1
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"errors"
+	"math/big"
+
+	sdkmath "cosmossdk.io/math"
 	abcitypes "github.com/cometbft/cometbft/abci/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"math/big"
 
 	"github.com/sentinel-official/hub/v12/third_party/osmosis/x/poolmanager/client/queryproto"
 	protorevtypes "github.com/sentinel-official/hub/v12/third_party/osmosis/x/protorev/types"

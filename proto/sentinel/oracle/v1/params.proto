@@ -11,7 +11,7 @@ option (gogoproto.goproto_getters_all) = false;
 message Params {
   string channel_id = 1 [(gogoproto.customname) = "ChannelID"];
   string port_id = 2 [(gogoproto.customname) = "PortID"];
-  google.protobuf.Duration timeout_duration = 3 [
+  google.protobuf.Duration timeout = 3 [
     (gogoproto.nullable) = false,
     (gogoproto.stdduration) = true
   ];

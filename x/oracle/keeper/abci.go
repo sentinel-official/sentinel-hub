@@ -9,9 +9,9 @@ import (
 )
 
 func (k *Keeper) EndBlock(ctx sdk.Context) []abcitypes.ValidatorUpdate {
-	channelID := k.GetChannelID(ctx)
 	portID := k.GetPortID(ctx)
-	timeout := k.GetTimeout(ctx)
+	channelID := k.GetChannelID(ctx)
+	timeout := k.GetQueryTimeout(ctx)
 
 	channelCap, found := k.capability.GetCapability(ctx, ibchost.ChannelCapabilityPath(portID, channelID))
 	if !found {
