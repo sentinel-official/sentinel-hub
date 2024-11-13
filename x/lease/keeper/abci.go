@@ -32,6 +32,8 @@ func (k *Keeper) handleLeasePayouts(ctx sdk.Context) {
 	share := k.StakingShare(ctx)
 
 	k.IterateLeasesForPayoutAt(ctx, ctx.BlockTime(), func(_ int, item v1.Lease) bool {
+		k.DeleteLeaseForPayoutAt(ctx, item.PayoutAt, item.ID)
+
 		provAddr, err := base.ProvAddressFromBech32(item.ProvAddress)
 		if err != nil {
 			panic(err)
@@ -41,8 +43,6 @@ func (k *Keeper) handleLeasePayouts(ctx sdk.Context) {
 		if err != nil {
 			panic(err)
 		}
-
-		k.DeleteLeaseForPayoutAt(ctx, item.PayoutAt, item.ID)
 
 		reward := baseutils.GetProportionOfCoin(item.Price, share)
 		if err := k.SendCoinFromDepositToModule(ctx, provAddr.Bytes(), k.feeCollectorName, reward); err != nil {
@@ -90,7 +90,7 @@ func (k *Keeper) handleLeasePayouts(ctx sdk.Context) {
 
 func (k *Keeper) handleLeaseRenewals(ctx sdk.Context) {
 	k.IterateLeasesForRenewalAt(ctx, ctx.BlockTime(), func(_ int, item v1.Lease) bool {
-		k.DeleteLeaseForRenewalAt(ctx, item.RenewalAt(), item.ID)
+		k.DeleteLeaseForRenewalAt(ctx, item.GetRenewalAt(), item.ID)
 
 		msg := &v1.MsgRenewLeaseRequest{
 			From:  item.ProvAddress,

@@ -58,7 +58,7 @@ func (k *Keeper) HandleQueryLeasesForProvider(ctx sdk.Context, req *v1.QueryLeas
 	)
 
 	pagination, err := sdkquery.Paginate(store, req.Pagination, func(key, _ []byte) error {
-		item, found := k.GetLease(ctx, sdk.BigEndianToUint64(key))
+		item, found := k.GetLease(ctx, types.IDFromLeaseForProviderByNodeKey(append([]byte{0x00, 0x00}, key...)))
 		if !found {
 			return fmt.Errorf("lease for key %X does not exist", key)
 		}
@@ -86,7 +86,7 @@ func (k *Keeper) HandleQueryLeasesForNode(ctx sdk.Context, req *v1.QueryLeasesFo
 	)
 
 	pagination, err := sdkquery.Paginate(store, req.Pagination, func(key, _ []byte) error {
-		item, found := k.GetLease(ctx, sdk.BigEndianToUint64(key))
+		item, found := k.GetLease(ctx, types.IDFromLeaseForNodeByProviderKey(append([]byte{0x00, 0x00}, key...)))
 		if !found {
 			return fmt.Errorf("lease for key %X does not exist", key)
 		}

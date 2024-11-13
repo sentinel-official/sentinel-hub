@@ -88,89 +88,61 @@ func (k *Keeper) IterateLeases(ctx sdk.Context, fn func(index int, item v1.Lease
 	}
 }
 
-// SetLeaseForNode stores a lease for a node in the module's KVStore.
-func (k *Keeper) SetLeaseForNode(ctx sdk.Context, addr base.NodeAddress, id uint64) {
+// SetLeaseForNodeByProvider stores a lease for a node by provider in the module's KVStore.
+func (k *Keeper) SetLeaseForNodeByProvider(ctx sdk.Context, nodeAddr base.NodeAddress, provAddr base.ProvAddress, id uint64) {
 	store := k.Store(ctx)
-	key := types.LeaseForNodeKey(addr, id)
+	key := types.LeaseForNodeByProviderKey(nodeAddr, provAddr, id)
 	value := k.cdc.MustMarshal(&protobuf.BoolValue{Value: true})
 
 	store.Set(key, value)
 }
 
-// HasLeaseForNode checks if a lease for a node exists in the module's KVStore based on the node address and lease ID.
-func (k *Keeper) HasLeaseForNode(ctx sdk.Context, addr base.NodeAddress, id uint64) bool {
+// HasLeaseForNodeByProvider checks if a lease for a node by provider exists in the module's KVStore based on the node and provider addresses and lease ID.
+func (k *Keeper) HasLeaseForNodeByProvider(ctx sdk.Context, nodeAddr base.NodeAddress, provAddr base.ProvAddress, id uint64) bool {
 	store := k.Store(ctx)
-	key := types.LeaseForNodeKey(addr, id)
+	key := types.LeaseForNodeByProviderKey(nodeAddr, provAddr, id)
 
 	return store.Has(key)
 }
 
-// DeleteLeaseForNode removes a lease for a node from the module's KVStore based on the node address and lease ID.
-func (k *Keeper) DeleteLeaseForNode(ctx sdk.Context, addr base.NodeAddress, id uint64) {
+// DeleteLeaseForNodeByProvider removes a lease for a node by provider from the module's KVStore based on the node and provider addresses and lease ID.
+func (k *Keeper) DeleteLeaseForNodeByProvider(ctx sdk.Context, nodeAddr base.NodeAddress, provAddr base.ProvAddress, id uint64) {
 	store := k.Store(ctx)
-	key := types.LeaseForNodeKey(addr, id)
+	key := types.LeaseForNodeByProviderKey(nodeAddr, provAddr, id)
 
 	store.Delete(key)
+}
+
+// GetLatestLeaseForNodeByProvider retrieves the latest lease for a node by provider from the module's KVStore.
+// If the lease exists, it returns the lease and 'found' as true; otherwise, it returns 'found' as false.
+func (k *Keeper) GetLatestLeaseForNodeByProvider(ctx sdk.Context, nodeAddr base.NodeAddress, provAddr base.ProvAddress) (lease v1.Lease, found bool) {
+	store := k.Store(ctx)
+	iterator := sdk.KVStoreReversePrefixIterator(store, types.GetLeaseForNodeByProviderKeyPrefix(nodeAddr, provAddr))
+
+	defer iterator.Close()
+
+	if iterator.Valid() {
+		lease, found = k.GetLease(ctx, types.IDFromLeaseForNodeByProviderKey(iterator.Key()))
+		if !found {
+			panic(fmt.Errorf("lease for node by provider key %X does not exist", iterator.Key()))
+		}
+	}
+
+	return lease, found
 }
 
 // IterateLeasesForNode iterates over all leases for a specific node and calls the provided function for each lease.
 // The iteration stops when the provided function returns 'true'.
 func (k *Keeper) IterateLeasesForNode(ctx sdk.Context, addr base.NodeAddress, fn func(index int, item v1.Lease) (stop bool)) {
 	store := k.Store(ctx)
-	iterator := store.Iterator(types.LeaseForNodeKeyPrefix, sdk.PrefixEndBytes(types.GetLeaseForNodeKeyPrefix(addr)))
+	iterator := sdk.KVStorePrefixIterator(store, types.GetLeaseForNodeKeyPrefix(addr))
 
 	defer iterator.Close()
 
 	for i := 0; iterator.Valid(); iterator.Next() {
-		item, found := k.GetLease(ctx, types.IDFromLeaseForNodeKey(iterator.Key()))
+		item, found := k.GetLease(ctx, types.IDFromLeaseForNodeByProviderKey(iterator.Key()))
 		if !found {
-			panic(fmt.Errorf("lease for node key %X does not exist", iterator.Key()))
-		}
-
-		if stop := fn(i, item); stop {
-			break
-		}
-		i++
-	}
-}
-
-// SetLeaseForProvider stores a lease for a provider in the module's KVStore.
-func (k *Keeper) SetLeaseForProvider(ctx sdk.Context, addr base.ProvAddress, id uint64) {
-	store := k.Store(ctx)
-	key := types.LeaseForProviderKey(addr, id)
-	value := k.cdc.MustMarshal(&protobuf.BoolValue{Value: true})
-
-	store.Set(key, value)
-}
-
-// HasLeaseForProvider checks if a lease for a provider exists in the module's KVStore based on the provider address and lease ID.
-func (k *Keeper) HasLeaseForProvider(ctx sdk.Context, addr base.ProvAddress, id uint64) bool {
-	store := k.Store(ctx)
-	key := types.LeaseForProviderKey(addr, id)
-
-	return store.Has(key)
-}
-
-// DeleteLeaseForProvider removes a lease for a provider from the module's KVStore based on the provider address and lease ID.
-func (k *Keeper) DeleteLeaseForProvider(ctx sdk.Context, addr base.ProvAddress, id uint64) {
-	store := k.Store(ctx)
-	key := types.LeaseForProviderKey(addr, id)
-
-	store.Delete(key)
-}
-
-// IterateLeasesForProvider iterates over all leases for a specific provider and calls the provided function for each lease.
-// The iteration stops when the provided function returns 'true'.
-func (k *Keeper) IterateLeasesForProvider(ctx sdk.Context, addr base.ProvAddress, fn func(index int, item v1.Lease) (stop bool)) {
-	store := k.Store(ctx)
-	iterator := store.Iterator(types.LeaseForProviderKeyPrefix, sdk.PrefixEndBytes(types.GetLeaseForProviderKeyPrefix(addr)))
-
-	defer iterator.Close()
-
-	for i := 0; iterator.Valid(); iterator.Next() {
-		item, found := k.GetLease(ctx, types.IDFromLeaseForProviderKey(iterator.Key()))
-		if !found {
-			panic(fmt.Errorf("lease for provider key %X does not exist", iterator.Key()))
+			panic(fmt.Errorf("lease for node by provider key %X does not exist", iterator.Key()))
 		}
 
 		if stop := fn(i, item); stop {
@@ -221,6 +193,27 @@ func (k *Keeper) GetLatestLeaseForProviderByNode(ctx sdk.Context, provAddr base.
 	}
 
 	return lease, found
+}
+
+// IterateLeasesForProvider iterates over all leases for a specific provider and calls the provided function for each lease.
+// The iteration stops when the provided function returns 'true'.
+func (k *Keeper) IterateLeasesForProvider(ctx sdk.Context, addr base.ProvAddress, fn func(index int, item v1.Lease) (stop bool)) {
+	store := k.Store(ctx)
+	iterator := sdk.KVStorePrefixIterator(store, types.GetLeaseForProviderKeyPrefix(addr))
+
+	defer iterator.Close()
+
+	for i := 0; iterator.Valid(); iterator.Next() {
+		item, found := k.GetLease(ctx, types.IDFromLeaseForProviderByNodeKey(iterator.Key()))
+		if !found {
+			panic(fmt.Errorf("lease for provider by node key %X does not exist", iterator.Key()))
+		}
+
+		if stop := fn(i, item); stop {
+			break
+		}
+		i++
+	}
 }
 
 // SetLeaseForInactiveAt stores a lease for inactive status at a specific time in the module's KVStore.
@@ -305,7 +298,7 @@ func (k *Keeper) IterateLeasesForPayoutAt(ctx sdk.Context, at time.Time, fn func
 	for i := 0; iterator.Valid(); iterator.Next() {
 		lease, found := k.GetLease(ctx, types.IDFromLeaseForPayoutAtKey(iterator.Key()))
 		if !found {
-			panic(fmt.Errorf("lease for payout_at key %X does not exist", iterator.Key()))
+			panic(fmt.Errorf("lease for payout at key %X does not exist", iterator.Key()))
 		}
 
 		if stop := fn(i, lease); stop {
@@ -351,7 +344,7 @@ func (k *Keeper) IterateLeasesForRenewalAt(ctx sdk.Context, at time.Time, fn fun
 	for i := 0; iterator.Valid(); iterator.Next() {
 		lease, found := k.GetLease(ctx, types.IDFromLeaseForRenewalAtKey(iterator.Key()))
 		if !found {
-			panic(fmt.Errorf("lease for renew key %X does not exist", iterator.Key()))
+			panic(fmt.Errorf("lease for renew at key %X does not exist", iterator.Key()))
 		}
 
 		if stop := fn(i, lease); stop {

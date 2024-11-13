@@ -10,14 +10,14 @@ import (
 	base "github.com/sentinel-official/hub/v12/types"
 )
 
-func (m *Lease) Deposit() sdk.Coin {
+func (m *Lease) GetDeposit() sdk.Coin {
 	return sdk.NewCoin(
 		m.Price.Denom,
 		m.Price.Amount.MulRaw(m.MaxHours),
 	)
 }
 
-func (m *Lease) Refund() sdk.Coin {
+func (m *Lease) GetRefund() sdk.Coin {
 	hours := m.MaxHours - m.Hours
 	return sdk.NewCoin(
 		m.Price.Denom,
@@ -25,7 +25,7 @@ func (m *Lease) Refund() sdk.Coin {
 	)
 }
 
-func (m *Lease) RenewalAt() time.Time {
+func (m *Lease) GetRenewalAt() time.Time {
 	if m.Renewable {
 		return m.InactiveAt
 	}
