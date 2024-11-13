@@ -37,7 +37,7 @@ func NewErrorAssetNotFound(denom string) error {
 }
 
 func NewErrorDenomtNotFound(portID, channelID string, sequence uint64) error {
-	return sdkerrors.Wrapf(ErrorAssetNotFound, "denom for packet %s/%s/%d does not exist", portID, channelID, sequence)
+	return sdkerrors.Wrapf(ErrorDenomNotFound, "denom for packet %s/%s/%d does not exist", portID, channelID, sequence)
 }
 
 func NewErrorInvalidSigner(from, expected string) error {

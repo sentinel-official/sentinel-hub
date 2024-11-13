@@ -21,10 +21,10 @@ func (k *Keeper) HandleMsgCreateAsset(ctx sdk.Context, msg *v1.MsgCreateAssetReq
 	asset := v1.Asset{
 		Denom:           msg.Denom,
 		Decimals:        msg.Decimals,
-		PoolID:          0,
 		BaseAssetDenom:  msg.BaseAssetDenom,
 		QuoteAssetDenom: msg.QuoteAssetDenom,
 		Price:           sdkmath.ZeroInt(),
+		Height:          0,
 	}
 
 	k.SetAsset(ctx, asset)

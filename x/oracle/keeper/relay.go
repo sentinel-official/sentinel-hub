@@ -10,9 +10,11 @@ import (
 	ibcicqtypes "github.com/cosmos/ibc-apps/modules/async-icq/v7/types"
 	ibcclienttypes "github.com/cosmos/ibc-go/v7/modules/core/02-client/types"
 	ibcchanneltypes "github.com/cosmos/ibc-go/v7/modules/core/04-channel/types"
+	ibchost "github.com/cosmos/ibc-go/v7/modules/core/24-host"
 
 	"github.com/sentinel-official/hub/v12/third_party/osmosis/x/poolmanager/client/queryproto"
 	protorevtypes "github.com/sentinel-official/hub/v12/third_party/osmosis/x/protorev/types"
+	"github.com/sentinel-official/hub/v12/x/oracle/types/v1"
 )
 
 // SendQueryPacket serializes query requests and sends them as an IBC packet to a destination chain.
@@ -39,7 +41,6 @@ func (k *Keeper) SendQueryPacket(
 }
 
 // OnAcknowledgementPacket processes the acknowledgement packet received after sending an IBC query packet.
-// It deserializes the packet data and acknowledgement, validates the response count, and updates the relevant asset.
 func (k *Keeper) OnAcknowledgementPacket(
 	ctx sdk.Context, packet ibcchanneltypes.Packet, ack ibcchanneltypes.Acknowledgement,
 ) error {
@@ -93,40 +94,88 @@ func (k *Keeper) OnAcknowledgementPacket(
 
 	// Iterate through each request-response pair and update the asset accordingly.
 	for i := 0; i < len(reqs); i++ {
-		// Skip updates if the response height is older than the current asset height.
-		if resps[i].GetHeight() < asset.Height {
-			return nil
-		}
-
 		// Handle specific query paths to extract the required data and update the asset.
 		switch reqs[i].Path {
 		case "/osmosis.poolmanager.v1beta1.Query/SpotPrice":
-			// Extract the spot price from the response and update the asset price.
-			var res queryproto.SpotPriceResponse
-			if err := k.cdc.Unmarshal(resps[i].GetValue(), &res); err != nil {
+			if err := k.handleSpotPriceQueryResponse(ctx, asset, &resps[i]); err != nil {
 				return err
 			}
-
-			spotPrice, err := sdkmath.LegacyNewDecFromStr(res.GetSpotPrice())
-			if err != nil {
-				return err
-			}
-
-			// Update the asset price using the spot price and its exponent.
-			asset.Price = spotPrice.MulInt(asset.Exponent()).TruncateInt()
 		case "/osmosis.protorev.v1beta1.Query/GetProtoRevPool":
-			// Extract the pool ID from the response and update the asset pool ID.
-			var res protorevtypes.QueryGetProtoRevPoolResponse
-			if err := k.cdc.Unmarshal(resps[i].GetValue(), &res); err != nil {
+			if err := k.handleProtoRevPoolQueryResponse(ctx, asset, &resps[i]); err != nil {
 				return err
 			}
-
-			asset.PoolID = res.GetPoolId()
 		}
 	}
 
+	return nil
+}
+
+// handleSpotPriceQueryResponse handles the response for the SpotPrice query.
+func (k *Keeper) handleSpotPriceQueryResponse(ctx sdk.Context, asset v1.Asset, resp *abcitypes.ResponseQuery) error {
+	// Skip updates if the response height is older than the current asset height.
+	if resp.GetHeight() < asset.Height {
+		return nil
+	}
+
+	var res queryproto.SpotPriceResponse
+	if err := k.cdc.Unmarshal(resp.GetValue(), &res); err != nil {
+		return err
+	}
+
+	spotPrice, err := sdkmath.LegacyNewDecFromStr(res.GetSpotPrice())
+	if err != nil {
+		return err
+	}
+
+	// Update the asset price using the spot price and its multiplier.
+	asset.Price = spotPrice.MulInt(asset.Multiplier()).TruncateInt()
+	asset.Height = resp.GetHeight()
+
 	// Persist the updated asset information in the store.
 	k.SetAsset(ctx, asset)
+
+	return nil
+}
+
+// handleProtoRevPoolQueryResponse handles the response for the GetProtoRevPool query.
+func (k *Keeper) handleProtoRevPoolQueryResponse(ctx sdk.Context, asset v1.Asset, resp *abcitypes.ResponseQuery) error {
+	// Unmarshal the response to extract the pool ID and other relevant details.
+	var res protorevtypes.QueryGetProtoRevPoolResponse
+	if err := k.cdc.Unmarshal(resp.GetValue(), &res); err != nil {
+		return err
+	}
+
+	// Retrieve necessary information for sending a follow-up query.
+	portID := k.GetPortID(ctx)
+	channelID := k.GetChannelID(ctx)
+	timeout := k.GetQueryTimeout(ctx)
+
+	// Get the channel capability to ensure we have the authority to send packets.
+	channelCap, found := k.capability.GetCapability(ctx, ibchost.ChannelCapabilityPath(portID, channelID))
+	if !found {
+		return nil
+	}
+
+	// Create a new request for the SpotPrice query using the pool ID and asset details.
+	req := abcitypes.RequestQuery{
+		Data: k.cdc.MustMarshal(
+			&queryproto.SpotPriceRequest{
+				PoolId:          res.GetPoolId(),
+				BaseAssetDenom:  asset.BaseAssetDenom,
+				QuoteAssetDenom: asset.QuoteAssetDenom,
+			},
+		),
+		Path: "/osmosis.poolmanager.v1beta1.Query/SpotPrice",
+	}
+
+	// Send the SpotPrice query packet over IBC.
+	sequence, err := k.SendQueryPacket(ctx, channelCap, portID, channelID, uint64(timeout), req)
+	if err != nil {
+		return err
+	}
+
+	// Map the sequence number to the asset denom for tracking.
+	k.SetDenomForPacket(ctx, portID, channelID, sequence, asset.Denom)
 
 	return nil
 }
