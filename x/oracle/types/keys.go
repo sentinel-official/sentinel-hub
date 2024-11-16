@@ -1,10 +1,13 @@
 package types
 
+import (
+	ibcicqtypes "github.com/cosmos/ibc-apps/modules/async-icq/v7/types"
+)
+
 const (
 	ModuleName = "oracle"
-	PortID     = ModuleName
 	StoreKey   = ModuleName
-	Version    = "oracle-1"
+	Version    = ibcicqtypes.Version
 )
 
 var (

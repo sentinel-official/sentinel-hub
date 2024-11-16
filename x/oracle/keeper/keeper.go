@@ -30,5 +30,10 @@ func NewKeeper(
 	}
 }
 
-func (k *Keeper) GetAuthority() string              { return k.authority }
-func (k *Keeper) Store(ctx sdk.Context) sdk.KVStore { return ctx.KVStore(k.key) }
+func (k *Keeper) GetAuthority() string {
+	return k.authority
+}
+
+func (k *Keeper) Store(ctx sdk.Context) sdk.KVStore {
+	return ctx.KVStore(k.key)
+}

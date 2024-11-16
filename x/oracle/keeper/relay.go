@@ -117,11 +117,13 @@ func (k *Keeper) handleSpotPriceQueryResponse(ctx sdk.Context, asset v1.Asset, r
 		return nil
 	}
 
+	// Unmarshal the response data to extract the spot price details.
 	var res queryproto.SpotPriceResponse
 	if err := k.cdc.Unmarshal(resp.GetValue(), &res); err != nil {
 		return err
 	}
 
+	// Convert the spot price to a decimal value.
 	spotPrice, err := sdkmath.LegacyNewDecFromStr(res.GetSpotPrice())
 	if err != nil {
 		return err
@@ -177,5 +179,17 @@ func (k *Keeper) handleProtoRevPoolQueryResponse(ctx sdk.Context, asset v1.Asset
 	// Map the sequence number to the asset denom for tracking.
 	k.SetDenomForPacket(ctx, portID, channelID, sequence, asset.Denom)
 
+	return nil
+}
+
+// OnTimeoutPacket handles the case when a packet times out before receiving an acknowledgement.
+func (k *Keeper) OnTimeoutPacket(ctx sdk.Context, packet ibcchanneltypes.Packet) error {
+	// Retrieve the source port, channel, and sequence number from the packet.
+	portID := packet.GetSourcePort()
+	channelID := packet.GetSourceChannel()
+	sequence := packet.GetSequence()
+
+	// Delete the denom mapping associated with the timed-out packet.
+	k.DeleteDenomForPacket(ctx, portID, channelID, sequence)
 	return nil
 }
