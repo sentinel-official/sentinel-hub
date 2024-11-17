@@ -9,17 +9,27 @@ import (
 	"github.com/sentinel-official/hub/v12/x/oracle/types/v1"
 )
 
-// EndBlock is called at the end of each block to trigger IBC query packets for relevant assets.
-func (k *Keeper) EndBlock(ctx sdk.Context) []abcitypes.ValidatorUpdate {
-	// Retrieve necessary information for the IBC packet.
+// BeginBlock is called at the beginning of each block to trigger IBC query packets for relevant assets.
+func (k *Keeper) BeginBlock(ctx sdk.Context) {
 	portID := k.GetPortID(ctx)
+	if portID == "" {
+		ctx.Logger().Info("PortID is empty, skipping BeginBlock execution")
+		return
+	}
+
 	channelID := k.GetChannelID(ctx)
+	if channelID == "" {
+		ctx.Logger().Info("ChannelID is empty, skipping BeginBlock execution")
+		return
+	}
+
 	timeout := k.GetQueryTimeout(ctx)
 
 	// Get the channel capability to ensure we have the authority to send packets.
 	channelCap, found := k.capability.GetCapability(ctx, ibchost.ChannelCapabilityPath(portID, channelID))
 	if !found {
-		return nil
+		ctx.Logger().Info("Channel capability not found, skipping BeginBlock execution")
+		return
 	}
 
 	// Iterate over each asset and send a ProtoRevPool query for each.
@@ -38,14 +48,12 @@ func (k *Keeper) EndBlock(ctx sdk.Context) []abcitypes.ValidatorUpdate {
 		// Send the GetProtoRevPool query packet over IBC.
 		sequence, err := k.SendQueryPacket(ctx, channelCap, portID, channelID, uint64(timeout), req)
 		if err != nil {
-			panic(err)
+			ctx.Logger().Error("Failed to send query packet", "asset", item.Denom, "error", err)
+			return false
 		}
 
 		// Map the sequence number to the asset denom for tracking.
 		k.SetDenomForPacket(ctx, portID, channelID, sequence, item.Denom)
 		return false
 	})
-
-	// No validator updates in this function.
-	return nil
 }

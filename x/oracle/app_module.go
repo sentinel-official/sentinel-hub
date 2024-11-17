@@ -1,6 +1,7 @@
 package oracle
 
 import (
+	"context"
 	"encoding/json"
 
 	abcitypes "github.com/cometbft/cometbft/abci/types"
@@ -43,7 +44,9 @@ func (amb AppModuleBasic) RegisterInterfaces(registry codectypes.InterfaceRegist
 	v1.RegisterInterfaces(registry)
 }
 
-func (amb AppModuleBasic) RegisterGRPCGatewayRoutes(context client.Context, mux *runtime.ServeMux) {}
+func (amb AppModuleBasic) RegisterGRPCGatewayRoutes(ctx client.Context, mux *runtime.ServeMux) {
+	_ = v1.RegisterQueryServiceHandlerClient(context.Background(), mux, v1.NewQueryServiceClient(ctx))
+}
 
 func (amb AppModuleBasic) GetTxCmd() *cobra.Command {
 	return cli.GetTxCmd()
@@ -101,9 +104,11 @@ func (am AppModule) WeightedOperations(_ sdkmodule.SimulationState) []sdksimulat
 	return nil
 }
 
-func (am AppModule) BeginBlock(ctx sdk.Context, req abcitypes.RequestBeginBlock) {}
+func (am AppModule) BeginBlock(ctx sdk.Context, _ abcitypes.RequestBeginBlock) {
+	am.keeper.BeginBlock(ctx)
+}
 
-func (am AppModule) EndBlock(ctx sdk.Context, req abcitypes.RequestEndBlock) []abcitypes.ValidatorUpdate {
+func (am AppModule) EndBlock(_ sdk.Context, _ abcitypes.RequestEndBlock) []abcitypes.ValidatorUpdate {
 	return nil
 }
 

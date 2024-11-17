@@ -128,19 +128,19 @@ func (am AppModule) ExportGenesis(ctx sdk.Context, jsonCodec codec.JSONCodec) js
 	return jsonCodec.MustMarshalJSON(state)
 }
 
-func (am AppModule) BeginBlock(ctx sdk.Context, _ abcitypes.RequestBeginBlock) {
-	am.keeper.BeginBlock(ctx)
-}
-
-func (am AppModule) EndBlock(_ sdk.Context, _ abcitypes.RequestEndBlock) []abcitypes.ValidatorUpdate {
-	return nil
-}
-
 func (am AppModule) GenerateGenesisState(_ *sdkmodule.SimulationState) {}
 
 func (am AppModule) RegisterStoreDecoder(_ sdk.StoreDecoderRegistry) {}
 
 func (am AppModule) WeightedOperations(_ sdkmodule.SimulationState) []sdksimulation.WeightedOperation {
+	return nil
+}
+
+func (am AppModule) BeginBlock(ctx sdk.Context, _ abcitypes.RequestBeginBlock) {
+	am.keeper.BeginBlock(ctx)
+}
+
+func (am AppModule) EndBlock(_ sdk.Context, _ abcitypes.RequestEndBlock) []abcitypes.ValidatorUpdate {
 	return nil
 }
 

@@ -10,6 +10,12 @@ func GetQueryCmd() *cobra.Command {
 		Short: "Querying commands for the Oracle module",
 	}
 
+	cmd.AddCommand(
+		queryAsset(),
+		queryAssets(),
+		queryParams(),
+	)
+
 	return cmd
 }
 
