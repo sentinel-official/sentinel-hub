@@ -13,7 +13,6 @@ message EventCreate {
   string prov_address = 3;
   int64 max_hours = 4;
   string price = 5;
-  string deposit = 6;
 }
 
 message EventEnd {
@@ -42,7 +41,6 @@ message EventRenew {
   string prov_address = 3;
   int64 max_hours = 4;
   string price = 5;
-  string deposit = 6;
 }
 
 message EventUpdate {

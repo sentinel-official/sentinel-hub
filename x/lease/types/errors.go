@@ -21,14 +21,9 @@ var (
 	ErrorUnauthorized          = sdkerrors.Register(ModuleName, 209, "unauthorized")
 )
 
-// NewErrorDuplicateLeaseForNode returns an error indicating that a lease for the specified node and provider already exists.
-func NewErrorDuplicateLeaseForNode(nodeAddr base.NodeAddress, provAddr base.ProvAddress) error {
+// NewErrorDuplicateLease returns an error indicating that a lease for the specified node and provider already exists.
+func NewErrorDuplicateLease(nodeAddr base.NodeAddress, provAddr base.ProvAddress) error {
 	return sdkerrors.Wrapf(ErrorDuplicateLease, "lease already exists for node %s by provider %s", nodeAddr, provAddr)
-}
-
-// NewErrorDuplicateLeaseForProvider returns an error indicating that a lease for the specified provider and node already exists.
-func NewErrorDuplicateLeaseForProvider(provAddr base.ProvAddress, nodeAddr base.NodeAddress) error {
-	return sdkerrors.Wrapf(ErrorDuplicateLease, "lease already exists for provider %s by node %s", provAddr, nodeAddr)
 }
 
 // NewErrorInvalidHours returns an error indicating that the provided hours are invalid.

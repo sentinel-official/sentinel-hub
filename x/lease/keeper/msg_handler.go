@@ -47,7 +47,7 @@ func (k *Keeper) HandleMsgEndLease(ctx sdk.Context, msg *v1.MsgEndLeaseRequest) 
 
 	k.DeleteLease(ctx, lease.ID)
 	k.DeleteLeaseForNodeByProvider(ctx, nodeAddr, provAddr, lease.ID)
-	k.DeleteLeaseForProviderByNode(ctx, provAddr, nodeAddr, lease.ID)
+	k.DeleteLeaseForProvider(ctx, provAddr, lease.ID)
 	k.DeleteLeaseForInactiveAt(ctx, lease.InactiveAt, lease.ID)
 	k.DeleteLeaseForPayoutAt(ctx, lease.PayoutAt, lease.ID)
 	k.DeleteLeaseForRenewalAt(ctx, lease.GetRenewalAt(), lease.ID)
@@ -107,6 +107,8 @@ func (k *Keeper) HandleMsgRenewLease(ctx sdk.Context, msg *v1.MsgRenewLeaseReque
 		return nil, types.NewErrorPriceNotFound(msg.Denom)
 	}
 
+	// TODO: convert the price
+
 	refund := lease.GetRefund()
 	if err := k.SubtractDeposit(ctx, provAddr.Bytes(), refund); err != nil {
 		return nil, err
@@ -153,7 +155,6 @@ func (k *Keeper) HandleMsgRenewLease(ctx sdk.Context, msg *v1.MsgRenewLeaseReque
 			ProvAddress: lease.ProvAddress,
 			MaxHours:    lease.MaxHours,
 			Price:       lease.Price.String(),
-			Deposit:     deposit.String(),
 		},
 	)
 
@@ -196,11 +197,10 @@ func (k *Keeper) HandleMsgStartLease(ctx sdk.Context, msg *v1.MsgStartLeaseReque
 		return nil, types.NewErrorPriceNotFound(msg.Denom)
 	}
 
+	// TODO: convert the price
+
 	if _, found := k.GetLatestLeaseForNodeByProvider(ctx, nodeAddr, provAddr); found {
-		return nil, types.NewErrorDuplicateLeaseForNode(nodeAddr, provAddr)
-	}
-	if _, found := k.GetLatestLeaseForProviderByNode(ctx, provAddr, nodeAddr); found {
-		return nil, types.NewErrorDuplicateLeaseForProvider(provAddr, nodeAddr)
+		return nil, types.NewErrorDuplicateLease(nodeAddr, provAddr)
 	}
 
 	count := k.GetCount(ctx)
@@ -224,7 +224,7 @@ func (k *Keeper) HandleMsgStartLease(ctx sdk.Context, msg *v1.MsgStartLeaseReque
 	k.SetCount(ctx, count+1)
 	k.SetLease(ctx, lease)
 	k.SetLeaseForNodeByProvider(ctx, nodeAddr, provAddr, lease.ID)
-	k.SetLeaseForProviderByNode(ctx, provAddr, nodeAddr, lease.ID)
+	k.SetLeaseForProvider(ctx, provAddr, lease.ID)
 	k.SetLeaseForInactiveAt(ctx, lease.InactiveAt, lease.ID)
 	k.SetLeaseForPayoutAt(ctx, lease.PayoutAt, lease.ID)
 	k.SetLeaseForRenewalAt(ctx, lease.GetRenewalAt(), lease.ID)
@@ -236,7 +236,6 @@ func (k *Keeper) HandleMsgStartLease(ctx sdk.Context, msg *v1.MsgStartLeaseReque
 			ProvAddress: lease.ProvAddress,
 			MaxHours:    lease.MaxHours,
 			Price:       lease.Price.String(),
-			Deposit:     deposit.String(),
 		},
 	)
 

@@ -53,12 +53,13 @@ func (k *Keeper) HandleQueryLeasesForProvider(ctx sdk.Context, req *v1.QueryLeas
 	}
 
 	var (
-		items []v1.Lease
-		store = prefix.NewStore(k.Store(ctx), types.GetLeaseForProviderKeyPrefix(addr))
+		items     []v1.Lease
+		keyPrefix = types.GetLeaseForProviderKeyPrefix(addr)
+		store     = prefix.NewStore(k.Store(ctx), keyPrefix)
 	)
 
 	pagination, err := sdkquery.Paginate(store, req.Pagination, func(key, _ []byte) error {
-		item, found := k.GetLease(ctx, types.IDFromLeaseForProviderByNodeKey(append([]byte{0x00, 0x00}, key...)))
+		item, found := k.GetLease(ctx, types.IDFromLeaseForProviderKey(append(keyPrefix, key...)))
 		if !found {
 			return fmt.Errorf("lease for key %X does not exist", key)
 		}
@@ -81,12 +82,13 @@ func (k *Keeper) HandleQueryLeasesForNode(ctx sdk.Context, req *v1.QueryLeasesFo
 	}
 
 	var (
-		items []v1.Lease
-		store = prefix.NewStore(k.Store(ctx), types.GetLeaseForNodeKeyPrefix(addr))
+		items     []v1.Lease
+		keyPrefix = types.GetLeaseForNodeKeyPrefix(addr)
+		store     = prefix.NewStore(k.Store(ctx), keyPrefix)
 	)
 
 	pagination, err := sdkquery.Paginate(store, req.Pagination, func(key, _ []byte) error {
-		item, found := k.GetLease(ctx, types.IDFromLeaseForNodeByProviderKey(append([]byte{0x00, 0x00}, key...)))
+		item, found := k.GetLease(ctx, types.IDFromLeaseForNodeByProviderKey(append(keyPrefix, key...)))
 		if !found {
 			return fmt.Errorf("lease for key %X does not exist", key)
 		}

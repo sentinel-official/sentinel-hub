@@ -35,7 +35,3 @@ type PlanKeeper interface {
 type ProviderKeeper interface {
 	GetProvider(ctx sdk.Context, addr base.ProvAddress) (providertypes.Provider, bool)
 }
-
-type SessionKeeper interface {
-	LeaseInactivePreHook(ctx sdk.Context, id uint64) error
-}

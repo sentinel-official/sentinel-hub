@@ -25,7 +25,6 @@ type Keeper struct {
 	node     expected.NodeKeeper
 	plan     expected.PlanKeeper
 	provider expected.ProviderKeeper
-	session  expected.SessionKeeper
 }
 
 func NewKeeper(cdc codec.BinaryCodec, key storetypes.StoreKey, router *baseapp.MsgServiceRouter, authority, feeCollectorName string) Keeper {
@@ -52,10 +51,6 @@ func (k *Keeper) WithPlanKeeper(keeper expected.PlanKeeper) {
 
 func (k *Keeper) WithProviderKeeper(keeper expected.ProviderKeeper) {
 	k.provider = keeper
-}
-
-func (k *Keeper) WithSessionKeeper(keeper expected.SessionKeeper) {
-	k.session = keeper
 }
 
 func (k *Keeper) Logger(ctx sdk.Context) log.Logger {

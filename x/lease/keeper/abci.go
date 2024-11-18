@@ -34,12 +34,12 @@ func (k *Keeper) handleLeasePayouts(ctx sdk.Context) {
 	k.IterateLeasesForPayoutAt(ctx, ctx.BlockTime(), func(_ int, item v1.Lease) bool {
 		k.DeleteLeaseForPayoutAt(ctx, item.PayoutAt, item.ID)
 
-		provAddr, err := base.ProvAddressFromBech32(item.ProvAddress)
+		nodeAddr, err := base.NodeAddressFromBech32(item.NodeAddress)
 		if err != nil {
 			panic(err)
 		}
 
-		nodeAddr, err := base.NodeAddressFromBech32(item.NodeAddress)
+		provAddr, err := base.ProvAddressFromBech32(item.ProvAddress)
 		if err != nil {
 			panic(err)
 		}

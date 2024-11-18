@@ -45,12 +45,8 @@ func GetLeaseForProviderKeyPrefix(addr base.ProvAddress) []byte {
 	return append(LeaseForProviderKeyPrefix, sdkaddress.MustLengthPrefix(addr.Bytes())...)
 }
 
-func GetLeaseForProviderByNodeKeyPrefix(provAddr base.ProvAddress, nodeAddr base.NodeAddress) (key []byte) {
-	return append(GetLeaseForProviderKeyPrefix(provAddr), sdkaddress.MustLengthPrefix(nodeAddr.Bytes())...)
-}
-
-func LeaseForProviderByNodeKey(provAddr base.ProvAddress, nodeAddr base.NodeAddress, id uint64) []byte {
-	return append(GetLeaseForProviderByNodeKeyPrefix(provAddr, nodeAddr), sdk.Uint64ToBigEndian(id)...)
+func LeaseForProviderKey(addr base.ProvAddress, id uint64) []byte {
+	return append(GetLeaseForProviderKeyPrefix(addr), sdk.Uint64ToBigEndian(id)...)
 }
 
 func GetLeaseForInactiveAtKeyPrefix(at time.Time) []byte {
@@ -88,15 +84,15 @@ func IDFromLeaseForNodeByProviderKey(key []byte) uint64 {
 	return sdk.BigEndianToUint64(key[3+nodeAddrLen+provAddrLen:])
 }
 
-func IDFromLeaseForProviderByNodeKey(key []byte) uint64 {
-	// prefix (1 byte) | provAddrLen(1 byte) | provAddr (provAddrLen bytes) | nodeAddrLen(1 byte) | nodeAddr (nodeAddrLen bytes) | id (8 bytes)
+func IDFromLeaseForProviderKey(key []byte) uint64 {
+	// prefix (1 bytes) | addrLen (1 byte) | addr (addrLen bytes) | id (8 bytes)
 
-	provAddrLen, nodeAddrLen := int(key[1]), int(key[2+int(key[1])])
-	if len(key) != 11+provAddrLen+nodeAddrLen {
-		panic(fmt.Errorf("invalid key length %d; expected %d", len(key), 11+provAddrLen+nodeAddrLen))
+	addrLen := int(key[1])
+	if len(key) != 10+addrLen {
+		panic(fmt.Errorf("invalid key length %d; expected %d", len(key), 10+addrLen))
 	}
 
-	return sdk.BigEndianToUint64(key[3+provAddrLen+nodeAddrLen:])
+	return sdk.BigEndianToUint64(key[2+addrLen:])
 }
 
 func IDFromLeaseForInactiveAtKey(key []byte) uint64 {
