@@ -5,6 +5,7 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
 	base "github.com/sentinel-official/hub/v12/types"
+	leasetypes "github.com/sentinel-official/hub/v12/x/lease/types/v1"
 	nodetypes "github.com/sentinel-official/hub/v12/x/node/types/v2"
 	subscriptiontypes "github.com/sentinel-official/hub/v12/x/subscription/types/v3"
 )
@@ -17,15 +18,25 @@ type BankKeeper interface {
 	SpendableCoins(ctx sdk.Context, address sdk.AccAddress) sdk.Coins
 }
 
+type LeaseKeeper interface {
+	GetLease(ctx sdk.Context, id uint64) (leasetypes.Lease, bool)
+	GetLatestLeaseForNodeByProvider(ctx sdk.Context, nodeAddr base.NodeAddress, provAddr base.ProvAddress) (leasetypes.Lease, bool)
+}
+
 type NodeKeeper interface {
-	HasNode(ctx sdk.Context, addr base.NodeAddress) bool
+	GetNode(ctx sdk.Context, addr base.NodeAddress) (nodetypes.Node, bool)
 	SetNodeForPlan(ctx sdk.Context, id uint64, addr base.NodeAddress)
 	DeleteNodeForPlan(ctx sdk.Context, id uint64, addr base.NodeAddress)
 	GetNodesForPlan(ctx sdk.Context, id uint64) []nodetypes.Node
+	HasNodeForPlan(ctx sdk.Context, id uint64, addr base.NodeAddress) bool
 }
 
 type ProviderKeeper interface {
 	HasProvider(ctx sdk.Context, addr base.ProvAddress) bool
+}
+
+type SessionKeeper interface {
+	PlanUnlinkNodePreHook(ctx sdk.Context, id uint64, addr base.NodeAddress) error
 }
 
 type SubscriptionKeeper interface {

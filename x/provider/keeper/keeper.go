@@ -21,6 +21,7 @@ type Keeper struct {
 	router    *baseapp.MsgServiceRouter
 
 	distribution expected.DistributionKeeper
+	plan         expected.PlanKeeper
 	lease        expected.LeaseKeeper
 }
 
@@ -35,6 +36,10 @@ func NewKeeper(cdc codec.BinaryCodec, key storetypes.StoreKey, router *baseapp.M
 
 func (k *Keeper) WithDistributionKeeper(keeper expected.DistributionKeeper) {
 	k.distribution = keeper
+}
+
+func (k *Keeper) WithPlanKeeper(keeper expected.PlanKeeper) {
+	k.plan = keeper
 }
 
 func (k *Keeper) WithLeaseKeeper(keeper expected.LeaseKeeper) {

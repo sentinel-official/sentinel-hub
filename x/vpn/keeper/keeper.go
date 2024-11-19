@@ -46,18 +46,20 @@ func NewKeeper(
 	k.Lease.WithNodeKeeper(&k.Node)
 	k.Lease.WithPlanKeeper(&k.Plan)
 	k.Lease.WithProviderKeeper(&k.Provider)
-	k.Lease.WithSessionKeeper(&k.Session)
 
 	k.Node.WithDepositKeeper(&k.Deposit)
 	k.Node.WithDistributionKeeper(distributionKeeper)
 	k.Node.WithLeaseKeeper(&k.Lease)
 	k.Node.WithSessionKeeper(&k.Session)
 
+	k.Plan.WithLeaseKeeper(&k.Lease)
 	k.Plan.WithNodeKeeper(&k.Node)
 	k.Plan.WithProviderKeeper(&k.Provider)
+	k.Plan.WithSessionKeeper(&k.Session)
 	k.Plan.WithSubscriptionKeeper(&k.Subscription)
 
 	k.Provider.WithDistributionKeeper(distributionKeeper)
+	k.Provider.WithPlanKeeper(&k.Plan)
 	k.Provider.WithLeaseKeeper(&k.Lease)
 
 	k.Session.WithAccountKeeper(accountKeeper)

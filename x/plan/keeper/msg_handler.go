@@ -66,16 +66,35 @@ func (k *Keeper) HandleMsgLinkNode(ctx sdk.Context, msg *v3.MsgLinkNodeRequest) 
 		return nil, err
 	}
 
-	if !k.node.HasNode(ctx, nodeAddr) {
+	node, found := k.node.GetNode(ctx, nodeAddr)
+	if !found {
 		return nil, types.NewErrorNodeNotFound(nodeAddr)
+	}
+	if !node.Status.Equal(v1base.StatusActive) {
+		return nil, types.NewErrorInvalidNodeStatus(nodeAddr, node.Status)
+	}
+
+	if k.node.HasNodeForPlan(ctx, plan.ID, nodeAddr) {
+		return nil, types.NewErrorDuplicateNodeForPlan(plan.ID, nodeAddr)
+	}
+
+	provAddr, err := base.ProvAddressFromBech32(plan.ProvAddress)
+	if err != nil {
+		return nil, err
+	}
+
+	if _, found := k.lease.GetLatestLeaseForNodeByProvider(ctx, nodeAddr, provAddr); !found {
+		return nil, types.NewErrorLeaseNotFound(nodeAddr, provAddr)
 	}
 
 	k.node.SetNodeForPlan(ctx, plan.ID, nodeAddr)
+	k.SetPlanForNodeByProvider(ctx, nodeAddr, provAddr, plan.ID)
+
 	ctx.EventManager().EmitTypedEvent(
 		&v3.EventLinkNode{
 			ID:          plan.ID,
 			ProvAddress: plan.ProvAddress,
-			NodeAddress: nodeAddr.String(),
+			NodeAddress: node.Address,
 		},
 	)
 
@@ -96,7 +115,22 @@ func (k *Keeper) HandleMsgUnlinkNode(ctx sdk.Context, msg *v3.MsgUnlinkNodeReque
 		return nil, err
 	}
 
+	if !k.node.HasNodeForPlan(ctx, plan.ID, nodeAddr) {
+		return nil, types.NewErrorNodeForPlanNotFound(plan.ID, nodeAddr)
+	}
+
+	if err := k.PlanUnlinkNodePreHook(ctx, plan.ID, nodeAddr); err != nil {
+		return nil, err
+	}
+
+	provAddr, err := base.ProvAddressFromBech32(plan.ProvAddress)
+	if err != nil {
+		return nil, err
+	}
+
 	k.node.DeleteNodeForPlan(ctx, plan.ID, nodeAddr)
+	k.DeletePlanForNodeByProvider(ctx, nodeAddr, provAddr, plan.ID)
+
 	ctx.EventManager().EmitTypedEvent(
 		&v3.EventUnlinkNode{
 			ID:          plan.ID,

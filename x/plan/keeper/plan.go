@@ -139,6 +139,73 @@ func (k *Keeper) GetPlans(ctx sdk.Context) (items []v3.Plan) {
 	return items
 }
 
+// SetPlanForNodeByProvider stores a plan for a node by provider in the module's KVStore.
+func (k *Keeper) SetPlanForNodeByProvider(ctx sdk.Context, nodeAddr base.NodeAddress, provAddr base.ProvAddress, id uint64) {
+	store := k.Store(ctx)
+	key := types.PlanForNodeByProviderKey(nodeAddr, provAddr, id)
+	value := k.cdc.MustMarshal(&protobuf.BoolValue{Value: true})
+
+	store.Set(key, value)
+}
+
+// HasPlanForNodeByProvider checks if a plan for a node by provider exists in the module's KVStore based on the node and provider addresses and plan ID.
+func (k *Keeper) HasPlanForNodeByProvider(ctx sdk.Context, nodeAddr base.NodeAddress, provAddr base.ProvAddress, id uint64) bool {
+	store := k.Store(ctx)
+	key := types.PlanForNodeByProviderKey(nodeAddr, provAddr, id)
+
+	return store.Has(key)
+}
+
+// DeletePlanForNodeByProvider removes a plan for a node by provider from the module's KVStore based on the node and provider addresses and plan ID.
+func (k *Keeper) DeletePlanForNodeByProvider(ctx sdk.Context, nodeAddr base.NodeAddress, provAddr base.ProvAddress, id uint64) {
+	store := k.Store(ctx)
+	key := types.PlanForNodeByProviderKey(nodeAddr, provAddr, id)
+
+	store.Delete(key)
+}
+
+// IteratePlansForNodeByProvider iterates over all plans for a specific node and provider and calls the provided function for each plan.
+// The iteration stops when the provided function returns 'true'.
+func (k *Keeper) IteratePlansForNodeByProvider(ctx sdk.Context, nodeAddr base.NodeAddress, provAddr base.ProvAddress, fn func(index int, item v3.Plan) (stop bool)) {
+	store := k.Store(ctx)
+	iterator := sdk.KVStorePrefixIterator(store, types.GetPlanForNodeByProviderKeyPrefix(nodeAddr, provAddr))
+
+	defer iterator.Close()
+
+	for i := 0; iterator.Valid(); iterator.Next() {
+		item, found := k.GetPlan(ctx, types.IDFromPlanForNodeByProviderKey(iterator.Key()))
+		if !found {
+			panic(fmt.Errorf("plan for node by provider key %X does not exist", iterator.Key()))
+		}
+
+		if stop := fn(i, item); stop {
+			break
+		}
+		i++
+	}
+}
+
+// IteratePlansForNode iterates over all plans for a specific node and calls the provided function for each plan.
+// The iteration stops when the provided function returns 'true'.
+func (k *Keeper) IteratePlansForNode(ctx sdk.Context, addr base.NodeAddress, fn func(index int, item v3.Plan) (stop bool)) {
+	store := k.Store(ctx)
+	iterator := sdk.KVStorePrefixIterator(store, types.GetPlanForNodeKeyPrefix(addr))
+
+	defer iterator.Close()
+
+	for i := 0; iterator.Valid(); iterator.Next() {
+		item, found := k.GetPlan(ctx, types.IDFromPlanForNodeByProviderKey(iterator.Key()))
+		if !found {
+			panic(fmt.Errorf("plan for node by provider key %X does not exist", iterator.Key()))
+		}
+
+		if stop := fn(i, item); stop {
+			break
+		}
+		i++
+	}
+}
+
 // SetPlanForProvider associates a plan ID with a provider address.
 func (k *Keeper) SetPlanForProvider(ctx sdk.Context, addr base.ProvAddress, id uint64) {
 	store := k.Store(ctx)
@@ -173,4 +240,23 @@ func (k *Keeper) GetPlansForProvider(ctx sdk.Context, addr base.ProvAddress) (it
 	}
 
 	return items
+}
+
+func (k *Keeper) IteratePlansForProvider(ctx sdk.Context, addr base.ProvAddress, fn func(index int, item v3.Plan) (stop bool)) {
+	store := k.Store(ctx)
+	iterator := sdk.KVStorePrefixIterator(store, types.GetPlanForProviderKeyPrefix(addr))
+
+	defer iterator.Close()
+
+	for i := 0; iterator.Valid(); iterator.Next() {
+		item, found := k.GetPlan(ctx, types.IDFromPlanForProviderKey(iterator.Key()))
+		if !found {
+			panic(fmt.Errorf("plan for provider key %X does not exist", iterator.Key()))
+		}
+
+		if stop := fn(i, item); stop {
+			break
+		}
+		i++
+	}
 }

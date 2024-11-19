@@ -15,6 +15,9 @@ func (k *Keeper) FundCommunityPool(ctx sdk.Context, fromAddr sdk.AccAddress, coi
 }
 
 func (k *Keeper) ProviderInactivePreHook(ctx sdk.Context, addr base.ProvAddress) error {
+	if err := k.plan.ProviderInactivePreHook(ctx, addr); err != nil {
+		return err
+	}
 	if err := k.lease.ProviderInactivePreHook(ctx, addr); err != nil {
 		return err
 	}

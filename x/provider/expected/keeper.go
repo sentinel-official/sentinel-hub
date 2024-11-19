@@ -19,6 +19,10 @@ type DistributionKeeper interface {
 	FundCommunityPool(ctx sdk.Context, amount sdk.Coins, sender sdk.AccAddress) error
 }
 
+type PlanKeeper interface {
+	ProviderInactivePreHook(ctx sdk.Context, addr base.ProvAddress) error
+}
+
 type LeaseKeeper interface {
 	ProviderInactivePreHook(ctx sdk.Context, addr base.ProvAddress) error
 }
