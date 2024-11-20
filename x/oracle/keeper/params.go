@@ -28,6 +28,11 @@ func (k *Keeper) GetParams(ctx sdk.Context) (v v1.Params) {
 	return v
 }
 
+// GetBlockInterval retrieves the BlockInterval parameter from the module's parameters.
+func (k *Keeper) GetBlockInterval(ctx sdk.Context) int64 {
+	return k.GetParams(ctx).BlockInterval
+}
+
 // GetChannelID retrieves the ChannelID parameter from the module's parameters.
 func (k *Keeper) GetChannelID(ctx sdk.Context) string {
 	return k.GetParams(ctx).ChannelID

@@ -9,9 +9,10 @@ option (gogoproto.equal_all) = false;
 option (gogoproto.goproto_getters_all) = false;
 
 message Params {
-  string channel_id = 1 [(gogoproto.customname) = "ChannelID"];
-  string port_id = 2 [(gogoproto.customname) = "PortID"];
-  google.protobuf.Duration timeout = 3 [
+  int64 block_interval = 1;
+  string channel_id = 2 [(gogoproto.customname) = "ChannelID"];
+  string port_id = 3 [(gogoproto.customname) = "PortID"];
+  google.protobuf.Duration timeout = 4 [
     (gogoproto.nullable) = false,
     (gogoproto.stdduration) = true
   ];

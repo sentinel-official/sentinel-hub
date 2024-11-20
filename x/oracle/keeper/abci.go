@@ -11,6 +11,11 @@ import (
 
 // BeginBlock is called at the beginning of each block to trigger IBC query packets for relevant assets.
 func (k *Keeper) BeginBlock(ctx sdk.Context) {
+	interval := k.GetBlockInterval(ctx)
+	if ctx.BlockHeight()%interval != 0 {
+		return
+	}
+
 	portID := k.GetPortID(ctx)
 	if portID == "" {
 		ctx.Logger().Info("PortID is empty, skipping BeginBlock execution")
