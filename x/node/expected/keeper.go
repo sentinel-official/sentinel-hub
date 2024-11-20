@@ -34,6 +34,9 @@ type LeaseKeeper interface {
 }
 
 type SessionKeeper interface {
+	DeleteSession(ctx sdk.Context, id uint64)
+	DeleteSessionForAccount(ctx sdk.Context, addr sdk.AccAddress, id uint64)
+	DeleteSessionForNode(ctx sdk.Context, addr base.NodeAddress, id uint64)
 	GetCount(ctx sdk.Context) uint64
 	GetSession(ctx sdk.Context, id uint64) (sessiontypes.Session, bool)
 	NodeInactivePreHook(ctx sdk.Context, addr base.NodeAddress) error

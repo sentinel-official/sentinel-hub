@@ -44,6 +44,12 @@ type PlanKeeper interface {
 }
 
 type SessionKeeper interface {
+	DeleteSession(ctx sdk.Context, id uint64)
+	DeleteSessionForAccount(ctx sdk.Context, addr sdk.AccAddress, id uint64)
+	DeleteSessionForAllocation(ctx sdk.Context, subscriptionID uint64, addr sdk.AccAddress, sessionID uint64)
+	DeleteSessionForNode(ctx sdk.Context, addr base.NodeAddress, id uint64)
+	DeleteSessionForPlanByNode(ctx sdk.Context, planID uint64, addr base.NodeAddress, sessionID uint64)
+	DeleteSessionForSubscription(ctx sdk.Context, subscriptionID, sessionID uint64)
 	GetCount(ctx sdk.Context) uint64
 	GetSession(ctx sdk.Context, id uint64) (sessiontypes.Session, bool)
 	SetCount(ctx sdk.Context, count uint64)
@@ -52,6 +58,7 @@ type SessionKeeper interface {
 	SetSessionForAllocation(ctx sdk.Context, subscriptionID uint64, addr sdk.AccAddress, sessionID uint64)
 	SetSessionForInactiveAt(ctx sdk.Context, at time.Time, id uint64)
 	SetSessionForNode(ctx sdk.Context, addr base.NodeAddress, id uint64)
+	SetSessionForPlanByNode(ctx sdk.Context, planID uint64, addr base.NodeAddress, sessionID uint64)
 	SetSessionForSubscription(ctx sdk.Context, subscriptionID, sessionID uint64)
 	StatusChangeDelay(ctx sdk.Context) time.Duration
 	SubscriptionInactivePendingPreHook(ctx sdk.Context, id uint64) error

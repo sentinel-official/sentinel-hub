@@ -11,7 +11,7 @@ import (
 	"github.com/sentinel-official/hub/v12/x/node/types/v3"
 )
 
-func (k *Keeper) SessionInactivePreHook(ctx sdk.Context, id uint64) error {
+func (k *Keeper) HandleInactiveSession(ctx sdk.Context, id uint64) error {
 	item, found := k.session.GetSession(ctx, id)
 	if !found {
 		return fmt.Errorf("session %d does not exist", id)
@@ -70,6 +70,10 @@ func (k *Keeper) SessionInactivePreHook(ctx sdk.Context, id uint64) error {
 			Amount:     refund.String(),
 		},
 	)
+
+	k.session.DeleteSession(ctx, item.GetID())
+	k.session.DeleteSessionForAccount(ctx, accAddr, item.GetID())
+	k.session.DeleteSessionForNode(ctx, nodeAddr, item.GetID())
 
 	return nil
 }

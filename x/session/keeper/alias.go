@@ -20,11 +20,11 @@ func (k *Keeper) SendCoinFromDepositToModule(ctx sdk.Context, from sdk.AccAddres
 	return k.deposit.SendCoinsFromDepositToModule(ctx, from, to, sdk.NewCoins(coin))
 }
 
-func (k *Keeper) SessionInactivePreHook(ctx sdk.Context, id uint64) error {
-	if err := k.node.SessionInactivePreHook(ctx, id); err != nil {
+func (k *Keeper) HandleInactiveSession(ctx sdk.Context, id uint64) error {
+	if err := k.node.HandleInactiveSession(ctx, id); err != nil {
 		return err
 	}
-	if err := k.subscription.SessionInactivePreHook(ctx, id); err != nil {
+	if err := k.subscription.HandleInactiveSession(ctx, id); err != nil {
 		return err
 	}
 

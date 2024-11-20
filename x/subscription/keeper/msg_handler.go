@@ -416,6 +416,7 @@ func (k *Keeper) HandleMsgStartSession(ctx sdk.Context, msg *v3.MsgStartSessionR
 	k.session.SetSession(ctx, session)
 	k.session.SetSessionForAccount(ctx, accAddr, session.ID)
 	k.session.SetSessionForNode(ctx, nodeAddr, session.ID)
+	k.session.SetSessionForPlanByNode(ctx, subscription.PlanID, nodeAddr, session.ID)
 	k.session.SetSessionForSubscription(ctx, subscription.ID, session.ID)
 	k.session.SetSessionForAllocation(ctx, subscription.ID, accAddr, session.ID)
 	k.session.SetSessionForInactiveAt(ctx, session.InactiveAt, session.ID)

@@ -5,11 +5,12 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
+	base "github.com/sentinel-official/hub/v12/types"
 	v1base "github.com/sentinel-official/hub/v12/types/v1"
 	"github.com/sentinel-official/hub/v12/x/subscription/types/v3"
 )
 
-func (k *Keeper) SessionInactivePreHook(ctx sdk.Context, id uint64) error {
+func (k *Keeper) HandleInactiveSession(ctx sdk.Context, id uint64) error {
 	item, found := k.session.GetSession(ctx, id)
 	if !found {
 		return fmt.Errorf("session %d does not exist", id)
@@ -33,6 +34,11 @@ func (k *Keeper) SessionInactivePreHook(ctx sdk.Context, id uint64) error {
 		panic(err)
 	}
 
+	nodeAddr, err := base.NodeAddressFromBech32(item.GetNodeAddress())
+	if err != nil {
+		return err
+	}
+
 	alloc, found := k.GetAllocation(ctx, subscription.ID, accAddr)
 	if !found {
 		return fmt.Errorf("subscription allocation %d/%s does not exist", subscription.ID, accAddr)
@@ -54,6 +60,13 @@ func (k *Keeper) SessionInactivePreHook(ctx sdk.Context, id uint64) error {
 			UtilisedBytes: alloc.UtilisedBytes.String(),
 		},
 	)
+
+	k.session.DeleteSession(ctx, item.GetID())
+	k.session.DeleteSessionForAccount(ctx, accAddr, item.GetID())
+	k.session.DeleteSessionForAllocation(ctx, subscription.ID, accAddr, item.GetID())
+	k.session.DeleteSessionForNode(ctx, nodeAddr, item.GetID())
+	k.session.DeleteSessionForPlanByNode(ctx, subscription.PlanID, nodeAddr, item.GetID())
+	k.session.DeleteSessionForSubscription(ctx, subscription.ID, item.GetID())
 
 	return nil
 }

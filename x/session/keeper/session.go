@@ -183,6 +183,44 @@ func (k *Keeper) IterateSessionsForNode(ctx sdk.Context, addr base.NodeAddress, 
 	}
 }
 
+// SetSessionForPlanByNode links a session ID to a plan ID and node address in the module's KVStore.
+func (k *Keeper) SetSessionForPlanByNode(ctx sdk.Context, planID uint64, addr base.NodeAddress, sessionID uint64) {
+	store := k.Store(ctx)
+	key := types.SessionForPlanByNodeKey(planID, addr, sessionID)
+	value := k.cdc.MustMarshal(&protobuf.BoolValue{Value: true})
+
+	store.Set(key, value)
+}
+
+// DeleteSessionForPlanByNode removes the association between a session ID, a plan ID, and a node address from the module's KVStore.
+func (k *Keeper) DeleteSessionForPlanByNode(ctx sdk.Context, planID uint64, addr base.NodeAddress, sessionID uint64) {
+	store := k.Store(ctx)
+	key := types.SessionForPlanByNodeKey(planID, addr, sessionID)
+
+	store.Delete(key)
+}
+
+// IterateSessionsForPlanByNode iterates over all sessions for a specific plan ID and node address, calling the provided function for each session.
+// The iteration stops when the provided function returns 'true'.
+func (k *Keeper) IterateSessionsForPlanByNode(ctx sdk.Context, id uint64, addr base.NodeAddress, fn func(index int, item v3.Session) (stop bool)) {
+	store := k.Store(ctx)
+	iterator := sdk.KVStorePrefixIterator(store, types.GetSessionForPlanByNodeKeyPrefix(id, addr))
+
+	defer iterator.Close()
+
+	for i := 0; iterator.Valid(); iterator.Next() {
+		item, found := k.GetSession(ctx, types.IDFromSessionForPlanByNodeKey(iterator.Key()))
+		if !found {
+			panic(fmt.Errorf("session for plan by node key %X does not exist", iterator.Key()))
+		}
+
+		if stop := fn(i, item); stop {
+			break
+		}
+		i++
+	}
+}
+
 // SetSessionForSubscription links a session ID to a subscription ID in the module's KVStore.
 func (k *Keeper) SetSessionForSubscription(ctx sdk.Context, subscriptionID, sessionID uint64) {
 	store := k.Store(ctx)

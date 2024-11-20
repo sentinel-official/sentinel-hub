@@ -19,9 +19,9 @@ type DepositKeeper interface {
 }
 
 type NodeKeeper interface {
-	SessionInactivePreHook(ctx sdk.Context, id uint64) error
+	HandleInactiveSession(ctx sdk.Context, id uint64) error
 }
 
 type SubscriptionKeeper interface {
-	SessionInactivePreHook(ctx sdk.Context, id uint64) error
+	HandleInactiveSession(ctx sdk.Context, id uint64) error
 }

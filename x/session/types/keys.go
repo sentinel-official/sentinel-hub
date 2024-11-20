@@ -22,8 +22,9 @@ var (
 	SessionForAccountKeyPrefix      = []byte{0x11}
 	SessionForAllocationKeyPrefix   = []byte{0x12}
 	SessionForNodeKeyPrefix         = []byte{0x13}
-	SessionForSubscriptionKeyPrefix = []byte{0x14}
-	SessionForInactiveAtKeyPrefix   = []byte{0x15}
+	SessionForPlanKeyPrefix         = []byte{0x14}
+	SessionForSubscriptionKeyPrefix = []byte{0x15}
+	SessionForInactiveAtKeyPrefix   = []byte{0x16}
 )
 
 func SessionKey(id uint64) []byte {
@@ -44,6 +45,18 @@ func GetSessionForNodeKeyPrefix(addr base.NodeAddress) []byte {
 
 func SessionForNodeKey(addr base.NodeAddress, id uint64) []byte {
 	return append(GetSessionForNodeKeyPrefix(addr), sdk.Uint64ToBigEndian(id)...)
+}
+
+func GetSessionForPlanKeyPrefix(id uint64) []byte {
+	return append(SessionForPlanKeyPrefix, sdk.Uint64ToBigEndian(id)...)
+}
+
+func GetSessionForPlanByNodeKeyPrefix(id uint64, addr base.NodeAddress) []byte {
+	return append(GetSessionForPlanKeyPrefix(id), sdkaddress.MustLengthPrefix(addr.Bytes())...)
+}
+
+func SessionForPlanByNodeKey(planID uint64, addr base.NodeAddress, sessionID uint64) []byte {
+	return append(GetSessionForPlanByNodeKeyPrefix(planID, addr), sdk.Uint64ToBigEndian(sessionID)...)
 }
 
 func GetSessionForSubscriptionKeyPrefix(id uint64) []byte {
@@ -90,6 +103,17 @@ func IDFromSessionForNodeKey(key []byte) uint64 {
 	}
 
 	return sdk.BigEndianToUint64(key[2+addrLen:])
+}
+
+func IDFromSessionForPlanByNodeKey(key []byte) uint64 {
+	// prefix (1 byte) | planID (8 bytes) | addrLen (1 byte) | addr (addrLen bytes) | sessionID (8 bytes)
+
+	addrLen := int(key[9])
+	if len(key) != 18+addrLen {
+		panic(fmt.Errorf("invalid key length %d; expected %d", len(key), 18+addrLen))
+	}
+
+	return sdk.BigEndianToUint64(key[10+addrLen:])
 }
 
 func IDFromSessionForSubscriptionKey(key []byte) uint64 {
