@@ -7,6 +7,7 @@ import (
 )
 
 func (k *Keeper) InitGenesis(ctx sdk.Context, state *v1.GenesisState) {
+	k.SetParams(ctx, state.Params)
 }
 
 func (k *Keeper) ExportGenesis(ctx sdk.Context) *v1.GenesisState {
