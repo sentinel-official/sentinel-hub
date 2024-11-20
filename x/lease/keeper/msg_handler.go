@@ -199,7 +199,13 @@ func (k *Keeper) HandleMsgStartLease(ctx sdk.Context, msg *v1.MsgStartLeaseReque
 
 	// TODO: convert the price
 
-	if _, found := k.GetLatestLeaseForNodeByProvider(ctx, nodeAddr, provAddr); found {
+	leaseExists := false
+	k.IterateLeasesForNodeByProvider(ctx, nodeAddr, provAddr, func(_ int, _ v1.Lease) bool {
+		leaseExists = true
+		return true
+	})
+
+	if leaseExists {
 		return nil, types.NewErrorDuplicateLease(nodeAddr, provAddr)
 	}
 

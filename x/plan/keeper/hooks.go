@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"fmt"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	base "github.com/sentinel-official/hub/v12/types"
@@ -11,7 +13,7 @@ import (
 func (k *Keeper) LeaseInactivePreHook(ctx sdk.Context, id uint64) error {
 	lease, found := k.lease.GetLease(ctx, id)
 	if !found {
-		return nil
+		return fmt.Errorf("lease %d does not exist", id)
 	}
 
 	nodeAddr, err := base.NodeAddressFromBech32(lease.NodeAddress)
@@ -44,6 +46,10 @@ func (k *Keeper) LeaseInactivePreHook(ctx sdk.Context, id uint64) error {
 
 func (k *Keeper) ProviderInactivePreHook(ctx sdk.Context, addr base.ProvAddress) error {
 	k.IteratePlansForProvider(ctx, addr, func(_ int, item v3.Plan) (stop bool) {
+		if !item.Status.Equal(v1base.StatusActive) {
+			return false
+		}
+
 		msg := &v3.MsgUpdatePlanStatusRequest{
 			From:   item.ProvAddress,
 			ID:     item.ID,
