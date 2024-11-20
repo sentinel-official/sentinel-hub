@@ -4,7 +4,7 @@ go 1.22.4
 
 require (
 	cosmossdk.io/errors v1.0.1
-	cosmossdk.io/math v1.3.0
+	cosmossdk.io/math v1.4.0
 	github.com/CosmWasm/wasmd v0.45.0
 	github.com/cometbft/cometbft v0.37.7
 	github.com/cometbft/cometbft-db v0.12.0
