@@ -16,22 +16,22 @@ var (
 
 func (m *MsgCreateAssetRequest) ValidateBasic() error {
 	if m.From == "" {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, "from cannot be empty")
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "from cannot be empty")
 	}
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, err.Error())
+		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
 	}
 	if err := sdk.ValidateDenom(m.Denom); err != nil {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, err.Error())
+		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
 	}
 	if m.Decimals < 0 {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, "decimals cannot be negative")
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "decimals cannot be negative")
 	}
 	if m.BaseAssetDenom == "" {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, "base_asset_denom cannot be empty")
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "base_asset_denom cannot be empty")
 	}
 	if m.QuoteAssetDenom == "" {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, "quote_asset_denom cannot be empty")
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "quote_asset_denom cannot be empty")
 	}
 
 	return nil
@@ -48,13 +48,13 @@ func (m *MsgCreateAssetRequest) GetSigners() []sdk.AccAddress {
 
 func (m *MsgDeleteAssetRequest) ValidateBasic() error {
 	if m.From == "" {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, "from cannot be empty")
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "from cannot be empty")
 	}
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, err.Error())
+		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
 	}
 	if err := sdk.ValidateDenom(m.Denom); err != nil {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, err.Error())
+		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
 	}
 
 	return nil
@@ -71,22 +71,22 @@ func (m *MsgDeleteAssetRequest) GetSigners() []sdk.AccAddress {
 
 func (m *MsgUpdateAssetRequest) ValidateBasic() error {
 	if m.From == "" {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, "from cannot be empty")
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "from cannot be empty")
 	}
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, err.Error())
+		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
 	}
 	if err := sdk.ValidateDenom(m.Denom); err != nil {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, err.Error())
+		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
 	}
 	if m.Decimals < 0 {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, "decimals cannot be negative")
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "decimals cannot be negative")
 	}
 	if m.BaseAssetDenom == "" {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, "base_asset_denom cannot be empty")
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "base_asset_denom cannot be empty")
 	}
 	if m.QuoteAssetDenom == "" {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, "quote_asset_denom cannot be empty")
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "quote_asset_denom cannot be empty")
 	}
 
 	return nil
@@ -103,10 +103,10 @@ func (m *MsgUpdateAssetRequest) GetSigners() []sdk.AccAddress {
 
 func (m *MsgUpdateParamsRequest) ValidateBasic() error {
 	if m.From == "" {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, "from cannot be empty")
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "from cannot be empty")
 	}
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, err.Error())
+		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
 	}
 
 	return m.Params.Validate()

@@ -8,45 +8,50 @@ import (
 )
 
 var (
-	ErrorInvalidMessage = sdkerrors.Register(ModuleName, 101, "invalid message")
+	ErrInvalidMessage = sdkerrors.Register(ModuleName, 101, "invalid message")
 
-	ErrorDuplicateNode     = sdkerrors.Register(ModuleName, 201, "duplicate node")
-	ErrorInvalidNodeStatus = sdkerrors.Register(ModuleName, 202, "invalid node status")
-	ErrorLeaseNotFound     = sdkerrors.Register(ModuleName, 203, "lease not found")
-	ErrorNodeNotFound      = sdkerrors.Register(ModuleName, 204, "node not found")
-	ErrorPlanNotFound      = sdkerrors.Register(ModuleName, 205, "plan not found")
-	ErrorProviderNotFound  = sdkerrors.Register(ModuleName, 206, "provider not found")
-	ErrorUnauthorized      = sdkerrors.Register(ModuleName, 207, "unauthorized")
+	ErrDuplicateEntry = sdkerrors.Register(ModuleName, 201, "duplicate entry")
+	ErrInvalidStatus  = sdkerrors.Register(ModuleName, 202, "invalid status")
+	ErrNotFound       = sdkerrors.Register(ModuleName, 203, "not found")
+	ErrUnauthorized   = sdkerrors.Register(ModuleName, 204, "unauthorized")
 )
 
+// NewErrorDuplicateNodeForPlan returns an error indicating that a node already exists for the specified plan.
 func NewErrorDuplicateNodeForPlan(id uint64, addr base.NodeAddress) error {
-	return sdkerrors.Wrapf(ErrorDuplicateNode, "node %s for plan %d already exists", addr, id)
+	return sdkerrors.Wrapf(ErrDuplicateEntry, "node %s for plan %d already exists", addr, id)
 }
 
+// NewErrorInvalidNodeStatus returns an error indicating that the provided status is invalid for the given node.
 func NewErrorInvalidNodeStatus(addr base.NodeAddress, status v1base.Status) error {
-	return sdkerrors.Wrapf(ErrorInvalidNodeStatus, "invalid status %s for node %s", status, addr)
+	return sdkerrors.Wrapf(ErrInvalidStatus, "invalid status %s for node %s", status, addr)
 }
 
+// NewErrorLeaseNotFound returns an error indicating that the specified lease does not exist.
 func NewErrorLeaseNotFound(nodeAddr base.NodeAddress, provAddr base.ProvAddress) error {
-	return sdkerrors.Wrapf(ErrorLeaseNotFound, "lease for node %s by provider %s does not exist", nodeAddr, provAddr)
+	return sdkerrors.Wrapf(ErrNotFound, "lease for node %s by provider %s does not exist", nodeAddr, provAddr)
 }
 
+// NewErrorNodeForPlanNotFound returns an error indicating that the specified node does not exist for the plan.
 func NewErrorNodeForPlanNotFound(id uint64, addr base.NodeAddress) error {
-	return sdkerrors.Wrapf(ErrorNodeNotFound, "node %s for plan %d does not exist", addr, id)
+	return sdkerrors.Wrapf(ErrNotFound, "node %s for plan %d does not exist", addr, id)
 }
 
+// NewErrorNodeNotFound returns an error indicating that the specified node does not exist.
 func NewErrorNodeNotFound(addr base.NodeAddress) error {
-	return sdkerrors.Wrapf(ErrorNodeNotFound, "node %s does not exist", addr)
+	return sdkerrors.Wrapf(ErrNotFound, "node %s does not exist", addr)
 }
 
+// NewErrorPlanNotFound returns an error indicating that the specified plan does not exist.
 func NewErrorPlanNotFound(id uint64) error {
-	return sdkerrors.Wrapf(ErrorPlanNotFound, "plan %d does not exist", id)
+	return sdkerrors.Wrapf(ErrNotFound, "plan %d does not exist", id)
 }
 
+// NewErrorProviderNotFound returns an error indicating that the specified provider does not exist.
 func NewErrorProviderNotFound(addr base.ProvAddress) error {
-	return sdkerrors.Wrapf(ErrorProviderNotFound, "provider %s does not exist", addr)
+	return sdkerrors.Wrapf(ErrNotFound, "provider %s does not exist", addr)
 }
 
+// NewErrorUnauthorized returns an error indicating that the specified address is not authorized.
 func NewErrorUnauthorized(addr string) error {
-	return sdkerrors.Wrapf(ErrorUnauthorized, "address %s is not authorized", addr)
+	return sdkerrors.Wrapf(ErrUnauthorized, "address %s is not authorized", addr)
 }

@@ -30,45 +30,45 @@ func NewMsgRegisterNodeRequest(from sdk.AccAddress, gigabytePrices, hourlyPrices
 
 func (m *MsgRegisterNodeRequest) ValidateBasic() error {
 	if m.From == "" {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, "from cannot be empty")
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "from cannot be empty")
 	}
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, err.Error())
+		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
 	}
 	if m.GigabytePrices == nil {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, "gigabyte_prices cannot be nil")
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "gigabyte_prices cannot be nil")
 	}
 	if m.GigabytePrices.IsAnyNil() {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, "gigabyte_prices cannot contain nil")
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "gigabyte_prices cannot contain nil")
 	}
 	if !m.GigabytePrices.IsValid() {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, "gigabyte_prices must be valid")
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "gigabyte_prices must be valid")
 	}
 	if m.HourlyPrices == nil {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, "hourly_prices cannot be nil")
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "hourly_prices cannot be nil")
 	}
 	if m.HourlyPrices.IsAnyNil() {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, "hourly_prices cannot contain nil")
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "hourly_prices cannot contain nil")
 	}
 	if !m.HourlyPrices.IsValid() {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, "hourly_prices must be valid")
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "hourly_prices must be valid")
 	}
 	if m.RemoteURL == "" {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, "remote_url cannot be empty")
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "remote_url cannot be empty")
 	}
 	if len(m.RemoteURL) > 64 {
-		return sdkerrors.Wrapf(types.ErrorInvalidMessage, "remote_url length cannot be greater than %d chars", 64)
+		return sdkerrors.Wrapf(types.ErrInvalidMessage, "remote_url length cannot be greater than %d chars", 64)
 	}
 
 	remoteURL, err := url.ParseRequestURI(m.RemoteURL)
 	if err != nil {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, err.Error())
+		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
 	}
 	if remoteURL.Scheme != "https" {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, "remote_url scheme must be https")
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "remote_url scheme must be https")
 	}
 	if remoteURL.Port() == "" {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, "remote_url port cannot be empty")
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "remote_url port cannot be empty")
 	}
 
 	return nil
@@ -94,41 +94,41 @@ func NewMsgUpdateNodeDetailsRequest(from base.NodeAddress, gigabytePrices, hourl
 
 func (m *MsgUpdateNodeDetailsRequest) ValidateBasic() error {
 	if m.From == "" {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, "from cannot be empty")
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "from cannot be empty")
 	}
 	if _, err := base.NodeAddressFromBech32(m.From); err != nil {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, err.Error())
+		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
 	}
 	if m.GigabytePrices != nil {
 		if m.GigabytePrices.IsAnyNil() {
-			return sdkerrors.Wrap(types.ErrorInvalidMessage, "gigabyte_prices cannot contain nil")
+			return sdkerrors.Wrap(types.ErrInvalidMessage, "gigabyte_prices cannot contain nil")
 		}
 		if !m.GigabytePrices.IsValid() {
-			return sdkerrors.Wrap(types.ErrorInvalidMessage, "gigabyte_prices must be valid")
+			return sdkerrors.Wrap(types.ErrInvalidMessage, "gigabyte_prices must be valid")
 		}
 	}
 	if m.HourlyPrices != nil {
 		if m.HourlyPrices.IsAnyNil() {
-			return sdkerrors.Wrap(types.ErrorInvalidMessage, "hourly_prices cannot contain nil")
+			return sdkerrors.Wrap(types.ErrInvalidMessage, "hourly_prices cannot contain nil")
 		}
 		if !m.HourlyPrices.IsValid() {
-			return sdkerrors.Wrap(types.ErrorInvalidMessage, "hourly_prices must be valid")
+			return sdkerrors.Wrap(types.ErrInvalidMessage, "hourly_prices must be valid")
 		}
 	}
 	if m.RemoteURL != "" {
 		if len(m.RemoteURL) > 64 {
-			return sdkerrors.Wrapf(types.ErrorInvalidMessage, "remote_url length cannot be greater than %d chars", 64)
+			return sdkerrors.Wrapf(types.ErrInvalidMessage, "remote_url length cannot be greater than %d chars", 64)
 		}
 
 		remoteURL, err := url.ParseRequestURI(m.RemoteURL)
 		if err != nil {
-			return sdkerrors.Wrap(types.ErrorInvalidMessage, err.Error())
+			return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
 		}
 		if remoteURL.Scheme != "https" {
-			return sdkerrors.Wrap(types.ErrorInvalidMessage, "remote_url scheme must be https")
+			return sdkerrors.Wrap(types.ErrInvalidMessage, "remote_url scheme must be https")
 		}
 		if remoteURL.Port() == "" {
-			return sdkerrors.Wrap(types.ErrorInvalidMessage, "remote_url port cannot be empty")
+			return sdkerrors.Wrap(types.ErrInvalidMessage, "remote_url port cannot be empty")
 		}
 	}
 
@@ -153,13 +153,13 @@ func NewMsgUpdateNodeStatusRequest(from base.NodeAddress, status v1base.Status) 
 
 func (m *MsgUpdateNodeStatusRequest) ValidateBasic() error {
 	if m.From == "" {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, "from cannot be empty")
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "from cannot be empty")
 	}
 	if _, err := base.NodeAddressFromBech32(m.From); err != nil {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, err.Error())
+		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
 	}
 	if !m.Status.IsOneOf(v1base.StatusActive, v1base.StatusInactive) {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, "status must be one of [active, inactive]")
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "status must be one of [active, inactive]")
 	}
 
 	return nil
@@ -186,38 +186,38 @@ func NewMsgStartSessionRequest(from sdk.AccAddress, nodeAddr base.NodeAddress, g
 
 func (m *MsgStartSessionRequest) ValidateBasic() error {
 	if m.From == "" {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, "from cannot be empty")
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "from cannot be empty")
 	}
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, err.Error())
+		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
 	}
 	if m.NodeAddress == "" {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, "node_address cannot be empty")
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "node_address cannot be empty")
 	}
 	if _, err := base.NodeAddressFromBech32(m.NodeAddress); err != nil {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, err.Error())
+		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
 	}
 	if m.Gigabytes == 0 && m.Hours == 0 {
-		return sdkerrors.Wrapf(types.ErrorInvalidMessage, "[gigabytes, hours] cannot be empty")
+		return sdkerrors.Wrapf(types.ErrInvalidMessage, "[gigabytes, hours] cannot be empty")
 	}
 	if m.Gigabytes != 0 && m.Hours != 0 {
-		return sdkerrors.Wrapf(types.ErrorInvalidMessage, "[gigabytes, hours] cannot be non-empty")
+		return sdkerrors.Wrapf(types.ErrInvalidMessage, "[gigabytes, hours] cannot be non-empty")
 	}
 	if m.Gigabytes != 0 {
 		if m.Gigabytes < 0 {
-			return sdkerrors.Wrap(types.ErrorInvalidMessage, "gigabytes cannot be negative")
+			return sdkerrors.Wrap(types.ErrInvalidMessage, "gigabytes cannot be negative")
 		}
 	}
 	if m.Hours != 0 {
 		if m.Hours < 0 {
-			return sdkerrors.Wrap(types.ErrorInvalidMessage, "hours cannot be negative")
+			return sdkerrors.Wrap(types.ErrInvalidMessage, "hours cannot be negative")
 		}
 	}
 	if m.Denom == "" {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, "denom cannot be empty")
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "denom cannot be empty")
 	}
 	if err := sdk.ValidateDenom(m.Denom); err != nil {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, err.Error())
+		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
 	}
 
 	return nil
@@ -241,10 +241,10 @@ func NewMsgUpdateParamsRequest(from sdk.AccAddress, params Params) *MsgUpdatePar
 
 func (m *MsgUpdateParamsRequest) ValidateBasic() error {
 	if m.From == "" {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, "from cannot be empty")
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "from cannot be empty")
 	}
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, err.Error())
+		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
 	}
 	if err := m.Params.Validate(); err != nil {
 		return err

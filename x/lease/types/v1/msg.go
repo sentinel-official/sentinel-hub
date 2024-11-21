@@ -27,13 +27,13 @@ func NewMsgEndLeaseRequest(from base.ProvAddress, id uint64) *MsgEndLeaseRequest
 
 func (m *MsgEndLeaseRequest) ValidateBasic() error {
 	if m.From == "" {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, "from cannot be empty")
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "from cannot be empty")
 	}
 	if _, err := base.ProvAddressFromBech32(m.From); err != nil {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, err.Error())
+		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
 	}
 	if m.ID == 0 {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, "id cannot be zero")
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "id cannot be zero")
 	}
 
 	return nil
@@ -63,25 +63,25 @@ func (m *MsgRenewLeaseRequest) GetHours() time.Duration {
 
 func (m *MsgRenewLeaseRequest) ValidateBasic() error {
 	if m.From == "" {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, "from cannot be empty")
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "from cannot be empty")
 	}
 	if _, err := base.ProvAddressFromBech32(m.From); err != nil {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, err.Error())
+		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
 	}
 	if m.ID == 0 {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, "id cannot be zero")
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "id cannot be zero")
 	}
 	if m.Hours == 0 {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, "hours cannot be empty")
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "hours cannot be empty")
 	}
 	if m.Hours < 0 {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, "hours cannot be negative")
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "hours cannot be negative")
 	}
 	if m.Denom == "" {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, "denom cannot be empty")
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "denom cannot be empty")
 	}
 	if err := sdk.ValidateDenom(m.Denom); err != nil {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, err.Error())
+		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
 	}
 
 	return nil
@@ -112,28 +112,28 @@ func (m *MsgStartLeaseRequest) GetHours() time.Duration {
 
 func (m *MsgStartLeaseRequest) ValidateBasic() error {
 	if m.From == "" {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, "from cannot be empty")
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "from cannot be empty")
 	}
 	if _, err := base.ProvAddressFromBech32(m.From); err != nil {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, err.Error())
+		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
 	}
 	if m.NodeAddress == "" {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, "node_address cannot be empty")
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "node_address cannot be empty")
 	}
 	if _, err := base.NodeAddressFromBech32(m.NodeAddress); err != nil {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, err.Error())
+		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
 	}
 	if m.Hours == 0 {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, "hours cannot be empty")
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "hours cannot be empty")
 	}
 	if m.Hours < 0 {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, "hours cannot be negative")
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "hours cannot be negative")
 	}
 	if m.Denom == "" {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, "denom cannot be empty")
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "denom cannot be empty")
 	}
 	if err := sdk.ValidateDenom(m.Denom); err != nil {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, err.Error())
+		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
 	}
 
 	return nil
@@ -158,13 +158,13 @@ func NewMsgUpdateLeaseRequest(from base.ProvAddress, id uint64, renewable bool) 
 
 func (m *MsgUpdateLeaseRequest) ValidateBasic() error {
 	if m.From == "" {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, "from cannot be empty")
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "from cannot be empty")
 	}
 	if _, err := base.ProvAddressFromBech32(m.From); err != nil {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, err.Error())
+		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
 	}
 	if m.ID == 0 {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, "id cannot be zero")
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "id cannot be zero")
 	}
 
 	return nil
@@ -188,10 +188,10 @@ func NewMsgUpdateParamsRequest(from sdk.AccAddress, params Params) *MsgUpdatePar
 
 func (m *MsgUpdateParamsRequest) ValidateBasic() error {
 	if m.From == "" {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, "from cannot be empty")
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "from cannot be empty")
 	}
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, err.Error())
+		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
 	}
 	if err := m.Params.Validate(); err != nil {
 		return err

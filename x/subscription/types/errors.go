@@ -10,61 +10,66 @@ import (
 )
 
 var (
-	ErrorInvalidMessage = sdkerrors.Register(ModuleName, 101, "invalid message")
+	ErrInvalidMessage = sdkerrors.Register(ModuleName, 101, "invalid message")
 
-	ErrorAllocationNotFound        = sdkerrors.Register(ModuleName, 201, "allocation not found")
-	ErrorInsufficientBytes         = sdkerrors.Register(ModuleName, 202, "insufficient bytes")
-	ErrorInvalidAllocation         = sdkerrors.Register(ModuleName, 203, "invalid allocation")
-	ErrorInvalidNodeStatus         = sdkerrors.Register(ModuleName, 204, "invalid node status")
-	ErrorInvalidPlanStatus         = sdkerrors.Register(ModuleName, 205, "invalid plan status")
-	ErrorInvalidSubscriptionStatus = sdkerrors.Register(ModuleName, 206, "invalid subscription status")
-	ErrorNodeNotFound              = sdkerrors.Register(ModuleName, 207, "node not found")
-	ErrorPlanNotFound              = sdkerrors.Register(ModuleName, 208, "plan not found")
-	ErrorPriceNotFound             = sdkerrors.Register(ModuleName, 209, "price not found")
-	ErrorSubscriptionNotFound      = sdkerrors.Register(ModuleName, 210, "subscription not found")
-	ErrorUnauthorized              = sdkerrors.Register(ModuleName, 211, "unauthorized")
+	ErrInsufficient    = sdkerrors.Register(ModuleName, 201, "insufficient resources")
+	ErrInvalidResource = sdkerrors.Register(ModuleName, 202, "invalid resource")
+	ErrInvalidStatus   = sdkerrors.Register(ModuleName, 203, "invalid status")
+	ErrNotFound        = sdkerrors.Register(ModuleName, 204, "not found")
+	ErrUnauthorized    = sdkerrors.Register(ModuleName, 205, "unauthorized")
 )
 
+// NewErrorAllocationNotFound returns an error indicating that the specified allocation does not exist.
 func NewErrorAllocationNotFound(id uint64, addr sdk.AccAddress) error {
-	return sdkerrors.Wrapf(ErrorAllocationNotFound, "allocation %d/%s does not exist", id, addr)
+	return sdkerrors.Wrapf(ErrNotFound, "allocation %d/%s does not exist", id, addr)
 }
 
+// NewErrorInsufficientBytes returns an error indicating that there are insufficient bytes for the specified subscription.
 func NewErrorInsufficientBytes(id uint64, bytes sdkmath.Int) error {
-	return sdkerrors.Wrapf(ErrorInsufficientBytes, "insufficient bytes %s for subscription %d", bytes, id)
+	return sdkerrors.Wrapf(ErrInsufficient, "insufficient bytes %s for subscription %d", bytes, id)
 }
 
+// NewErrorInvalidAllocation returns an error indicating that the allocation is invalid.
 func NewErrorInvalidAllocation(id uint64, addr sdk.AccAddress) error {
-	return sdkerrors.Wrapf(ErrorInvalidAllocation, "invalid allocation %d/%s", id, addr)
+	return sdkerrors.Wrapf(ErrInvalidResource, "invalid allocation %d/%s", id, addr)
 }
 
+// NewErrorInvalidNodeStatus returns an error indicating that the provided status is invalid for the node.
 func NewErrorInvalidNodeStatus(addr base.NodeAddress, status v1base.Status) error {
-	return sdkerrors.Wrapf(ErrorInvalidNodeStatus, "invalid status %s for node %d", status, addr)
+	return sdkerrors.Wrapf(ErrInvalidStatus, "invalid status %s for node %s", status, addr)
 }
 
+// NewErrorInvalidPlanStatus returns an error indicating that the provided status is invalid for the plan.
 func NewErrorInvalidPlanStatus(id uint64, status v1base.Status) error {
-	return sdkerrors.Wrapf(ErrorInvalidPlanStatus, "invalid status %s for plan %d", status, id)
+	return sdkerrors.Wrapf(ErrInvalidStatus, "invalid status %s for plan %d", status, id)
 }
 
+// NewErrorInvalidSubscriptionStatus returns an error indicating that the provided status is invalid for the subscription.
 func NewErrorInvalidSubscriptionStatus(id uint64, status v1base.Status) error {
-	return sdkerrors.Wrapf(ErrorInvalidSubscriptionStatus, "invalid status %s for subscription %d", status, id)
+	return sdkerrors.Wrapf(ErrInvalidStatus, "invalid status %s for subscription %d", status, id)
 }
 
+// NewErrorNodeNotFound returns an error indicating that the specified node does not exist.
 func NewErrorNodeNotFound(addr base.NodeAddress) error {
-	return sdkerrors.Wrapf(ErrorNodeNotFound, "node %s does not exist", addr)
+	return sdkerrors.Wrapf(ErrNotFound, "node %s does not exist", addr)
 }
 
+// NewErrorPlanNotFound returns an error indicating that the specified plan does not exist.
 func NewErrorPlanNotFound(id uint64) error {
-	return sdkerrors.Wrapf(ErrorPlanNotFound, "plan %d does not exist", id)
+	return sdkerrors.Wrapf(ErrNotFound, "plan %d does not exist", id)
 }
 
+// NewErrorPriceNotFound returns an error indicating that the price for the specified denomination does not exist.
 func NewErrorPriceNotFound(denom string) error {
-	return sdkerrors.Wrapf(ErrorPriceNotFound, "price for denom %s does not exist", denom)
+	return sdkerrors.Wrapf(ErrNotFound, "price for denom %s does not exist", denom)
 }
 
+// NewErrorSubscriptionNotFound returns an error indicating that the specified subscription does not exist.
 func NewErrorSubscriptionNotFound(id uint64) error {
-	return sdkerrors.Wrapf(ErrorSubscriptionNotFound, "subscription %d does not exist", id)
+	return sdkerrors.Wrapf(ErrNotFound, "subscription %d does not exist", id)
 }
 
+// NewErrorUnauthorized returns an error indicating that the specified address is not authorized.
 func NewErrorUnauthorized(addr string) error {
-	return sdkerrors.Wrapf(ErrorUnauthorized, "address %s is not authorized", addr)
+	return sdkerrors.Wrapf(ErrUnauthorized, "address %s is not authorized", addr)
 }

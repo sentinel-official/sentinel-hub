@@ -7,21 +7,24 @@ import (
 )
 
 var (
-	ErrorInvalidMessage = sdkerrors.Register(ModuleName, 101, "invalid message")
+	ErrInvalidMessage = sdkerrors.Register(ModuleName, 101, "invalid message")
 
-	ErrorDuplicateProvider = sdkerrors.Register(ModuleName, 201, "duplicate provider")
-	ErrorProviderNotFound  = sdkerrors.Register(ModuleName, 202, "provider not found")
-	ErrorUnauthorized      = sdkerrors.Register(ModuleName, 203, "unauthorized")
+	ErrDuplicateEntry = sdkerrors.Register(ModuleName, 201, "duplicate entry")
+	ErrNotFound       = sdkerrors.Register(ModuleName, 202, "not found")
+	ErrUnauthorized   = sdkerrors.Register(ModuleName, 203, "unauthorized")
 )
 
+// NewErrorDuplicateProvider returns an error indicating that the specified provider already exists.
 func NewErrorDuplicateProvider(addr base.ProvAddress) error {
-	return sdkerrors.Wrapf(ErrorDuplicateProvider, "provider %s already exist", addr)
+	return sdkerrors.Wrapf(ErrDuplicateEntry, "provider %s already exists", addr)
 }
 
+// NewErrorProviderNotFound returns an error indicating that the specified provider does not exist.
 func NewErrorProviderNotFound(addr base.ProvAddress) error {
-	return sdkerrors.Wrapf(ErrorProviderNotFound, "provider %s does not exist", addr)
+	return sdkerrors.Wrapf(ErrNotFound, "provider %s does not exist", addr)
 }
 
+// NewErrorUnauthorized returns an error indicating that the specified address is not authorized.
 func NewErrorUnauthorized(addr string) error {
-	return sdkerrors.Wrapf(ErrorUnauthorized, "address %s is not authorized", addr)
+	return sdkerrors.Wrapf(ErrUnauthorized, "address %s is not authorized", addr)
 }

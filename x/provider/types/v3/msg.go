@@ -31,30 +31,30 @@ func NewMsgRegisterProviderRequest(from sdk.AccAddress, name, identity, website,
 
 func (m *MsgRegisterProviderRequest) ValidateBasic() error {
 	if m.From == "" {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, "from cannot be empty")
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "from cannot be empty")
 	}
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, err.Error())
+		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
 	}
 	if m.Name == "" {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, "name cannot be empty")
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "name cannot be empty")
 	}
 	if len(m.Name) > 64 {
-		return sdkerrors.Wrapf(types.ErrorInvalidMessage, "name length cannot be greater than %d chars", 64)
+		return sdkerrors.Wrapf(types.ErrInvalidMessage, "name length cannot be greater than %d chars", 64)
 	}
 	if len(m.Identity) > 64 {
-		return sdkerrors.Wrapf(types.ErrorInvalidMessage, "identity length cannot be greater than %d chars", 64)
+		return sdkerrors.Wrapf(types.ErrInvalidMessage, "identity length cannot be greater than %d chars", 64)
 	}
 	if len(m.Website) > 64 {
-		return sdkerrors.Wrapf(types.ErrorInvalidMessage, "website length cannot be greater than %d chars", 64)
+		return sdkerrors.Wrapf(types.ErrInvalidMessage, "website length cannot be greater than %d chars", 64)
 	}
 	if m.Website != "" {
 		if _, err := url.ParseRequestURI(m.Website); err != nil {
-			return sdkerrors.Wrap(types.ErrorInvalidMessage, err.Error())
+			return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
 		}
 	}
 	if len(m.Description) > 256 {
-		return sdkerrors.Wrapf(types.ErrorInvalidMessage, "description length cannot be greater than %d chars", 256)
+		return sdkerrors.Wrapf(types.ErrInvalidMessage, "description length cannot be greater than %d chars", 256)
 	}
 
 	return nil
@@ -81,27 +81,27 @@ func NewMsgUpdateProviderDetailsRequest(from base.ProvAddress, name, identity, w
 
 func (m *MsgUpdateProviderDetailsRequest) ValidateBasic() error {
 	if m.From == "" {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, "from cannot be empty")
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "from cannot be empty")
 	}
 	if _, err := base.ProvAddressFromBech32(m.From); err != nil {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, err.Error())
+		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
 	}
 	if len(m.Name) > 64 {
-		return sdkerrors.Wrapf(types.ErrorInvalidMessage, "name length cannot be greater than %d chars", 64)
+		return sdkerrors.Wrapf(types.ErrInvalidMessage, "name length cannot be greater than %d chars", 64)
 	}
 	if len(m.Identity) > 64 {
-		return sdkerrors.Wrapf(types.ErrorInvalidMessage, "identity length cannot be greater than %d chars", 64)
+		return sdkerrors.Wrapf(types.ErrInvalidMessage, "identity length cannot be greater than %d chars", 64)
 	}
 	if len(m.Website) > 64 {
-		return sdkerrors.Wrapf(types.ErrorInvalidMessage, "website length cannot be greater than %d chars", 64)
+		return sdkerrors.Wrapf(types.ErrInvalidMessage, "website length cannot be greater than %d chars", 64)
 	}
 	if m.Website != "" {
 		if _, err := url.ParseRequestURI(m.Website); err != nil {
-			return sdkerrors.Wrap(types.ErrorInvalidMessage, err.Error())
+			return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
 		}
 	}
 	if len(m.Description) > 256 {
-		return sdkerrors.Wrapf(types.ErrorInvalidMessage, "description length cannot be greater than %d chars", 256)
+		return sdkerrors.Wrapf(types.ErrInvalidMessage, "description length cannot be greater than %d chars", 256)
 	}
 
 	return nil
@@ -125,13 +125,13 @@ func NewMsgUpdateProviderStatusRequest(from base.ProvAddress, status v1base.Stat
 
 func (m *MsgUpdateProviderStatusRequest) ValidateBasic() error {
 	if m.From == "" {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, "from cannot be empty")
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "from cannot be empty")
 	}
 	if _, err := base.ProvAddressFromBech32(m.From); err != nil {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, err.Error())
+		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
 	}
 	if !m.Status.IsOneOf(v1base.StatusActive, v1base.StatusInactive) {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, "status must be one of [active, inactive]")
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "status must be one of [active, inactive]")
 	}
 
 	return nil
@@ -155,10 +155,10 @@ func NewMsgUpdateParamsRequest(from sdk.AccAddress, params v2.Params) *MsgUpdate
 
 func (m *MsgUpdateParamsRequest) ValidateBasic() error {
 	if m.From == "" {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, "from cannot be empty")
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "from cannot be empty")
 	}
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, err.Error())
+		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
 	}
 	if err := m.Params.Validate(); err != nil {
 		return err

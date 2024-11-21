@@ -107,7 +107,7 @@ func (k *Keeper) DeleteDenomForPacket(ctx sdk.Context, portID, channelID string,
 func (k *Keeper) GetAssetForPacket(ctx sdk.Context, portID, channelID string, sequence uint64) (v v1.Asset, err error) {
 	denom, found := k.GetDenomForPacket(ctx, portID, channelID, sequence)
 	if !found {
-		return v, types.NewErrorDenomtNotFound(portID, channelID, sequence)
+		return v, types.NewErrorDenomForPacketNotFound(portID, channelID, sequence)
 	}
 
 	v, found = k.GetAsset(ctx, denom)

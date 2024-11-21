@@ -27,13 +27,13 @@ func NewMsgCancelSessionRequest(from sdk.AccAddress, id uint64) *MsgCancelSessio
 
 func (m *MsgCancelSessionRequest) ValidateBasic() error {
 	if m.From == "" {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, "from cannot be empty")
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "from cannot be empty")
 	}
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, err.Error())
+		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
 	}
 	if m.ID == 0 {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, "id cannot be zero")
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "id cannot be zero")
 	}
 
 	return nil
@@ -70,31 +70,31 @@ func (m *MsgUpdateSessionRequest) Proof() *Proof {
 
 func (m *MsgUpdateSessionRequest) ValidateBasic() error {
 	if m.From == "" {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, "from cannot be empty")
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "from cannot be empty")
 	}
 	if _, err := base.NodeAddressFromBech32(m.From); err != nil {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, err.Error())
+		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
 	}
 	if m.ID == 0 {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, "id cannot be zero")
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "id cannot be zero")
 	}
 	if m.DownloadBytes.IsNil() {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, "download_bytes cannot be nil")
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "download_bytes cannot be nil")
 	}
 	if !m.DownloadBytes.IsPositive() {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, "download_bytes must be positive")
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "download_bytes must be positive")
 	}
 	if m.UploadBytes.IsNil() {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, "upload_bytes cannot be nil")
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "upload_bytes cannot be nil")
 	}
 	if !m.UploadBytes.IsPositive() {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, "upload_bytes must be positive")
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "upload_bytes must be positive")
 	}
 	if m.Duration < 0 {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, "duration cannot be negative")
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "duration cannot be negative")
 	}
 	if m.Signature != nil && len(m.Signature) != 64 {
-		return sdkerrors.Wrapf(types.ErrorInvalidMessage, "signature length must be %d bytes", 64)
+		return sdkerrors.Wrapf(types.ErrInvalidMessage, "signature length must be %d bytes", 64)
 	}
 
 	return nil
@@ -118,10 +118,10 @@ func NewMsgUpdateParamsRequest(from sdk.AccAddress, params v2.Params) *MsgUpdate
 
 func (m *MsgUpdateParamsRequest) ValidateBasic() error {
 	if m.From == "" {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, "from cannot be empty")
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "from cannot be empty")
 	}
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return sdkerrors.Wrap(types.ErrorInvalidMessage, err.Error())
+		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
 	}
 	if err := m.Params.Validate(); err != nil {
 		return err
