@@ -1,0 +1,481 @@
+package v1
+
+import (
+	"math"
+	"testing"
+
+	sdkmath "cosmossdk.io/math"
+	"github.com/stretchr/testify/require"
+
+	base "github.com/sentinel-official/hub/v12/types"
+)
+
+func TestMsgEndLeaseRequest_ValidateBasic(t *testing.T) {
+	tests := []struct {
+		name   string
+		msg    *MsgEndLeaseRequest
+		expErr bool
+	}{
+		{
+			"ValidMessage",
+			&MsgEndLeaseRequest{From: base.TestBech32ProvAddr20Bytes, ID: 1},
+			false,
+		},
+		{
+			"EmptyFromAddress",
+			&MsgEndLeaseRequest{From: base.TestAddrEmpty, ID: 1},
+			true,
+		},
+		{
+			"InvalidIDZero",
+			&MsgEndLeaseRequest{From: base.TestBech32ProvAddr20Bytes, ID: 0},
+			true,
+		},
+		{
+			"InvalidFromAddressFormat",
+			&MsgEndLeaseRequest{From: base.TestAddrInvalid, ID: 1},
+			true,
+		},
+		{
+			"InvalidFromAddressPrefix",
+			&MsgEndLeaseRequest{From: base.TestAddrInvalidPrefix, ID: 1},
+			true,
+		},
+		{
+			"MaximumUint64ID",
+			&MsgEndLeaseRequest{From: base.TestBech32ProvAddr20Bytes, ID: math.MaxUint64},
+			false,
+		},
+		{
+			"ValidFromAddress10Bytes",
+			&MsgEndLeaseRequest{From: base.TestBech32ProvAddr10Bytes, ID: 123},
+			false,
+		},
+		{
+			"ValidFromAddress30Bytes",
+			&MsgEndLeaseRequest{From: base.TestBech32ProvAddr30Bytes, ID: 123},
+			false,
+		},
+		{
+			"InvalidFromAddressAccount",
+			&MsgEndLeaseRequest{From: base.TestBech32AccAddr20Bytes, ID: 123},
+			true,
+		},
+		{
+			"InvalidFromAddressNode",
+			&MsgEndLeaseRequest{From: base.TestBech32NodeAddr20Bytes, ID: 123},
+			true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := tt.msg.ValidateBasic()
+			if tt.expErr {
+				require.Error(t, err)
+			} else {
+				require.NoError(t, err)
+			}
+		})
+	}
+}
+
+func TestMsgRenewLeaseRequest_ValidateBasic(t *testing.T) {
+	tests := []struct {
+		name   string
+		msg    *MsgRenewLeaseRequest
+		expErr bool
+	}{
+		{
+			"ValidMessage",
+			&MsgRenewLeaseRequest{From: base.TestBech32ProvAddr20Bytes, ID: 1, Hours: 24, Denom: base.TestDenomOne},
+			false,
+		},
+		{
+			"EmptyFromAddress",
+			&MsgRenewLeaseRequest{From: base.TestAddrEmpty, ID: 1, Hours: 24, Denom: base.TestDenomOne},
+			true,
+		},
+		{
+			"InvalidIDZero",
+			&MsgRenewLeaseRequest{From: base.TestBech32ProvAddr20Bytes, ID: 0, Hours: 24, Denom: base.TestDenomOne},
+			true,
+		},
+		{
+			"HoursCannotBeZero",
+			&MsgRenewLeaseRequest{From: base.TestBech32ProvAddr20Bytes, ID: 1, Hours: 0, Denom: base.TestDenomOne},
+			true,
+		},
+		{
+			"NegativeHours",
+			&MsgRenewLeaseRequest{From: base.TestBech32ProvAddr20Bytes, ID: 1, Hours: -5, Denom: base.TestDenomOne},
+			true,
+		},
+		{
+			"EmptyDenom",
+			&MsgRenewLeaseRequest{From: base.TestBech32ProvAddr20Bytes, ID: 1, Hours: 24, Denom: base.TestDenomEmpty},
+			true,
+		},
+		{
+			"InvalidDenom",
+			&MsgRenewLeaseRequest{From: base.TestBech32ProvAddr20Bytes, ID: 1, Hours: 24, Denom: base.TestDenomInvalid},
+			true,
+		},
+		{
+			"ValidFromAddress10Bytes",
+			&MsgRenewLeaseRequest{From: base.TestBech32ProvAddr10Bytes, ID: 1, Hours: 24, Denom: base.TestDenomOne},
+			false,
+		},
+		{
+			"ValidFromAddress30Bytes",
+			&MsgRenewLeaseRequest{From: base.TestBech32ProvAddr30Bytes, ID: 1, Hours: 24, Denom: base.TestDenomOne},
+			false,
+		},
+		{
+			"MaximumUint64ID",
+			&MsgRenewLeaseRequest{From: base.TestBech32ProvAddr20Bytes, ID: math.MaxUint64, Hours: 24, Denom: base.TestDenomOne},
+			false,
+		},
+		{
+			"InvalidFromAddressAccount",
+			&MsgRenewLeaseRequest{From: base.TestBech32AccAddr20Bytes, ID: 1, Hours: 24, Denom: base.TestDenomOne},
+			true,
+		},
+		{
+			"InvalidFromAddressNode",
+			&MsgRenewLeaseRequest{From: base.TestBech32NodeAddr20Bytes, ID: 1, Hours: 24, Denom: base.TestDenomOne},
+			true,
+		},
+		{
+			"ValidMessageWithLargeHours",
+			&MsgRenewLeaseRequest{From: base.TestBech32ProvAddr20Bytes, ID: 1, Hours: 1000, Denom: base.TestDenomOne},
+			false,
+		},
+		{
+			"InvalidAddressFormatAndZeroID",
+			&MsgRenewLeaseRequest{From: base.TestAddrInvalid, ID: 0, Hours: 24, Denom: base.TestDenomOne},
+			true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := tt.msg.ValidateBasic()
+			if tt.expErr {
+				require.Error(t, err)
+			} else {
+				require.NoError(t, err)
+			}
+		})
+	}
+}
+
+func TestMsgStartLeaseRequest_ValidateBasic(t *testing.T) {
+	tests := []struct {
+		name   string
+		msg    *MsgStartLeaseRequest
+		expErr bool
+	}{
+		{
+			"ValidMessage",
+			&MsgStartLeaseRequest{From: base.TestBech32ProvAddr20Bytes, NodeAddress: base.TestBech32NodeAddr20Bytes, Hours: 24, Denom: base.TestDenomOne, Renewable: true},
+			false,
+		},
+		{
+			"EmptyFromAddress",
+			&MsgStartLeaseRequest{From: base.TestAddrEmpty, NodeAddress: base.TestBech32NodeAddr20Bytes, Hours: 24, Denom: base.TestDenomOne, Renewable: true},
+			true,
+		},
+		{
+			"EmptyNodeAddress",
+			&MsgStartLeaseRequest{From: base.TestBech32ProvAddr20Bytes, NodeAddress: base.TestAddrEmpty, Hours: 24, Denom: base.TestDenomOne, Renewable: true},
+			true,
+		},
+		{
+			"InvalidNodeAddressFormat",
+			&MsgStartLeaseRequest{From: base.TestBech32ProvAddr20Bytes, NodeAddress: base.TestAddrInvalid, Hours: 24, Denom: base.TestDenomOne, Renewable: true},
+			true,
+		},
+		{
+			"HoursCannotBeZero",
+			&MsgStartLeaseRequest{From: base.TestBech32ProvAddr20Bytes, NodeAddress: base.TestBech32NodeAddr20Bytes, Hours: 0, Denom: base.TestDenomOne, Renewable: true},
+			true,
+		},
+		{
+			"NegativeHours",
+			&MsgStartLeaseRequest{From: base.TestBech32ProvAddr20Bytes, NodeAddress: base.TestBech32NodeAddr20Bytes, Hours: -5, Denom: base.TestDenomOne, Renewable: true},
+			true,
+		},
+		{
+			"EmptyDenom",
+			&MsgStartLeaseRequest{From: base.TestBech32ProvAddr20Bytes, NodeAddress: base.TestBech32NodeAddr20Bytes, Hours: 24, Denom: base.TestDenomEmpty, Renewable: true},
+			true,
+		},
+		{
+			"InvalidDenom",
+			&MsgStartLeaseRequest{From: base.TestBech32ProvAddr20Bytes, NodeAddress: base.TestBech32NodeAddr20Bytes, Hours: 24, Denom: base.TestDenomInvalid, Renewable: true},
+			true,
+		},
+		{
+			"ValidFromAddress10Bytes",
+			&MsgStartLeaseRequest{From: base.TestBech32ProvAddr10Bytes, NodeAddress: base.TestBech32NodeAddr20Bytes, Hours: 24, Denom: base.TestDenomOne, Renewable: true},
+			false,
+		},
+		{
+			"ValidNodeAddress10Bytes",
+			&MsgStartLeaseRequest{From: base.TestBech32ProvAddr20Bytes, NodeAddress: base.TestBech32NodeAddr10Bytes, Hours: 24, Denom: base.TestDenomOne, Renewable: true},
+			false,
+		},
+		{
+			"ValidFromAddress30Bytes",
+			&MsgStartLeaseRequest{From: base.TestBech32ProvAddr30Bytes, NodeAddress: base.TestBech32NodeAddr20Bytes, Hours: 24, Denom: base.TestDenomOne, Renewable: true},
+			false,
+		},
+		{
+			"MaximumUint64Hours",
+			&MsgStartLeaseRequest{From: base.TestBech32ProvAddr20Bytes, NodeAddress: base.TestBech32NodeAddr20Bytes, Hours: math.MaxInt64, Denom: base.TestDenomOne, Renewable: true},
+			false,
+		},
+		{
+			"InvalidFromAddressAccount",
+			&MsgStartLeaseRequest{From: base.TestBech32AccAddr20Bytes, NodeAddress: base.TestBech32NodeAddr20Bytes, Hours: 24, Denom: base.TestDenomOne, Renewable: true},
+			true,
+		},
+		{
+			"InvalidFromAddressEmptyNode",
+			&MsgStartLeaseRequest{From: base.TestBech32ProvAddr20Bytes, NodeAddress: base.TestAddrEmpty, Hours: 24, Denom: base.TestDenomOne, Renewable: true},
+			true,
+		},
+		{
+			"LargeValidHours",
+			&MsgStartLeaseRequest{From: base.TestBech32ProvAddr20Bytes, NodeAddress: base.TestBech32NodeAddr20Bytes, Hours: 100000, Denom: base.TestDenomOne, Renewable: true},
+			false,
+		},
+		{
+			"InvalidAddressFormatAndZeroHours",
+			&MsgStartLeaseRequest{From: base.TestAddrInvalid, NodeAddress: base.TestBech32NodeAddr20Bytes, Hours: 0, Denom: base.TestDenomOne, Renewable: true},
+			true,
+		},
+		{
+			"InvalidFromAndNodeAddress",
+			&MsgStartLeaseRequest{From: base.TestAddrInvalid, NodeAddress: base.TestAddrInvalidPrefix, Hours: 24, Denom: base.TestDenomOne, Renewable: true},
+			true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := tt.msg.ValidateBasic()
+			if tt.expErr {
+				require.Error(t, err)
+			} else {
+				require.NoError(t, err)
+			}
+		})
+	}
+}
+
+func TestMsgUpdateLeaseRequest_ValidateBasic(t *testing.T) {
+	tests := []struct {
+		name   string
+		msg    *MsgUpdateLeaseRequest
+		expErr bool
+	}{
+		{
+			"ValidMessage",
+			&MsgUpdateLeaseRequest{From: base.TestBech32ProvAddr20Bytes, ID: 1, Renewable: true},
+			false,
+		},
+		{
+			"EmptyFromAddress",
+			&MsgUpdateLeaseRequest{From: base.TestAddrEmpty, ID: 1, Renewable: true},
+			true,
+		},
+		{
+			"InvalidIDZero",
+			&MsgUpdateLeaseRequest{From: base.TestBech32ProvAddr20Bytes, ID: 0, Renewable: true},
+			true,
+		},
+		{
+			"InvalidFromAddressFormat",
+			&MsgUpdateLeaseRequest{From: base.TestAddrInvalid, ID: 1, Renewable: true},
+			true,
+		},
+		{
+			"InvalidFromAddressPrefix",
+			&MsgUpdateLeaseRequest{From: base.TestAddrInvalidPrefix, ID: 1, Renewable: true},
+			true,
+		},
+		{
+			"ValidFromAddress10Bytes",
+			&MsgUpdateLeaseRequest{From: base.TestBech32ProvAddr10Bytes, ID: 1, Renewable: true},
+			false,
+		},
+		{
+			"ValidFromAddress30Bytes",
+			&MsgUpdateLeaseRequest{From: base.TestBech32ProvAddr30Bytes, ID: 1, Renewable: true},
+			false,
+		},
+		{
+			"MaximumUint64ID",
+			&MsgUpdateLeaseRequest{From: base.TestBech32ProvAddr20Bytes, ID: math.MaxUint64, Renewable: true},
+			false,
+		},
+		{
+			"InvalidFromAddressAccount",
+			&MsgUpdateLeaseRequest{From: base.TestBech32AccAddr20Bytes, ID: 1, Renewable: true},
+			true,
+		},
+		{
+			"InvalidFromAddressNode",
+			&MsgUpdateLeaseRequest{From: base.TestBech32NodeAddr20Bytes, ID: 1, Renewable: true},
+			true,
+		},
+		{
+			"ValidFromAddressNonRenewable",
+			&MsgUpdateLeaseRequest{From: base.TestBech32ProvAddr20Bytes, ID: 1, Renewable: false},
+			false,
+		},
+		{
+			"ValidFromAddressSmallValidID",
+			&MsgUpdateLeaseRequest{From: base.TestBech32ProvAddr20Bytes, ID: 2, Renewable: true},
+			false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := tt.msg.ValidateBasic()
+			if tt.expErr {
+				require.Error(t, err)
+			} else {
+				require.NoError(t, err)
+			}
+		})
+	}
+}
+
+func TestMsgUpdateParamsRequest_ValidateBasic(t *testing.T) {
+	tests := []struct {
+		name   string
+		msg    *MsgUpdateParamsRequest
+		expErr bool
+	}{
+		{
+			"ValidMessage",
+			&MsgUpdateParamsRequest{From: base.TestBech32AccAddr20Bytes, Params: DefaultParams()},
+			false,
+		},
+		{
+			"EmptyFromAddress",
+			&MsgUpdateParamsRequest{From: base.TestAddrEmpty, Params: DefaultParams()},
+			true,
+		},
+		{
+			"InvalidFromAddressFormat",
+			&MsgUpdateParamsRequest{From: base.TestAddrInvalid, Params: DefaultParams()},
+			true,
+		},
+		{
+			"InvalidFromAddressPrefix",
+			&MsgUpdateParamsRequest{From: base.TestAddrInvalidPrefix, Params: DefaultParams()},
+			true,
+		},
+		{
+			"EmptyParams",
+			&MsgUpdateParamsRequest{From: base.TestBech32AccAddr20Bytes, Params: Params{}},
+			true,
+		},
+		{
+			"InvalidMaxLeaseHoursNegative",
+			&MsgUpdateParamsRequest{From: base.TestBech32AccAddr20Bytes, Params: Params{MaxLeaseHours: -1}},
+			true,
+		},
+		{
+			"InvalidMaxLeaseHoursZero",
+			&MsgUpdateParamsRequest{From: base.TestBech32AccAddr20Bytes, Params: Params{MaxLeaseHours: 0}},
+			true,
+		},
+		{
+			"InvalidMinLeaseHoursNegative",
+			&MsgUpdateParamsRequest{From: base.TestBech32AccAddr20Bytes, Params: Params{MaxLeaseHours: 10, MinLeaseHours: -1}},
+			true,
+		},
+		{
+			"InvalidMinLeaseHoursZero",
+			&MsgUpdateParamsRequest{From: base.TestBech32AccAddr20Bytes, Params: Params{MinLeaseHours: 0}},
+			true,
+		},
+		{
+			"ValidMinAndMaxLeaseHours",
+			&MsgUpdateParamsRequest{From: base.TestBech32AccAddr20Bytes, Params: Params{MaxLeaseHours: 10, MinLeaseHours: 1, StakingShare: sdkmath.LegacyNewDecWithPrec(5, 1)}},
+			false,
+		},
+		{
+			"InvalidStakingShareGreaterThanOne",
+			&MsgUpdateParamsRequest{From: base.TestBech32AccAddr20Bytes, Params: Params{MaxLeaseHours: 10, MinLeaseHours: 1, StakingShare: sdkmath.LegacyNewDec(2)}},
+			true,
+		},
+		{
+			"InvalidStakingShareNegative",
+			&MsgUpdateParamsRequest{From: base.TestBech32AccAddr20Bytes, Params: Params{MaxLeaseHours: 10, MinLeaseHours: 1, StakingShare: sdkmath.LegacyNewDec(-1)}},
+			true,
+		},
+		{
+			"StakingShareIsNil",
+			&MsgUpdateParamsRequest{From: base.TestBech32AccAddr20Bytes, Params: Params{StakingShare: sdkmath.LegacyDec{}}},
+			true,
+		},
+		{
+			"ValidStakingShare",
+			&MsgUpdateParamsRequest{From: base.TestBech32AccAddr20Bytes, Params: Params{MaxLeaseHours: 10, MinLeaseHours: 1, StakingShare: sdkmath.LegacyNewDecWithPrec(5, 1)}},
+			false,
+		},
+		{
+			"MaxLeaseHoursLessThanMinLeaseHours",
+			&MsgUpdateParamsRequest{From: base.TestBech32AccAddr20Bytes, Params: Params{MaxLeaseHours: 5, MinLeaseHours: 10}},
+			true,
+		},
+		{
+			"ValidMaxLeaseHoursAndStakingShare",
+			&MsgUpdateParamsRequest{From: base.TestBech32AccAddr20Bytes, Params: Params{MaxLeaseHours: 100, MinLeaseHours: 10, StakingShare: sdkmath.LegacyNewDecWithPrec(3, 1)}},
+			false,
+		},
+		{
+			"InvalidMaxLeaseHoursExceedsLimit",
+			&MsgUpdateParamsRequest{From: base.TestBech32AccAddr20Bytes, Params: Params{MaxLeaseHours: 1000000000}},
+			true,
+		},
+		{
+			"InvalidMinLeaseHoursGreaterThanMax",
+			&MsgUpdateParamsRequest{From: base.TestBech32AccAddr20Bytes, Params: Params{MaxLeaseHours: 20, MinLeaseHours: 30}},
+			true,
+		},
+		{
+			"ValidStakingShareAtOne",
+			&MsgUpdateParamsRequest{From: base.TestBech32AccAddr20Bytes, Params: Params{MaxLeaseHours: 15, MinLeaseHours: 5, StakingShare: sdkmath.LegacyNewDec(1)}},
+			false,
+		},
+		{
+			"ValidStakingShareAtZero",
+			&MsgUpdateParamsRequest{From: base.TestBech32AccAddr20Bytes, Params: Params{MaxLeaseHours: 15, MinLeaseHours: 5, StakingShare: sdkmath.LegacyNewDec(0)}},
+			false,
+		},
+		{
+			"InvalidStakingShareExceedsOneWithPrecision",
+			&MsgUpdateParamsRequest{From: base.TestBech32AccAddr20Bytes, Params: Params{StakingShare: sdkmath.LegacyNewDecWithPrec(15, 1)}},
+			true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := tt.msg.ValidateBasic()
+			if tt.expErr {
+				require.Error(t, err)
+			} else {
+				require.NoError(t, err)
+			}
+		})
+	}
+}
