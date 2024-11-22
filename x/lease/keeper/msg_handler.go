@@ -81,7 +81,7 @@ func (k *Keeper) HandleMsgRenewLease(ctx sdk.Context, msg *v1.MsgRenewLeaseReque
 		return nil, err
 	}
 
-	provider, found := k.provider.GetProvider(ctx, provAddr)
+	provider, found := k.GetProvider(ctx, provAddr)
 	if !found {
 		return nil, types.NewErrorProviderNotFound(provAddr)
 	}
@@ -94,7 +94,7 @@ func (k *Keeper) HandleMsgRenewLease(ctx sdk.Context, msg *v1.MsgRenewLeaseReque
 		return nil, err
 	}
 
-	node, found := k.node.GetNode(ctx, nodeAddr)
+	node, found := k.GetNode(ctx, nodeAddr)
 	if !found {
 		return nil, types.NewErrorNodeNotFound(nodeAddr)
 	}
@@ -171,7 +171,7 @@ func (k *Keeper) HandleMsgStartLease(ctx sdk.Context, msg *v1.MsgStartLeaseReque
 		return nil, err
 	}
 
-	provider, found := k.provider.GetProvider(ctx, provAddr)
+	provider, found := k.GetProvider(ctx, provAddr)
 	if !found {
 		return nil, types.NewErrorProviderNotFound(provAddr)
 	}
@@ -184,7 +184,7 @@ func (k *Keeper) HandleMsgStartLease(ctx sdk.Context, msg *v1.MsgStartLeaseReque
 		return nil, err
 	}
 
-	node, found := k.node.GetNode(ctx, nodeAddr)
+	node, found := k.GetNode(ctx, nodeAddr)
 	if !found {
 		return nil, types.NewErrorNodeNotFound(nodeAddr)
 	}

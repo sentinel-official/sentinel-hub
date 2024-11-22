@@ -67,7 +67,7 @@ func (k *Keeper) HandleMsgRenewSubscription(ctx sdk.Context, msg *v3.MsgRenewSub
 		return nil, types.NewErrorInvalidSubscriptionStatus(subscription.ID, subscription.Status)
 	}
 
-	plan, found := k.plan.GetPlan(ctx, subscription.PlanID)
+	plan, found := k.GetPlan(ctx, subscription.PlanID)
 	if !found {
 		return nil, types.NewErrorPlanNotFound(subscription.PlanID)
 	}
@@ -83,7 +83,7 @@ func (k *Keeper) HandleMsgRenewSubscription(ctx sdk.Context, msg *v3.MsgRenewSub
 	k.DeleteSubscriptionForInactiveAt(ctx, subscription.InactiveAt, subscription.ID)
 	k.DeleteSubscriptionForRenewalAt(ctx, subscription.RenewalAt(), subscription.ID)
 
-	share := k.provider.StakingShare(ctx)
+	share := k.ProviderStakingShare(ctx)
 	reward := baseutils.GetProportionOfCoin(price, share)
 	payment := price.Sub(reward)
 
@@ -235,7 +235,7 @@ func (k *Keeper) HandleMsgShareSubscription(ctx sdk.Context, msg *v3.MsgShareSub
 }
 
 func (k *Keeper) HandleMsgStartSubscription(ctx sdk.Context, msg *v3.MsgStartSubscriptionRequest) (*v3.MsgStartSubscriptionResponse, error) {
-	plan, found := k.plan.GetPlan(ctx, msg.ID)
+	plan, found := k.GetPlan(ctx, msg.ID)
 	if !found {
 		return nil, types.NewErrorPlanNotFound(msg.ID)
 	}
@@ -248,7 +248,7 @@ func (k *Keeper) HandleMsgStartSubscription(ctx sdk.Context, msg *v3.MsgStartSub
 		return nil, types.NewErrorPriceNotFound(msg.Denom)
 	}
 
-	share := k.provider.StakingShare(ctx)
+	share := k.ProviderStakingShare(ctx)
 	reward := baseutils.GetProportionOfCoin(price, share)
 	payment := price.Sub(reward)
 
@@ -374,7 +374,7 @@ func (k *Keeper) HandleMsgStartSession(ctx sdk.Context, msg *v3.MsgStartSessionR
 		return nil, err
 	}
 
-	node, found := k.node.GetNode(ctx, nodeAddr)
+	node, found := k.GetNode(ctx, nodeAddr)
 	if !found {
 		return nil, types.NewErrorNodeNotFound(nodeAddr)
 	}
@@ -396,8 +396,8 @@ func (k *Keeper) HandleMsgStartSession(ctx sdk.Context, msg *v3.MsgStartSessionR
 	}
 
 	var (
-		count   = k.session.GetCount(ctx)
-		delay   = k.session.StatusChangeDelay(ctx)
+		count   = k.GetSessionCount(ctx)
+		delay   = k.SessionStatusChangeDelay(ctx)
 		session = &v3.Session{
 			ID:             count + 1,
 			AccAddress:     accAddr.String(),
@@ -412,14 +412,14 @@ func (k *Keeper) HandleMsgStartSession(ctx sdk.Context, msg *v3.MsgStartSessionR
 		}
 	)
 
-	k.session.SetCount(ctx, count+1)
-	k.session.SetSession(ctx, session)
-	k.session.SetSessionForAccount(ctx, accAddr, session.ID)
-	k.session.SetSessionForNode(ctx, nodeAddr, session.ID)
-	k.session.SetSessionForPlanByNode(ctx, subscription.PlanID, nodeAddr, session.ID)
-	k.session.SetSessionForSubscription(ctx, subscription.ID, session.ID)
-	k.session.SetSessionForAllocation(ctx, subscription.ID, accAddr, session.ID)
-	k.session.SetSessionForInactiveAt(ctx, session.InactiveAt, session.ID)
+	k.SetSessionCount(ctx, count+1)
+	k.SetSession(ctx, session)
+	k.SetSessionForAccount(ctx, accAddr, session.ID)
+	k.SetSessionForNode(ctx, nodeAddr, session.ID)
+	k.SetSessionForPlanByNode(ctx, subscription.PlanID, nodeAddr, session.ID)
+	k.SetSessionForSubscription(ctx, subscription.ID, session.ID)
+	k.SetSessionForAllocation(ctx, subscription.ID, accAddr, session.ID)
+	k.SetSessionForInactiveAt(ctx, session.InactiveAt, session.ID)
 
 	ctx.EventManager().EmitTypedEvent(
 		&v3.EventCreateSession{

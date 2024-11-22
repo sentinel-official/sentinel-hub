@@ -13,17 +13,17 @@ func (k *Keeper) BeginBlock(ctx sdk.Context) []abcitypes.ValidatorUpdate {
 			return true
 		}
 
-		params := k.mint.GetParams(ctx)
+		params := k.GetParams(ctx)
 		params.InflationMax = item.Max
 		params.InflationMin = item.Min
 		params.InflationRateChange = item.RateChange
-		if err := k.mint.SetParams(ctx, params); err != nil {
+		if err := k.SetParams(ctx, params); err != nil {
 			panic(err)
 		}
 
-		minter := k.mint.GetMinter(ctx)
+		minter := k.GetMinter(ctx)
 		minter.Inflation = item.Min
-		k.mint.SetMinter(ctx, minter)
+		k.SetMinter(ctx, minter)
 
 		k.DeleteInflation(ctx, item.Timestamp)
 		return false

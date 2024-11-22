@@ -189,8 +189,8 @@ func (k *Keeper) HandleMsgStartSession(ctx sdk.Context, msg *v3.MsgStartSessionR
 	}
 
 	var (
-		count   = k.session.GetCount(ctx)
-		delay   = k.session.StatusChangeDelay(ctx)
+		count   = k.GetSessionCount(ctx)
+		delay   = k.SessionStatusChangeDelay(ctx)
 		session = &v3.Session{
 			ID:            count + 1,
 			AccAddress:    accAddr.String(),
@@ -225,11 +225,11 @@ func (k *Keeper) HandleMsgStartSession(ctx sdk.Context, msg *v3.MsgStartSessionR
 		return nil, err
 	}
 
-	k.session.SetCount(ctx, count+1)
-	k.session.SetSession(ctx, session)
-	k.session.SetSessionForAccount(ctx, accAddr, session.ID)
-	k.session.SetSessionForNode(ctx, nodeAddr, session.ID)
-	k.session.SetSessionForInactiveAt(ctx, session.InactiveAt, session.ID)
+	k.SetSessionCount(ctx, count+1)
+	k.SetSession(ctx, session)
+	k.SetSessionForAccount(ctx, accAddr, session.ID)
+	k.SetSessionForNode(ctx, nodeAddr, session.ID)
+	k.SetSessionForInactiveAt(ctx, session.InactiveAt, session.ID)
 
 	ctx.EventManager().EmitTypedEvent(
 		&v3.EventCreateSession{

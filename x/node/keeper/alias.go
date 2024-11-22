@@ -1,9 +1,12 @@
 package keeper
 
 import (
+	"time"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	base "github.com/sentinel-official/hub/v12/types"
+	sessiontypes "github.com/sentinel-official/hub/v12/x/session/types/v3"
 )
 
 func (k *Keeper) FundCommunityPool(ctx sdk.Context, fromAddr sdk.AccAddress, coin sdk.Coin) error {
@@ -44,6 +47,50 @@ func (k *Keeper) SubtractDeposit(ctx sdk.Context, addr sdk.AccAddress, coin sdk.
 	}
 
 	return k.deposit.SubtractDeposit(ctx, addr, sdk.NewCoins(coin))
+}
+
+func (k *Keeper) DeleteSession(ctx sdk.Context, id uint64) {
+	k.session.DeleteSession(ctx, id)
+}
+
+func (k *Keeper) DeleteSessionForAccount(ctx sdk.Context, addr sdk.AccAddress, id uint64) {
+	k.session.DeleteSessionForAccount(ctx, addr, id)
+}
+
+func (k *Keeper) DeleteSessionForNode(ctx sdk.Context, addr base.NodeAddress, id uint64) {
+	k.session.DeleteSessionForNode(ctx, addr, id)
+}
+
+func (k *Keeper) GetSessionCount(ctx sdk.Context) uint64 {
+	return k.session.GetCount(ctx)
+}
+
+func (k *Keeper) GetSession(ctx sdk.Context, id uint64) (sessiontypes.Session, bool) {
+	return k.session.GetSession(ctx, id)
+}
+
+func (k *Keeper) SetSessionCount(ctx sdk.Context, count uint64) {
+	k.session.SetCount(ctx, count)
+}
+
+func (k *Keeper) SetSession(ctx sdk.Context, session sessiontypes.Session) {
+	k.session.SetSession(ctx, session)
+}
+
+func (k *Keeper) SetSessionForAccount(ctx sdk.Context, addr sdk.AccAddress, id uint64) {
+	k.session.SetSessionForAccount(ctx, addr, id)
+}
+
+func (k *Keeper) SetSessionForInactiveAt(ctx sdk.Context, at time.Time, id uint64) {
+	k.session.SetSessionForInactiveAt(ctx, at, id)
+}
+
+func (k *Keeper) SetSessionForNode(ctx sdk.Context, addr base.NodeAddress, id uint64) {
+	k.session.SetSessionForNode(ctx, addr, id)
+}
+
+func (k *Keeper) SessionStatusChangeDelay(ctx sdk.Context) time.Duration {
+	return k.session.StatusChangeDelay(ctx)
 }
 
 func (k *Keeper) NodeInactivePreHook(ctx sdk.Context, addr base.NodeAddress) error {

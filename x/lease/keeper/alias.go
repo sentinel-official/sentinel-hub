@@ -2,6 +2,10 @@ package keeper
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
+
+	base "github.com/sentinel-official/hub/v12/types"
+	nodetypes "github.com/sentinel-official/hub/v12/x/node/types/v2"
+	providertypes "github.com/sentinel-official/hub/v12/x/provider/types/v2"
 )
 
 func (k *Keeper) AddDeposit(ctx sdk.Context, addr sdk.AccAddress, coin sdk.Coin) error {
@@ -34,6 +38,14 @@ func (k *Keeper) SendCoinFromDepositToModule(ctx sdk.Context, fromAddr sdk.AccAd
 	}
 
 	return k.deposit.SendCoinsFromDepositToModule(ctx, fromAddr, toModule, sdk.NewCoins(coin))
+}
+
+func (k *Keeper) GetNode(ctx sdk.Context, addr base.NodeAddress) (nodetypes.Node, bool) {
+	return k.node.GetNode(ctx, addr)
+}
+
+func (k *Keeper) GetProvider(ctx sdk.Context, addr base.ProvAddress) (providertypes.Provider, bool) {
+	return k.provider.GetProvider(ctx, addr)
 }
 
 func (k *Keeper) LeaseInactivePreHook(ctx sdk.Context, id uint64) error {

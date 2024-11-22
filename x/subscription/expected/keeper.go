@@ -35,7 +35,6 @@ type ProviderKeeper interface {
 }
 
 type NodeKeeper interface {
-	StakingShare(ctx sdk.Context) sdkmath.LegacyDec
 	GetNode(ctx sdk.Context, addr base.NodeAddress) (nodetypes.Node, bool)
 }
 

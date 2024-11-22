@@ -12,7 +12,7 @@ import (
 )
 
 func (k *Keeper) HandleInactiveSession(ctx sdk.Context, id uint64) error {
-	item, found := k.session.GetSession(ctx, id)
+	item, found := k.GetSession(ctx, id)
 	if !found {
 		return fmt.Errorf("session %d does not exist", id)
 	}
@@ -71,9 +71,9 @@ func (k *Keeper) HandleInactiveSession(ctx sdk.Context, id uint64) error {
 		},
 	)
 
-	k.session.DeleteSession(ctx, item.GetID())
-	k.session.DeleteSessionForAccount(ctx, accAddr, item.GetID())
-	k.session.DeleteSessionForNode(ctx, nodeAddr, item.GetID())
+	k.DeleteSession(ctx, item.GetID())
+	k.DeleteSessionForAccount(ctx, accAddr, item.GetID())
+	k.DeleteSessionForNode(ctx, nodeAddr, item.GetID())
 
 	return nil
 }

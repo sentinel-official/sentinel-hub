@@ -17,7 +17,7 @@ func (k *Keeper) HandleMsgCreatePlan(ctx sdk.Context, msg *v3.MsgCreatePlanReque
 		return nil, err
 	}
 
-	if !k.provider.HasProvider(ctx, provAddr) {
+	if !k.HasProvider(ctx, provAddr) {
 		return nil, types.NewErrorProviderNotFound(provAddr)
 	}
 
@@ -67,7 +67,7 @@ func (k *Keeper) HandleMsgLinkNode(ctx sdk.Context, msg *v3.MsgLinkNodeRequest) 
 		return nil, err
 	}
 
-	node, found := k.node.GetNode(ctx, nodeAddr)
+	node, found := k.GetNode(ctx, nodeAddr)
 	if !found {
 		return nil, types.NewErrorNodeNotFound(nodeAddr)
 	}
@@ -75,7 +75,7 @@ func (k *Keeper) HandleMsgLinkNode(ctx sdk.Context, msg *v3.MsgLinkNodeRequest) 
 		return nil, types.NewErrorInvalidNodeStatus(nodeAddr, node.Status)
 	}
 
-	if k.node.HasNodeForPlan(ctx, plan.ID, nodeAddr) {
+	if k.HasNodeForPlan(ctx, plan.ID, nodeAddr) {
 		return nil, types.NewErrorDuplicateNodeForPlan(plan.ID, nodeAddr)
 	}
 
@@ -85,7 +85,7 @@ func (k *Keeper) HandleMsgLinkNode(ctx sdk.Context, msg *v3.MsgLinkNodeRequest) 
 	}
 
 	leaseExists := false
-	k.lease.IterateLeasesForNodeByProvider(ctx, nodeAddr, provAddr, func(_ int, _ v1.Lease) bool {
+	k.IterateLeasesForNodeByProvider(ctx, nodeAddr, provAddr, func(_ int, _ v1.Lease) bool {
 		leaseExists = true
 		return true
 	})
@@ -94,7 +94,7 @@ func (k *Keeper) HandleMsgLinkNode(ctx sdk.Context, msg *v3.MsgLinkNodeRequest) 
 		return nil, types.NewErrorLeaseNotFound(nodeAddr, provAddr)
 	}
 
-	k.node.SetNodeForPlan(ctx, plan.ID, nodeAddr)
+	k.SetNodeForPlan(ctx, plan.ID, nodeAddr)
 	k.SetPlanForNodeByProvider(ctx, nodeAddr, provAddr, plan.ID)
 
 	ctx.EventManager().EmitTypedEvent(
@@ -122,7 +122,7 @@ func (k *Keeper) HandleMsgUnlinkNode(ctx sdk.Context, msg *v3.MsgUnlinkNodeReque
 		return nil, err
 	}
 
-	if !k.node.HasNodeForPlan(ctx, plan.ID, nodeAddr) {
+	if !k.HasNodeForPlan(ctx, plan.ID, nodeAddr) {
 		return nil, types.NewErrorNodeForPlanNotFound(plan.ID, nodeAddr)
 	}
 
@@ -135,7 +135,7 @@ func (k *Keeper) HandleMsgUnlinkNode(ctx sdk.Context, msg *v3.MsgUnlinkNodeReque
 		return nil, err
 	}
 
-	k.node.DeleteNodeForPlan(ctx, plan.ID, nodeAddr)
+	k.DeleteNodeForPlan(ctx, plan.ID, nodeAddr)
 	k.DeletePlanForNodeByProvider(ctx, nodeAddr, provAddr, plan.ID)
 
 	ctx.EventManager().EmitTypedEvent(

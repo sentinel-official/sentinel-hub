@@ -11,7 +11,7 @@ import (
 )
 
 func (k *Keeper) LeaseInactivePreHook(ctx sdk.Context, id uint64) error {
-	lease, found := k.lease.GetLease(ctx, id)
+	lease, found := k.GetLease(ctx, id)
 	if !found {
 		return fmt.Errorf("lease %d does not exist", id)
 	}

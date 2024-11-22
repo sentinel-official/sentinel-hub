@@ -71,7 +71,7 @@ func (k *Keeper) IterateDeposits(ctx sdk.Context, fn func(index int, item v1.Dep
 // If the deposit does not exist, a new deposit will be created.
 // It returns an error if the account doesn't have enough balance.
 func (k *Keeper) SendCoinsFromAccountToDeposit(ctx sdk.Context, fromAddr, toAddr sdk.AccAddress, coins sdk.Coins) error {
-	if err := k.bank.SendCoinsFromAccountToModule(ctx, fromAddr, types.ModuleName, coins); err != nil {
+	if err := k.SendCoinsFromAccountToModule(ctx, fromAddr, types.ModuleName, coins); err != nil {
 		return err
 	}
 
@@ -112,7 +112,7 @@ func (k *Keeper) SendCoinsFromDepositToAccount(ctx sdk.Context, fromAddr, toAddr
 		return types.NewErrorInsufficientDeposit(fromAddr)
 	}
 
-	if err := k.bank.SendCoinsFromModuleToAccount(ctx, types.ModuleName, toAddr, coins); err != nil {
+	if err := k.SendCoinsFromModuleToAccount(ctx, types.ModuleName, toAddr, coins); err != nil {
 		return err
 	}
 
@@ -140,7 +140,7 @@ func (k *Keeper) SendCoinsFromDepositToModule(ctx sdk.Context, fromAddr sdk.AccA
 		return types.NewErrorInsufficientDeposit(fromAddr)
 	}
 
-	if err := k.bank.SendCoinsFromModuleToModule(ctx, types.ModuleName, toModule, coins); err != nil {
+	if err := k.SendCoinsFromModuleToModule(ctx, types.ModuleName, toModule, coins); err != nil {
 		return err
 	}
 

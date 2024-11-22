@@ -11,7 +11,7 @@ import (
 )
 
 func (k *Keeper) HandleInactiveSession(ctx sdk.Context, id uint64) error {
-	item, found := k.session.GetSession(ctx, id)
+	item, found := k.GetSession(ctx, id)
 	if !found {
 		return fmt.Errorf("session %d does not exist", id)
 	}
@@ -61,12 +61,12 @@ func (k *Keeper) HandleInactiveSession(ctx sdk.Context, id uint64) error {
 		},
 	)
 
-	k.session.DeleteSession(ctx, item.GetID())
-	k.session.DeleteSessionForAccount(ctx, accAddr, item.GetID())
-	k.session.DeleteSessionForAllocation(ctx, subscription.ID, accAddr, item.GetID())
-	k.session.DeleteSessionForNode(ctx, nodeAddr, item.GetID())
-	k.session.DeleteSessionForPlanByNode(ctx, subscription.PlanID, nodeAddr, item.GetID())
-	k.session.DeleteSessionForSubscription(ctx, subscription.ID, item.GetID())
+	k.DeleteSession(ctx, item.GetID())
+	k.DeleteSessionForAccount(ctx, accAddr, item.GetID())
+	k.DeleteSessionForAllocation(ctx, subscription.ID, accAddr, item.GetID())
+	k.DeleteSessionForNode(ctx, nodeAddr, item.GetID())
+	k.DeleteSessionForPlanByNode(ctx, subscription.PlanID, nodeAddr, item.GetID())
+	k.DeleteSessionForSubscription(ctx, subscription.ID, item.GetID())
 
 	return nil
 }
