@@ -141,8 +141,7 @@ func (k *Keeper) HandleMsgUpdateNodeStatus(ctx sdk.Context, msg *v3.MsgUpdateNod
 	node.StatusAt = ctx.BlockTime()
 
 	if node.Status.Equal(v1base.StatusActive) {
-		duration := k.ActiveDuration(ctx)
-		node.InactiveAt = ctx.BlockTime().Add(duration)
+		node.InactiveAt = k.GetInactiveAt(ctx)
 	}
 
 	k.SetNode(ctx, node)
@@ -189,9 +188,9 @@ func (k *Keeper) HandleMsgStartSession(ctx sdk.Context, msg *v3.MsgStartSessionR
 	}
 
 	var (
-		count   = k.GetSessionCount(ctx)
-		delay   = k.SessionStatusChangeDelay(ctx)
-		session = &v3.Session{
+		count      = k.GetSessionCount(ctx)
+		inactiveAt = k.GetSessionInactiveAt(ctx)
+		session    = &v3.Session{
 			ID:            count + 1,
 			AccAddress:    accAddr.String(),
 			NodeAddress:   nodeAddr.String(),
@@ -202,7 +201,7 @@ func (k *Keeper) HandleMsgStartSession(ctx sdk.Context, msg *v3.MsgStartSessionR
 			Duration:      0,
 			MaxHours:      msg.Hours,
 			Status:        v1base.StatusActive,
-			InactiveAt:    ctx.BlockTime().Add(delay),
+			InactiveAt:    inactiveAt,
 			StatusAt:      ctx.BlockTime(),
 		}
 	)

@@ -38,6 +38,7 @@ type SessionKeeper interface {
 	DeleteSessionForAccount(ctx sdk.Context, addr sdk.AccAddress, id uint64)
 	DeleteSessionForNode(ctx sdk.Context, addr base.NodeAddress, id uint64)
 	GetCount(ctx sdk.Context) uint64
+	GetInactiveAt(ctx sdk.Context) time.Time
 	GetSession(ctx sdk.Context, id uint64) (sessiontypes.Session, bool)
 	NodeInactivePreHook(ctx sdk.Context, addr base.NodeAddress) error
 	SetCount(ctx sdk.Context, count uint64)
@@ -45,5 +46,4 @@ type SessionKeeper interface {
 	SetSessionForAccount(ctx sdk.Context, addr sdk.AccAddress, id uint64)
 	SetSessionForInactiveAt(ctx sdk.Context, at time.Time, id uint64)
 	SetSessionForNode(ctx sdk.Context, addr base.NodeAddress, id uint64)
-	StatusChangeDelay(ctx sdk.Context) time.Duration
 }

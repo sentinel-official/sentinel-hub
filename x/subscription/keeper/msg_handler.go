@@ -31,10 +31,9 @@ func (k *Keeper) HandleMsgCancelSubscription(ctx sdk.Context, msg *v3.MsgCancelS
 	k.DeleteSubscriptionForInactiveAt(ctx, subscription.InactiveAt, subscription.ID)
 	k.DeleteSubscriptionForRenewalAt(ctx, subscription.RenewalAt(), subscription.ID)
 
-	delay := k.StatusChangeDelay(ctx)
 	subscription.Renewable = false
+	subscription.InactiveAt = k.GetInactiveAt(ctx)
 	subscription.Status = v1base.StatusInactivePending
-	subscription.InactiveAt = ctx.BlockTime().Add(delay)
 	subscription.StatusAt = ctx.BlockTime()
 
 	k.SetSubscription(ctx, subscription)
@@ -396,9 +395,9 @@ func (k *Keeper) HandleMsgStartSession(ctx sdk.Context, msg *v3.MsgStartSessionR
 	}
 
 	var (
-		count   = k.GetSessionCount(ctx)
-		delay   = k.SessionStatusChangeDelay(ctx)
-		session = &v3.Session{
+		count      = k.GetSessionCount(ctx)
+		inactiveAt = k.GetSessionInactiveAt(ctx)
+		session    = &v3.Session{
 			ID:             count + 1,
 			AccAddress:     accAddr.String(),
 			NodeAddress:    nodeAddr.String(),
@@ -407,7 +406,7 @@ func (k *Keeper) HandleMsgStartSession(ctx sdk.Context, msg *v3.MsgStartSessionR
 			UploadBytes:    sdkmath.ZeroInt(),
 			Duration:       0,
 			Status:         v1base.StatusActive,
-			InactiveAt:     ctx.BlockTime().Add(delay),
+			InactiveAt:     inactiveAt,
 			StatusAt:       ctx.BlockTime(),
 		}
 	)

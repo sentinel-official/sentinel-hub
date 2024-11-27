@@ -65,6 +65,10 @@ func (k *Keeper) GetSessionCount(ctx sdk.Context) uint64 {
 	return k.session.GetCount(ctx)
 }
 
+func (k *Keeper) GetSessionInactiveAt(ctx sdk.Context) time.Time {
+	return k.session.GetInactiveAt(ctx)
+}
+
 func (k *Keeper) GetSession(ctx sdk.Context, id uint64) (sessiontypes.Session, bool) {
 	return k.session.GetSession(ctx, id)
 }
@@ -87,10 +91,6 @@ func (k *Keeper) SetSessionForInactiveAt(ctx sdk.Context, at time.Time, id uint6
 
 func (k *Keeper) SetSessionForNode(ctx sdk.Context, addr base.NodeAddress, id uint64) {
 	k.session.SetSessionForNode(ctx, addr, id)
-}
-
-func (k *Keeper) SessionStatusChangeDelay(ctx sdk.Context) time.Duration {
-	return k.session.StatusChangeDelay(ctx)
 }
 
 func (k *Keeper) NodeInactivePreHook(ctx sdk.Context, addr base.NodeAddress) error {

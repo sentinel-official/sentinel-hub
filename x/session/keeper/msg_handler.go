@@ -34,9 +34,9 @@ func (k *Keeper) HandleMsgCancelSession(ctx sdk.Context, msg *v3.MsgCancelSessio
 
 	k.DeleteSessionForInactiveAt(ctx, session.GetInactiveAt(), session.GetID())
 
-	delay := k.StatusChangeDelay(ctx)
+	inactiveAt := k.GetInactiveAt(ctx)
 	session.SetStatus(v1base.StatusInactivePending)
-	session.SetInactiveAt(ctx.BlockTime().Add(delay))
+	session.SetInactiveAt(inactiveAt)
 	session.SetStatusAt(ctx.BlockTime())
 
 	k.SetSession(ctx, session)
@@ -98,8 +98,8 @@ func (k *Keeper) HandleMsgUpdateSession(ctx sdk.Context, msg *v3.MsgUpdateSessio
 	session.SetDuration(msg.Duration)
 
 	if session.GetStatus().Equal(v1base.StatusActive) {
-		delay := k.StatusChangeDelay(ctx)
-		session.SetInactiveAt(ctx.BlockTime().Add(delay))
+		inactiveAt := k.GetInactiveAt(ctx)
+		session.SetInactiveAt(inactiveAt)
 	}
 
 	k.SetSession(ctx, session)

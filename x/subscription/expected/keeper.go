@@ -50,6 +50,7 @@ type SessionKeeper interface {
 	DeleteSessionForPlanByNode(ctx sdk.Context, planID uint64, addr base.NodeAddress, sessionID uint64)
 	DeleteSessionForSubscription(ctx sdk.Context, subscriptionID, sessionID uint64)
 	GetCount(ctx sdk.Context) uint64
+	GetInactiveAt(ctx sdk.Context) time.Time
 	GetSession(ctx sdk.Context, id uint64) (sessiontypes.Session, bool)
 	SetCount(ctx sdk.Context, count uint64)
 	SetSession(ctx sdk.Context, session sessiontypes.Session)

@@ -123,3 +123,9 @@ func (k *Keeper) IsValidSessionHours(ctx sdk.Context, hours int64) bool {
 
 	return true
 }
+
+// GetInactiveAt returns the inactive time by adding ActiveDuration to the current block time.
+func (k *Keeper) GetInactiveAt(ctx sdk.Context) time.Time {
+	d := k.ActiveDuration(ctx)
+	return ctx.BlockTime().Add(d)
+}
