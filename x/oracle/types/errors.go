@@ -10,23 +10,24 @@ import (
 var (
 	ErrInvalidMessage = sdkerrors.Register(ModuleName, 101, "invalid message")
 
-	ErrDuplicateEntry = sdkerrors.Register(ModuleName, 201, "duplicate entry")
-	ErrNotFound       = sdkerrors.Register(ModuleName, 202, "not found")
+	ErrAssetNotFound          = sdkerrors.Register(ModuleName, 201, "asset not found")
+	ErrDenomForPacketNotFound = sdkerrors.Register(ModuleName, 202, "denom for packet not found")
+	ErrDuplicateAsset         = sdkerrors.Register(ModuleName, 203, "duplicate asset")
 )
 
 // NewErrorAssetNotFound returns an error indicating that the specified asset does not exist.
 func NewErrorAssetNotFound(denom string) error {
-	return sdkerrors.Wrapf(ErrNotFound, "asset %s does not exist", denom)
+	return sdkerrors.Wrapf(ErrAssetNotFound, "asset %s does not exist", denom)
 }
 
 // NewErrorDenomForPacketNotFound returns an error indicating that the denom for the specified packet does not exist.
 func NewErrorDenomForPacketNotFound(portID, channelID string, sequence uint64) error {
-	return sdkerrors.Wrapf(ErrNotFound, "denom for packet %s/%s/%d does not exist", portID, channelID, sequence)
+	return sdkerrors.Wrapf(ErrDenomForPacketNotFound, "denom for packet %s/%s/%d does not exist", portID, channelID, sequence)
 }
 
 // NewErrorDuplicateAsset returns an error indicating that the specified asset already exists.
 func NewErrorDuplicateAsset(denom string) error {
-	return sdkerrors.Wrapf(ErrDuplicateEntry, "asset %s already exists", denom)
+	return sdkerrors.Wrapf(ErrDuplicateAsset, "asset %s already exists", denom)
 }
 
 // NewErrorInvalidCounterpartyVersion returns an error indicating that the counterparty version is invalid.

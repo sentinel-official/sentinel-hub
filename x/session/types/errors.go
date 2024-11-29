@@ -9,25 +9,25 @@ import (
 var (
 	ErrInvalidMessage = sdkerrors.Register(ModuleName, 101, "invalid message")
 
-	ErrInvalidResource = sdkerrors.Register(ModuleName, 201, "invalid resource")
-	ErrInvalidStatus   = sdkerrors.Register(ModuleName, 202, "invalid status")
-	ErrNotFound        = sdkerrors.Register(ModuleName, 203, "not found")
-	ErrUnauthorized    = sdkerrors.Register(ModuleName, 204, "unauthorized")
+	ErrInvalidSessionStatus = sdkerrors.Register(ModuleName, 201, "invalid session status")
+	ErrInvalidSignature     = sdkerrors.Register(ModuleName, 202, "invalid signature")
+	ErrSessionNotFound      = sdkerrors.Register(ModuleName, 203, "session not found")
+	ErrUnauthorized         = sdkerrors.Register(ModuleName, 204, "unauthorized")
 )
 
 // NewErrorInvalidSessionStatus returns an error indicating that the provided status is invalid for the session.
 func NewErrorInvalidSessionStatus(id uint64, status v1base.Status) error {
-	return sdkerrors.Wrapf(ErrInvalidStatus, "invalid status %s for session %d", status, id)
+	return sdkerrors.Wrapf(ErrInvalidSessionStatus, "invalid status %s for session %d", status, id)
 }
 
 // NewErrorInvalidSignature returns an error indicating that the provided signature is invalid.
 func NewErrorInvalidSignature(signature []byte) error {
-	return sdkerrors.Wrapf(ErrInvalidResource, "invalid signature %X", signature)
+	return sdkerrors.Wrapf(ErrInvalidSignature, "invalid signature %X", signature)
 }
 
 // NewErrorSessionNotFound returns an error indicating that the specified session does not exist.
 func NewErrorSessionNotFound(id uint64) error {
-	return sdkerrors.Wrapf(ErrNotFound, "session %d does not exist", id)
+	return sdkerrors.Wrapf(ErrSessionNotFound, "session %d does not exist", id)
 }
 
 // NewErrorUnauthorized returns an error indicating that the specified address is not authorized.
