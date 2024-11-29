@@ -26,7 +26,7 @@ func (k *Keeper) LeaseInactivePreHook(ctx sdk.Context, id uint64) error {
 		return err
 	}
 
-	k.IteratePlansForNodeByProvider(ctx, nodeAddr, provAddr, func(_ int, item v3.Plan) (stop bool) {
+	return k.IteratePlansForNodeByProvider(ctx, nodeAddr, provAddr, func(_ int, item v3.Plan) (bool, error) {
 		msg := &v3.MsgUnlinkNodeRequest{
 			From:        item.ProvAddress,
 			ID:          item.ID,
@@ -34,20 +34,24 @@ func (k *Keeper) LeaseInactivePreHook(ctx sdk.Context, id uint64) error {
 		}
 
 		handler := k.router.Handler(msg)
-		if _, err := handler(ctx, msg); err != nil {
-			panic(err)
+		if handler == nil {
+			return false, fmt.Errorf("nil handler for message route: %s", sdk.MsgTypeURL(msg))
 		}
 
-		return false
-	})
+		resp, err := handler(ctx, msg)
+		if err != nil {
+			return false, err
+		}
 
-	return nil
+		ctx.EventManager().EmitEvents(resp.GetEvents())
+		return false, nil
+	})
 }
 
 func (k *Keeper) ProviderInactivePreHook(ctx sdk.Context, addr base.ProvAddress) error {
-	k.IteratePlansForProvider(ctx, addr, func(_ int, item v3.Plan) (stop bool) {
+	return k.IteratePlansForProvider(ctx, addr, func(_ int, item v3.Plan) (bool, error) {
 		if !item.Status.Equal(v1base.StatusActive) {
-			return false
+			return false, nil
 		}
 
 		msg := &v3.MsgUpdatePlanStatusRequest{
@@ -57,12 +61,16 @@ func (k *Keeper) ProviderInactivePreHook(ctx sdk.Context, addr base.ProvAddress)
 		}
 
 		handler := k.router.Handler(msg)
-		if _, err := handler(ctx, msg); err != nil {
-			panic(err)
+		if handler == nil {
+			return false, fmt.Errorf("nil handler for message route: %s", sdk.MsgTypeURL(msg))
 		}
 
-		return false
-	})
+		resp, err := handler(ctx, msg)
+		if err != nil {
+			return false, err
+		}
 
-	return nil
+		ctx.EventManager().EmitEvents(resp.GetEvents())
+		return false, nil
+	})
 }

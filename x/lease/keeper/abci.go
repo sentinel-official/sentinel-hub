@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"fmt"
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -20,10 +21,16 @@ func (k *Keeper) handleInactiveLeases(ctx sdk.Context) {
 		}
 
 		handler := k.router.Handler(msg)
-		if _, err := handler(ctx, msg); err != nil {
+		if handler == nil {
+			panic(fmt.Errorf("nil handler for message route: %s", sdk.MsgTypeURL(msg)))
+		}
+
+		resp, err := handler(ctx, msg)
+		if err != nil {
 			panic(err)
 		}
 
+		ctx.EventManager().EmitEvents(resp.GetEvents())
 		return false
 	})
 }
@@ -90,7 +97,7 @@ func (k *Keeper) handleLeasePayouts(ctx sdk.Context) {
 
 func (k *Keeper) handleLeaseRenewals(ctx sdk.Context) {
 	k.IterateLeasesForRenewalAt(ctx, ctx.BlockTime(), func(_ int, item v1.Lease) bool {
-		k.DeleteLeaseForRenewalAt(ctx, item.GetRenewalAt(), item.ID)
+		k.DeleteLeaseForRenewalAt(ctx, item.RenewalAt(), item.ID)
 
 		msg := &v1.MsgRenewLeaseRequest{
 			From:  item.ProvAddress,
@@ -100,10 +107,16 @@ func (k *Keeper) handleLeaseRenewals(ctx sdk.Context) {
 		}
 
 		handler := k.router.Handler(msg)
-		if _, err := handler(ctx, msg); err != nil {
+		if handler == nil {
+			panic(fmt.Errorf("nil handler for message route: %s", sdk.MsgTypeURL(msg)))
+		}
+
+		resp, err := handler(ctx, msg)
+		if err != nil {
 			panic(err)
 		}
 
+		ctx.EventManager().EmitEvents(resp.GetEvents())
 		return false
 	})
 }

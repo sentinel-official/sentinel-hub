@@ -135,8 +135,8 @@ func (k *Keeper) IterateLeasesForNodeByProvider(ctx sdk.Context, nodeAddr base.N
 }
 
 // IterateLeasesForNode iterates over all leases for a specific node and calls the provided function for each lease.
-// The iteration stops when the provided function returns 'true'.
-func (k *Keeper) IterateLeasesForNode(ctx sdk.Context, addr base.NodeAddress, fn func(index int, item v1.Lease) (stop bool)) {
+// The iteration stops when the provided function returns 'true' or an error occurs.
+func (k *Keeper) IterateLeasesForNode(ctx sdk.Context, addr base.NodeAddress, fn func(int, v1.Lease) (bool, error)) error {
 	store := k.Store(ctx)
 	iterator := sdk.KVStorePrefixIterator(store, types.GetLeaseForNodeKeyPrefix(addr))
 
@@ -148,11 +148,18 @@ func (k *Keeper) IterateLeasesForNode(ctx sdk.Context, addr base.NodeAddress, fn
 			panic(fmt.Errorf("lease for node by provider key %X does not exist", iterator.Key()))
 		}
 
-		if stop := fn(i, item); stop {
+		stop, err := fn(i, item)
+		if err != nil {
+			return err
+		}
+		if stop {
 			break
 		}
+
 		i++
 	}
+
+	return nil
 }
 
 // SetLeaseForProvider stores a lease for a provider in the module's KVStore.
@@ -181,8 +188,8 @@ func (k *Keeper) DeleteLeaseForProvider(ctx sdk.Context, addr base.ProvAddress, 
 }
 
 // IterateLeasesForProvider iterates over all leases for a specific provider and calls the provided function for each lease.
-// The iteration stops when the provided function returns 'true'.
-func (k *Keeper) IterateLeasesForProvider(ctx sdk.Context, addr base.ProvAddress, fn func(index int, item v1.Lease) (stop bool)) {
+// The iteration stops when the provided function returns 'true' or an error occurs.
+func (k *Keeper) IterateLeasesForProvider(ctx sdk.Context, addr base.ProvAddress, fn func(int, v1.Lease) (bool, error)) error {
 	store := k.Store(ctx)
 	iterator := sdk.KVStorePrefixIterator(store, types.GetLeaseForProviderKeyPrefix(addr))
 
@@ -194,11 +201,18 @@ func (k *Keeper) IterateLeasesForProvider(ctx sdk.Context, addr base.ProvAddress
 			panic(fmt.Errorf("lease for provider key %X does not exist", iterator.Key()))
 		}
 
-		if stop := fn(i, item); stop {
+		stop, err := fn(i, item)
+		if err != nil {
+			return err
+		}
+		if stop {
 			break
 		}
+
 		i++
 	}
+
+	return nil
 }
 
 // SetLeaseForInactiveAt stores a lease for inactive status at a specific time in the module's KVStore.

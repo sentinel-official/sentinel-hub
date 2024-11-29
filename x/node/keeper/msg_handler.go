@@ -41,8 +41,8 @@ func (k *Keeper) HandleMsgRegisterNode(ctx sdk.Context, msg *v3.MsgRegisterNodeR
 		GigabytePrices: msg.GigabytePrices,
 		HourlyPrices:   msg.HourlyPrices,
 		RemoteURL:      msg.RemoteURL,
-		InactiveAt:     time.Time{},
 		Status:         v1base.StatusInactive,
+		InactiveAt:     time.Time{},
 		StatusAt:       ctx.BlockTime(),
 	}
 

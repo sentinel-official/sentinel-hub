@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"fmt"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	base "github.com/sentinel-official/hub/v12/types"
@@ -8,37 +10,45 @@ import (
 )
 
 func (k *Keeper) NodeInactivePreHook(ctx sdk.Context, addr base.NodeAddress) error {
-	k.IterateLeasesForNode(ctx, addr, func(_ int, item v1.Lease) bool {
+	return k.IterateLeasesForNode(ctx, addr, func(_ int, item v1.Lease) (bool, error) {
 		msg := &v1.MsgEndLeaseRequest{
 			From: item.ProvAddress,
 			ID:   item.ID,
 		}
 
 		handler := k.router.Handler(msg)
-		if _, err := handler(ctx, msg); err != nil {
-			panic(err)
+		if handler == nil {
+			return false, fmt.Errorf("nil handler for message route: %s", sdk.MsgTypeURL(msg))
 		}
 
-		return false
-	})
+		resp, err := handler(ctx, msg)
+		if err != nil {
+			return false, err
+		}
 
-	return nil
+		ctx.EventManager().EmitEvents(resp.GetEvents())
+		return false, nil
+	})
 }
 
 func (k *Keeper) ProviderInactivePreHook(ctx sdk.Context, addr base.ProvAddress) error {
-	k.IterateLeasesForProvider(ctx, addr, func(_ int, item v1.Lease) bool {
+	return k.IterateLeasesForProvider(ctx, addr, func(_ int, item v1.Lease) (bool, error) {
 		msg := &v1.MsgEndLeaseRequest{
 			From: item.ProvAddress,
 			ID:   item.ID,
 		}
 
 		handler := k.router.Handler(msg)
-		if _, err := handler(ctx, msg); err != nil {
-			panic(err)
+		if handler == nil {
+			return false, fmt.Errorf("nil handler for message route: %s", sdk.MsgTypeURL(msg))
 		}
 
-		return false
-	})
+		resp, err := handler(ctx, msg)
+		if err != nil {
+			return false, err
+		}
 
-	return nil
+		ctx.EventManager().EmitEvents(resp.GetEvents())
+		return false, nil
+	})
 }

@@ -163,8 +163,8 @@ func (k *Keeper) GetSessionsForNode(ctx sdk.Context, addr base.NodeAddress) (ite
 }
 
 // IterateSessionsForNode iterates over all sessions for a specific node and calls the provided function for each session.
-// The iteration stops when the provided function returns 'true'.
-func (k *Keeper) IterateSessionsForNode(ctx sdk.Context, addr base.NodeAddress, fn func(index int, item v3.Session) (stop bool)) {
+// The iteration stops when the provided function returns 'true' or an error occurs.
+func (k *Keeper) IterateSessionsForNode(ctx sdk.Context, addr base.NodeAddress, fn func(int, v3.Session) (bool, error)) error {
 	store := k.Store(ctx)
 	iterator := sdk.KVStoreReversePrefixIterator(store, types.GetSessionForNodeKeyPrefix(addr))
 
@@ -176,11 +176,18 @@ func (k *Keeper) IterateSessionsForNode(ctx sdk.Context, addr base.NodeAddress, 
 			panic(fmt.Errorf("session for node key %X does not exist", iterator.Key()))
 		}
 
-		if stop := fn(i, item); stop {
+		stop, err := fn(i, item)
+		if err != nil {
+			return err
+		}
+		if stop {
 			break
 		}
+
 		i++
 	}
+
+	return nil
 }
 
 // SetSessionForPlanByNode links a session ID to a plan ID and node address in the module's KVStore.
@@ -201,8 +208,8 @@ func (k *Keeper) DeleteSessionForPlanByNode(ctx sdk.Context, planID uint64, addr
 }
 
 // IterateSessionsForPlanByNode iterates over all sessions for a specific plan ID and node address, calling the provided function for each session.
-// The iteration stops when the provided function returns 'true'.
-func (k *Keeper) IterateSessionsForPlanByNode(ctx sdk.Context, id uint64, addr base.NodeAddress, fn func(index int, item v3.Session) (stop bool)) {
+// The iteration stops when the provided function returns 'true' or an error occurs.
+func (k *Keeper) IterateSessionsForPlanByNode(ctx sdk.Context, id uint64, addr base.NodeAddress, fn func(int, v3.Session) (bool, error)) error {
 	store := k.Store(ctx)
 	iterator := sdk.KVStorePrefixIterator(store, types.GetSessionForPlanByNodeKeyPrefix(id, addr))
 
@@ -214,11 +221,18 @@ func (k *Keeper) IterateSessionsForPlanByNode(ctx sdk.Context, id uint64, addr b
 			panic(fmt.Errorf("session for plan by node key %X does not exist", iterator.Key()))
 		}
 
-		if stop := fn(i, item); stop {
+		stop, err := fn(i, item)
+		if err != nil {
+			return err
+		}
+		if stop {
 			break
 		}
+
 		i++
 	}
+
+	return nil
 }
 
 // SetSessionForSubscription links a session ID to a subscription ID in the module's KVStore.
@@ -258,8 +272,8 @@ func (k *Keeper) GetSessionsForSubscription(ctx sdk.Context, id uint64) (items [
 }
 
 // IterateSessionsForSubscription iterates over all sessions associated with a specific subscription ID and calls the provided function for each session.
-// The iteration stops when the provided function returns 'true'.
-func (k *Keeper) IterateSessionsForSubscription(ctx sdk.Context, id uint64, fn func(index int, item v3.Session) (stop bool)) {
+// The iteration stops when the provided function returns 'true' or an error occurs.
+func (k *Keeper) IterateSessionsForSubscription(ctx sdk.Context, id uint64, fn func(int, v3.Session) (bool, error)) error {
 	store := k.Store(ctx)
 	iterator := sdk.KVStoreReversePrefixIterator(store, types.GetSessionForSubscriptionKeyPrefix(id))
 
@@ -271,11 +285,18 @@ func (k *Keeper) IterateSessionsForSubscription(ctx sdk.Context, id uint64, fn f
 			panic(fmt.Errorf("session for subscription key %X does not exist", iterator.Key()))
 		}
 
-		if stop := fn(i, item); stop {
+		stop, err := fn(i, item)
+		if err != nil {
+			return err
+		}
+		if stop {
 			break
 		}
+
 		i++
 	}
+
+	return nil
 }
 
 // SetSessionForAllocation links a session ID to a subscription ID and an account address in the module's KVStore.

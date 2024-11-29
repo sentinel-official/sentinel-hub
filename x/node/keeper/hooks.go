@@ -11,7 +11,7 @@ import (
 	"github.com/sentinel-official/hub/v12/x/node/types/v3"
 )
 
-func (k *Keeper) HandleInactiveSession(ctx sdk.Context, id uint64) error {
+func (k *Keeper) HandleInactiveSession(ctx sdk.Context, id uint64) error { // todo: rename
 	item, found := k.GetSession(ctx, id)
 	if !found {
 		return fmt.Errorf("session %d does not exist", id)
@@ -35,15 +35,15 @@ func (k *Keeper) HandleInactiveSession(ctx sdk.Context, id uint64) error {
 		return err
 	}
 
-	amount := session.PaymentAmount()
 	share := k.StakingShare(ctx)
+	totalPayment := session.PaymentAmount()
 
-	reward := baseutils.GetProportionOfCoin(amount, share)
+	reward := baseutils.GetProportionOfCoin(totalPayment, share)
 	if err := k.SendCoinFromDepositToModule(ctx, accAddr, k.feeCollectorName, reward); err != nil {
 		return err
 	}
 
-	payment := amount.Sub(reward)
+	payment := totalPayment.Sub(reward)
 	if err := k.SendCoinFromDepositToAccount(ctx, accAddr, nodeAddr.Bytes(), payment); err != nil {
 		return err
 	}

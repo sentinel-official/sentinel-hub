@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"fmt"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	base "github.com/sentinel-official/hub/v12/types"
@@ -9,9 +11,9 @@ import (
 )
 
 func (k *Keeper) NodeInactivePreHook(ctx sdk.Context, addr base.NodeAddress) error {
-	k.IterateSessionsForNode(ctx, addr, func(_ int, item v3.Session) bool {
+	return k.IterateSessionsForNode(ctx, addr, func(_ int, item v3.Session) (bool, error) {
 		if !item.GetStatus().Equal(v1base.StatusActive) {
-			return false
+			return false, nil
 		}
 
 		msg := &v3.MsgCancelSessionRequest{
@@ -20,20 +22,24 @@ func (k *Keeper) NodeInactivePreHook(ctx sdk.Context, addr base.NodeAddress) err
 		}
 
 		handler := k.router.Handler(msg)
-		if _, err := handler(ctx, msg); err != nil {
-			panic(err)
+		if handler == nil {
+			return false, fmt.Errorf("nil handler for message route: %s", sdk.MsgTypeURL(msg))
 		}
 
-		return false
-	})
+		resp, err := handler(ctx, msg)
+		if err != nil {
+			return false, err
+		}
 
-	return nil
+		ctx.EventManager().EmitEvents(resp.GetEvents())
+		return false, nil
+	})
 }
 
 func (k *Keeper) SubscriptionInactivePendingPreHook(ctx sdk.Context, id uint64) error {
-	k.IterateSessionsForSubscription(ctx, id, func(_ int, item v3.Session) bool {
+	return k.IterateSessionsForSubscription(ctx, id, func(_ int, item v3.Session) (bool, error) {
 		if !item.GetStatus().Equal(v1base.StatusActive) {
-			return false
+			return false, nil
 		}
 
 		msg := &v3.MsgCancelSessionRequest{
@@ -42,20 +48,24 @@ func (k *Keeper) SubscriptionInactivePendingPreHook(ctx sdk.Context, id uint64) 
 		}
 
 		handler := k.router.Handler(msg)
-		if _, err := handler(ctx, msg); err != nil {
-			panic(err)
+		if handler == nil {
+			return false, fmt.Errorf("nil handler for message route: %s", sdk.MsgTypeURL(msg))
 		}
 
-		return false
-	})
+		resp, err := handler(ctx, msg)
+		if err != nil {
+			return false, err
+		}
 
-	return nil
+		ctx.EventManager().EmitEvents(resp.GetEvents())
+		return false, nil
+	})
 }
 
 func (k *Keeper) PlanUnlinkNodePreHook(ctx sdk.Context, id uint64, addr base.NodeAddress) error {
-	k.IterateSessionsForPlanByNode(ctx, id, addr, func(_ int, item v3.Session) bool {
+	return k.IterateSessionsForPlanByNode(ctx, id, addr, func(_ int, item v3.Session) (bool, error) {
 		if !item.GetStatus().Equal(v1base.StatusActive) {
-			return false
+			return false, nil
 		}
 
 		msg := &v3.MsgCancelSessionRequest{
@@ -64,12 +74,16 @@ func (k *Keeper) PlanUnlinkNodePreHook(ctx sdk.Context, id uint64, addr base.Nod
 		}
 
 		handler := k.router.Handler(msg)
-		if _, err := handler(ctx, msg); err != nil {
-			panic(err)
+		if handler == nil {
+			return false, fmt.Errorf("nil handler for message route: %s", sdk.MsgTypeURL(msg))
 		}
 
-		return false
-	})
+		resp, err := handler(ctx, msg)
+		if err != nil {
+			return false, err
+		}
 
-	return nil
+		ctx.EventManager().EmitEvents(resp.GetEvents())
+		return false, nil
+	})
 }

@@ -165,8 +165,8 @@ func (k *Keeper) DeletePlanForNodeByProvider(ctx sdk.Context, nodeAddr base.Node
 }
 
 // IteratePlansForNodeByProvider iterates over all plans for a specific node and provider and calls the provided function for each plan.
-// The iteration stops when the provided function returns 'true'.
-func (k *Keeper) IteratePlansForNodeByProvider(ctx sdk.Context, nodeAddr base.NodeAddress, provAddr base.ProvAddress, fn func(index int, item v3.Plan) (stop bool)) {
+// The iteration stops when the provided function returns 'true' or an error occurs.
+func (k *Keeper) IteratePlansForNodeByProvider(ctx sdk.Context, nodeAddr base.NodeAddress, provAddr base.ProvAddress, fn func(int, v3.Plan) (bool, error)) error {
 	store := k.Store(ctx)
 	iterator := sdk.KVStorePrefixIterator(store, types.GetPlanForNodeByProviderKeyPrefix(nodeAddr, provAddr))
 
@@ -178,11 +178,18 @@ func (k *Keeper) IteratePlansForNodeByProvider(ctx sdk.Context, nodeAddr base.No
 			panic(fmt.Errorf("plan for node by provider key %X does not exist", iterator.Key()))
 		}
 
-		if stop := fn(i, item); stop {
+		stop, err := fn(i, item)
+		if err != nil {
+			return err
+		}
+		if stop {
 			break
 		}
+
 		i++
 	}
+
+	return nil
 }
 
 // IteratePlansForNode iterates over all plans for a specific node and calls the provided function for each plan.
@@ -242,7 +249,7 @@ func (k *Keeper) GetPlansForProvider(ctx sdk.Context, addr base.ProvAddress) (it
 	return items
 }
 
-func (k *Keeper) IteratePlansForProvider(ctx sdk.Context, addr base.ProvAddress, fn func(index int, item v3.Plan) (stop bool)) {
+func (k *Keeper) IteratePlansForProvider(ctx sdk.Context, addr base.ProvAddress, fn func(int, v3.Plan) (bool, error)) error {
 	store := k.Store(ctx)
 	iterator := sdk.KVStorePrefixIterator(store, types.GetPlanForProviderKeyPrefix(addr))
 
@@ -254,9 +261,16 @@ func (k *Keeper) IteratePlansForProvider(ctx sdk.Context, addr base.ProvAddress,
 			panic(fmt.Errorf("plan for provider key %X does not exist", iterator.Key()))
 		}
 
-		if stop := fn(i, item); stop {
+		stop, err := fn(i, item)
+		if err != nil {
+			return err
+		}
+		if stop {
 			break
 		}
+
 		i++
 	}
+
+	return nil
 }

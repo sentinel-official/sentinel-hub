@@ -27,7 +27,7 @@ func (k *Keeper) HandleMsgEndLease(ctx sdk.Context, msg *v1.MsgEndLeaseRequest) 
 		return nil, err
 	}
 
-	refund := lease.GetRefund()
+	refund := lease.RefundAmount()
 	if err := k.SubtractDeposit(ctx, provAddr.Bytes(), refund); err != nil {
 		return nil, err
 	}
@@ -50,7 +50,7 @@ func (k *Keeper) HandleMsgEndLease(ctx sdk.Context, msg *v1.MsgEndLeaseRequest) 
 	k.DeleteLeaseForProvider(ctx, provAddr, lease.ID)
 	k.DeleteLeaseForInactiveAt(ctx, lease.InactiveAt, lease.ID)
 	k.DeleteLeaseForPayoutAt(ctx, lease.PayoutAt, lease.ID)
-	k.DeleteLeaseForRenewalAt(ctx, lease.GetRenewalAt(), lease.ID)
+	k.DeleteLeaseForRenewalAt(ctx, lease.RenewalAt(), lease.ID)
 
 	ctx.EventManager().EmitTypedEvent(
 		&v1.EventEnd{
@@ -109,7 +109,7 @@ func (k *Keeper) HandleMsgRenewLease(ctx sdk.Context, msg *v1.MsgRenewLeaseReque
 
 	// TODO: convert the price
 
-	refund := lease.GetRefund()
+	refund := lease.RefundAmount()
 	if err := k.SubtractDeposit(ctx, provAddr.Bytes(), refund); err != nil {
 		return nil, err
 	}
@@ -124,7 +124,7 @@ func (k *Keeper) HandleMsgRenewLease(ctx sdk.Context, msg *v1.MsgRenewLeaseReque
 
 	k.DeleteLeaseForInactiveAt(ctx, lease.InactiveAt, lease.ID)
 	k.DeleteLeaseForPayoutAt(ctx, lease.PayoutAt, lease.ID)
-	k.DeleteLeaseForRenewalAt(ctx, lease.GetRenewalAt(), lease.ID)
+	k.DeleteLeaseForRenewalAt(ctx, lease.RenewalAt(), lease.ID)
 
 	lease = v1.Lease{
 		ID:          lease.ID,
@@ -138,7 +138,7 @@ func (k *Keeper) HandleMsgRenewLease(ctx sdk.Context, msg *v1.MsgRenewLeaseReque
 		PayoutAt:    ctx.BlockTime(),
 	}
 
-	deposit := lease.GetDeposit()
+	deposit := lease.DepositAmount()
 	if err := k.AddDeposit(ctx, provAddr.Bytes(), deposit); err != nil {
 		return nil, err
 	}
@@ -146,7 +146,7 @@ func (k *Keeper) HandleMsgRenewLease(ctx sdk.Context, msg *v1.MsgRenewLeaseReque
 	k.SetLease(ctx, lease)
 	k.SetLeaseForInactiveAt(ctx, lease.InactiveAt, lease.ID)
 	k.SetLeaseForPayoutAt(ctx, lease.PayoutAt, lease.ID)
-	k.SetLeaseForRenewalAt(ctx, lease.GetRenewalAt(), lease.ID)
+	k.SetLeaseForRenewalAt(ctx, lease.RenewalAt(), lease.ID)
 
 	ctx.EventManager().EmitTypedEvent(
 		&v1.EventRenew{
@@ -222,7 +222,7 @@ func (k *Keeper) HandleMsgStartLease(ctx sdk.Context, msg *v1.MsgStartLeaseReque
 		PayoutAt:    ctx.BlockTime(),
 	}
 
-	deposit := lease.GetDeposit()
+	deposit := lease.DepositAmount()
 	if err := k.AddDeposit(ctx, provAddr.Bytes(), deposit); err != nil {
 		return nil, err
 	}
@@ -233,7 +233,7 @@ func (k *Keeper) HandleMsgStartLease(ctx sdk.Context, msg *v1.MsgStartLeaseReque
 	k.SetLeaseForProvider(ctx, provAddr, lease.ID)
 	k.SetLeaseForInactiveAt(ctx, lease.InactiveAt, lease.ID)
 	k.SetLeaseForPayoutAt(ctx, lease.PayoutAt, lease.ID)
-	k.SetLeaseForRenewalAt(ctx, lease.GetRenewalAt(), lease.ID)
+	k.SetLeaseForRenewalAt(ctx, lease.RenewalAt(), lease.ID)
 
 	ctx.EventManager().EmitTypedEvent(
 		&v1.EventCreate{
@@ -259,12 +259,12 @@ func (k *Keeper) HandleMsgUpdateLease(ctx sdk.Context, msg *v1.MsgUpdateLeaseReq
 		return nil, types.NewErrorUnauthorized(msg.From)
 	}
 
-	k.DeleteLeaseForRenewalAt(ctx, lease.GetRenewalAt(), lease.ID)
+	k.DeleteLeaseForRenewalAt(ctx, lease.RenewalAt(), lease.ID)
 
 	lease.Renewable = msg.Renewable
 
 	k.SetLease(ctx, lease)
-	k.SetLeaseForRenewalAt(ctx, lease.GetRenewalAt(), lease.ID)
+	k.SetLeaseForRenewalAt(ctx, lease.RenewalAt(), lease.ID)
 
 	ctx.EventManager().EmitTypedEvent(
 		&v1.EventUpdate{

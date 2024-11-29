@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"fmt"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	v1base "github.com/sentinel-official/hub/v12/types/v1"
@@ -21,10 +23,16 @@ func (k *Keeper) handleInactivePendingSessions(ctx sdk.Context) {
 		}
 
 		handler := k.router.Handler(msg)
-		if _, err := handler(ctx, msg); err != nil {
+		if handler == nil {
+			panic(fmt.Errorf("nil handler for message route: %s", sdk.MsgTypeURL(msg)))
+		}
+
+		resp, err := handler(ctx, msg)
+		if err != nil {
 			panic(err)
 		}
 
+		ctx.EventManager().EmitEvents(resp.GetEvents())
 		return false
 	})
 }
