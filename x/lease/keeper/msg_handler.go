@@ -209,7 +209,7 @@ func (k *Keeper) HandleMsgStartLease(ctx sdk.Context, msg *v1.MsgStartLeaseReque
 		return nil, types.NewErrorDuplicateLease(nodeAddr, provAddr)
 	}
 
-	count := k.GetCount(ctx)
+	count := k.GetLeaseCount(ctx)
 	lease := v1.Lease{
 		ID:          count + 1,
 		ProvAddress: provAddr.String(),
@@ -227,7 +227,7 @@ func (k *Keeper) HandleMsgStartLease(ctx sdk.Context, msg *v1.MsgStartLeaseReque
 		return nil, err
 	}
 
-	k.SetCount(ctx, count+1)
+	k.SetLeaseCount(ctx, count+1)
 	k.SetLease(ctx, lease)
 	k.SetLeaseForNodeByProvider(ctx, nodeAddr, provAddr, lease.ID)
 	k.SetLeaseForProvider(ctx, provAddr, lease.ID)

@@ -34,7 +34,7 @@ func (k *Keeper) InitGenesis(ctx sdk.Context, state *v3.GenesisState) {
 		}
 	}
 
-	k.SetCount(ctx, count)
+	k.SetPlanCount(ctx, count)
 }
 
 func (k *Keeper) ExportGenesis(ctx sdk.Context) *v3.GenesisState {

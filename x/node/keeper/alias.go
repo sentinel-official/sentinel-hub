@@ -62,7 +62,7 @@ func (k *Keeper) DeleteSessionForNode(ctx sdk.Context, addr base.NodeAddress, id
 }
 
 func (k *Keeper) GetSessionCount(ctx sdk.Context) uint64 {
-	return k.session.GetCount(ctx)
+	return k.session.GetSessionCount(ctx)
 }
 
 func (k *Keeper) GetSessionInactiveAt(ctx sdk.Context) time.Time {
@@ -74,7 +74,7 @@ func (k *Keeper) GetSession(ctx sdk.Context, id uint64) (sessiontypes.Session, b
 }
 
 func (k *Keeper) SetSessionCount(ctx sdk.Context, count uint64) {
-	k.session.SetCount(ctx, count)
+	k.session.SetSessionCount(ctx, count)
 }
 
 func (k *Keeper) SetSession(ctx sdk.Context, session sessiontypes.Session) {

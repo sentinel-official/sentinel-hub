@@ -37,11 +37,11 @@ type SessionKeeper interface {
 	DeleteSession(ctx sdk.Context, id uint64)
 	DeleteSessionForAccount(ctx sdk.Context, addr sdk.AccAddress, id uint64)
 	DeleteSessionForNode(ctx sdk.Context, addr base.NodeAddress, id uint64)
-	GetCount(ctx sdk.Context) uint64
 	GetInactiveAt(ctx sdk.Context) time.Time
+	GetSessionCount(ctx sdk.Context) uint64
 	GetSession(ctx sdk.Context, id uint64) (sessiontypes.Session, bool)
 	NodeInactivePreHook(ctx sdk.Context, addr base.NodeAddress) error
-	SetCount(ctx sdk.Context, count uint64)
+	SetSessionCount(ctx sdk.Context, count uint64)
 	SetSession(ctx sdk.Context, session sessiontypes.Session)
 	SetSessionForAccount(ctx sdk.Context, addr sdk.AccAddress, id uint64)
 	SetSessionForInactiveAt(ctx sdk.Context, at time.Time, id uint64)

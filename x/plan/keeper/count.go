@@ -7,8 +7,8 @@ import (
 	"github.com/sentinel-official/hub/v12/x/plan/types"
 )
 
-// SetCount stores the count of plans in the module's KVStore.
-func (k *Keeper) SetCount(ctx sdk.Context, count uint64) {
+// SetPlanCount stores the count of plans in the module's KVStore.
+func (k *Keeper) SetPlanCount(ctx sdk.Context, count uint64) {
 	store := k.Store(ctx)
 	key := types.CountKey
 	value := k.cdc.MustMarshal(&protobuf.UInt64Value{Value: count})
@@ -16,8 +16,8 @@ func (k *Keeper) SetCount(ctx sdk.Context, count uint64) {
 	store.Set(key, value)
 }
 
-// GetCount retrieves the count of plans from the module's KVStore.
-func (k *Keeper) GetCount(ctx sdk.Context) uint64 {
+// GetPlanCount retrieves the count of plans from the module's KVStore.
+func (k *Keeper) GetPlanCount(ctx sdk.Context) uint64 {
 	store := k.Store(ctx)
 	key := types.CountKey
 	value := store.Get(key)

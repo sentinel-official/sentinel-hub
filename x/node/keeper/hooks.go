@@ -11,7 +11,7 @@ import (
 	"github.com/sentinel-official/hub/v12/x/node/types/v3"
 )
 
-func (k *Keeper) HandleInactiveSession(ctx sdk.Context, id uint64) error { // todo: rename
+func (k *Keeper) SessionInactivePreHook(ctx sdk.Context, id uint64) error {
 	item, found := k.GetSession(ctx, id)
 	if !found {
 		return fmt.Errorf("session %d does not exist", id)

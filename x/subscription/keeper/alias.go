@@ -65,7 +65,7 @@ func (k *Keeper) DeleteSessionForSubscription(ctx sdk.Context, subscriptionID, s
 }
 
 func (k *Keeper) GetSessionCount(ctx sdk.Context) uint64 {
-	return k.session.GetCount(ctx)
+	return k.session.GetSessionCount(ctx)
 }
 
 func (k *Keeper) GetSessionInactiveAt(ctx sdk.Context) time.Time {
@@ -77,7 +77,7 @@ func (k *Keeper) GetSession(ctx sdk.Context, id uint64) (sessiontypes.Session, b
 }
 
 func (k *Keeper) SetSessionCount(ctx sdk.Context, count uint64) {
-	k.session.SetCount(ctx, count)
+	k.session.SetSessionCount(ctx, count)
 }
 
 func (k *Keeper) SetSession(ctx sdk.Context, session sessiontypes.Session) {
@@ -106,10 +106,6 @@ func (k *Keeper) SetSessionForPlanByNode(ctx sdk.Context, planID uint64, addr ba
 
 func (k *Keeper) SetSessionForSubscription(ctx sdk.Context, subscriptionID, sessionID uint64) {
 	k.session.SetSessionForSubscription(ctx, subscriptionID, sessionID)
-}
-
-func (k *Keeper) SessionStatusChangeDelay(ctx sdk.Context) time.Duration {
-	return k.session.StatusChangeDelay(ctx)
 }
 
 func (k *Keeper) SubscriptionInactivePendingPreHook(ctx sdk.Context, id uint64) error {

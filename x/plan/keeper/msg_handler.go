@@ -21,7 +21,7 @@ func (k *Keeper) HandleMsgCreatePlan(ctx sdk.Context, msg *v3.MsgCreatePlanReque
 		return nil, types.NewErrorProviderNotFound(provAddr)
 	}
 
-	count := k.GetCount(ctx)
+	count := k.GetPlanCount(ctx)
 	plan := v3.Plan{
 		ID:          count + 1,
 		ProvAddress: provAddr.String(),
@@ -33,7 +33,7 @@ func (k *Keeper) HandleMsgCreatePlan(ctx sdk.Context, msg *v3.MsgCreatePlanReque
 		StatusAt:    ctx.BlockTime(),
 	}
 
-	k.SetCount(ctx, count+1)
+	k.SetPlanCount(ctx, count+1)
 	k.SetPlan(ctx, plan)
 	k.SetPlanForProvider(ctx, provAddr, plan.ID)
 

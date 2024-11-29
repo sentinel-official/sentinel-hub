@@ -45,7 +45,7 @@ func (k *Keeper) handleInactiveSessions(ctx sdk.Context) {
 
 		k.DeleteSessionForInactiveAt(ctx, item.GetInactiveAt(), item.GetID())
 
-		if err := k.HandleInactiveSession(ctx, item.GetID()); err != nil {
+		if err := k.SessionInactivePreHook(ctx, item.GetID()); err != nil {
 			panic(err)
 		}
 

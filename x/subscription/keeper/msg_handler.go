@@ -269,7 +269,7 @@ func (k *Keeper) HandleMsgStartSubscription(ctx sdk.Context, msg *v3.MsgStartSub
 		return nil, err
 	}
 
-	count := k.GetCount(ctx)
+	count := k.GetSubscriptionCount(ctx)
 	subscription := v3.Subscription{
 		ID:         count + 1,
 		AccAddress: accAddr.String(),
@@ -281,7 +281,7 @@ func (k *Keeper) HandleMsgStartSubscription(ctx sdk.Context, msg *v3.MsgStartSub
 		StatusAt:   ctx.BlockTime(),
 	}
 
-	k.SetCount(ctx, count+1)
+	k.SetSubscriptionCount(ctx, count+1)
 	k.SetSubscription(ctx, subscription)
 	k.SetSubscriptionForAccount(ctx, accAddr, subscription.ID)
 	k.SetSubscriptionForPlan(ctx, subscription.PlanID, subscription.ID)
