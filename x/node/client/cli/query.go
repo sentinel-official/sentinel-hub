@@ -6,7 +6,6 @@ import (
 	"github.com/spf13/cobra"
 
 	base "github.com/sentinel-official/hub/v12/types"
-	"github.com/sentinel-official/hub/v12/x/node/types/v2"
 	"github.com/sentinel-official/hub/v12/x/node/types/v3"
 )
 
@@ -26,11 +25,11 @@ func queryNode() *cobra.Command {
 				return err
 			}
 
-			qc := v2.NewQueryServiceClient(ctx)
+			qc := v3.NewQueryServiceClient(ctx)
 
 			res, err := qc.QueryNode(
 				cmd.Context(),
-				v2.NewQueryNodeRequest(addr),
+				v3.NewQueryNodeRequest(addr),
 			)
 			if err != nil {
 				return err
@@ -70,13 +69,13 @@ func queryNodes() *cobra.Command {
 				return err
 			}
 
-			qc := v2.NewQueryServiceClient(ctx)
+			qc := v3.NewQueryServiceClient(ctx)
 
 			switch {
 			case id != 0:
 				res, err := qc.QueryNodesForPlan(
 					cmd.Context(),
-					v2.NewQueryNodesForPlanRequest(id, status, pagination),
+					v3.NewQueryNodesForPlanRequest(id, status, pagination),
 				)
 				if err != nil {
 					return err
@@ -85,7 +84,7 @@ func queryNodes() *cobra.Command {
 			default:
 				res, err := qc.QueryNodes(
 					cmd.Context(),
-					v2.NewQueryNodesRequest(status, pagination),
+					v3.NewQueryNodesRequest(status, pagination),
 				)
 				if err != nil {
 					return err
