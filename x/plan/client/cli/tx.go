@@ -9,7 +9,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/spf13/cobra"
 
 	base "github.com/sentinel-official/hub/v12/types"
@@ -19,9 +18,9 @@ import (
 
 func txCreatePlan() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-plan [bytes] [duration] [prices] [private]",
+		Use:   "create-plan [bytes] [duration]",
 		Short: "Create a new subscription plan with bytes, duration and pricing details",
-		Args:  cobra.ExactArgs(4),
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -38,12 +37,12 @@ func txCreatePlan() *cobra.Command {
 				return err
 			}
 
-			prices, err := sdk.ParseDecCoins(args[2])
+			prices, err := GetPrices(cmd.Flags())
 			if err != nil {
 				return err
 			}
 
-			private, err := strconv.ParseBool(args[3])
+			private, err := GetPrivate(cmd.Flags())
 			if err != nil {
 				return err
 			}
@@ -64,6 +63,8 @@ func txCreatePlan() *cobra.Command {
 	}
 
 	flags.AddTxFlagsToCmd(cmd)
+	cmd.Flags().Bool(flagPrivate, false, "specify if the plan is private")
+	cmd.Flags().String(flagPrices, "", "specify the list of prices (e.g., 1000token)")
 
 	return cmd
 }

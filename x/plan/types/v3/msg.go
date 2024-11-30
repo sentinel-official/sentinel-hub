@@ -52,9 +52,6 @@ func (m *MsgCreatePlanRequest) ValidateBasic() error {
 	if m.Duration < 0 {
 		return sdkerrors.Wrap(types.ErrInvalidMessage, "duration cannot be negative")
 	}
-	if m.Prices == nil {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "prices cannot be nil")
-	}
 	if !m.Prices.IsValid() {
 		return sdkerrors.Wrap(types.ErrInvalidMessage, "prices must be valid")
 	}

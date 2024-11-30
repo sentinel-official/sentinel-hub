@@ -76,6 +76,10 @@ func (k *Keeper) StakingShare(ctx sdk.Context) sdkmath.LegacyDec {
 
 // IsValidGigabytePrices checks if the provided gigabyte prices are valid based on the minimum prices defined in the module's parameters.
 func (k *Keeper) IsValidGigabytePrices(ctx sdk.Context, prices sdk.DecCoins) bool {
+	if prices.Len() == 0 {
+		return true
+	}
+
 	minPrices := k.MinGigabytePrices(ctx)
 	for _, coin := range minPrices {
 		amount := prices.AmountOf(coin.Denom)
@@ -89,6 +93,10 @@ func (k *Keeper) IsValidGigabytePrices(ctx sdk.Context, prices sdk.DecCoins) boo
 
 // IsValidHourlyPrices checks if the provided hourly prices are valid based on the minimum prices defined in the module's parameters.
 func (k *Keeper) IsValidHourlyPrices(ctx sdk.Context, prices sdk.DecCoins) bool {
+	if prices.Len() == 0 {
+		return true
+	}
+
 	minPrices := k.MinHourlyPrices(ctx)
 	for _, coin := range minPrices {
 		amount := prices.AmountOf(coin.Denom)

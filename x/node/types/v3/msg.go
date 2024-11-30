@@ -35,14 +35,8 @@ func (m *MsgRegisterNodeRequest) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
 		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
 	}
-	if m.GigabytePrices == nil {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "gigabyte_prices cannot be nil")
-	}
 	if !m.GigabytePrices.IsValid() {
 		return sdkerrors.Wrap(types.ErrInvalidMessage, "gigabyte_prices must be valid")
-	}
-	if m.HourlyPrices == nil {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "hourly_prices cannot be nil")
 	}
 	if !m.HourlyPrices.IsValid() {
 		return sdkerrors.Wrap(types.ErrInvalidMessage, "hourly_prices must be valid")
@@ -93,15 +87,11 @@ func (m *MsgUpdateNodeDetailsRequest) ValidateBasic() error {
 	if _, err := base.NodeAddressFromBech32(m.From); err != nil {
 		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
 	}
-	if m.GigabytePrices != nil {
-		if !m.GigabytePrices.IsValid() {
-			return sdkerrors.Wrap(types.ErrInvalidMessage, "gigabyte_prices must be valid")
-		}
+	if !m.GigabytePrices.IsValid() {
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "gigabyte_prices must be valid")
 	}
-	if m.HourlyPrices != nil {
-		if !m.HourlyPrices.IsValid() {
-			return sdkerrors.Wrap(types.ErrInvalidMessage, "hourly_prices must be valid")
-		}
+	if !m.HourlyPrices.IsValid() {
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "hourly_prices must be valid")
 	}
 	if m.RemoteURL != "" {
 		if len(m.RemoteURL) > 64 {

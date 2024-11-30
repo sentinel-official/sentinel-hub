@@ -6,7 +6,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/spf13/cobra"
 
 	base "github.com/sentinel-official/hub/v12/types"
@@ -16,21 +15,21 @@ import (
 
 func txRegisterNode() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "register-node [remote-url] [gigabyte-prices] [hourly-prices]",
+		Use:   "register-node [remote-url]",
 		Short: "Register a new node with a remote URL and pricing details",
-		Args:  cobra.ExactArgs(3),
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
 
-			gigabytePrices, err := sdk.ParseDecCoins(args[1])
+			gigabytePrices, err := GetGigabytePrices(cmd.Flags())
 			if err != nil {
 				return err
 			}
 
-			hourlyPrices, err := sdk.ParseDecCoins(args[2])
+			hourlyPrices, err := GetHourlyPrices(cmd.Flags())
 			if err != nil {
 				return err
 			}
@@ -52,7 +51,7 @@ func txRegisterNode() *cobra.Command {
 	flags.AddTxFlagsToCmd(cmd)
 	cmd.Flags().String(flagGigabytePrices, "", "prices for one gigabyte of bandwidth (e.g., 1000token")
 	cmd.Flags().String(flagHourlyPrices, "", "prices for one hour of bandwidth (e.g., 500token")
-	cmd.Flags().String(flagRemoteURL, "", "remote URL address for the node")
+
 	return cmd
 }
 

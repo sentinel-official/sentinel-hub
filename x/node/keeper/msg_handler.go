@@ -61,15 +61,11 @@ func (k *Keeper) HandleMsgRegisterNode(ctx sdk.Context, msg *v3.MsgRegisterNodeR
 }
 
 func (k *Keeper) HandleMsgUpdateNodeDetails(ctx sdk.Context, msg *v3.MsgUpdateNodeDetailsRequest) (*v3.MsgUpdateNodeDetailsResponse, error) {
-	if msg.GigabytePrices != nil {
-		if !k.IsValidGigabytePrices(ctx, msg.GigabytePrices) {
-			return nil, types.NewErrorInvalidPrices(msg.GigabytePrices)
-		}
+	if !k.IsValidGigabytePrices(ctx, msg.GigabytePrices) {
+		return nil, types.NewErrorInvalidPrices(msg.GigabytePrices)
 	}
-	if msg.HourlyPrices != nil {
-		if !k.IsValidHourlyPrices(ctx, msg.HourlyPrices) {
-			return nil, types.NewErrorInvalidPrices(msg.HourlyPrices)
-		}
+	if !k.IsValidHourlyPrices(ctx, msg.HourlyPrices) {
+		return nil, types.NewErrorInvalidPrices(msg.HourlyPrices)
 	}
 
 	nodeAddr, err := base.NodeAddressFromBech32(msg.From)
@@ -82,12 +78,8 @@ func (k *Keeper) HandleMsgUpdateNodeDetails(ctx sdk.Context, msg *v3.MsgUpdateNo
 		return nil, types.NewErrorNodeNotFound(nodeAddr)
 	}
 
-	if msg.GigabytePrices != nil {
-		node.GigabytePrices = msg.GigabytePrices
-	}
-	if msg.HourlyPrices != nil {
-		node.HourlyPrices = msg.HourlyPrices
-	}
+	node.GigabytePrices = msg.GigabytePrices
+	node.HourlyPrices = msg.HourlyPrices
 	if msg.RemoteURL != "" {
 		node.RemoteURL = msg.RemoteURL
 	}
