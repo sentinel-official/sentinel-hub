@@ -46,11 +46,11 @@ func (m *MsgCreatePlanRequest) ValidateBasic() error {
 	if m.Bytes.IsZero() {
 		return sdkerrors.Wrap(types.ErrInvalidMessage, "bytes cannot be zero")
 	}
-	if m.Duration < 0 {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "duration cannot be negative")
-	}
 	if m.Duration == 0 {
 		return sdkerrors.Wrap(types.ErrInvalidMessage, "duration cannot be zero")
+	}
+	if m.Duration < 0 {
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "duration cannot be negative")
 	}
 	if m.Prices == nil {
 		return sdkerrors.Wrap(types.ErrInvalidMessage, "prices cannot be nil")

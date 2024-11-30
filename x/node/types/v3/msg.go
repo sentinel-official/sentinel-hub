@@ -54,14 +54,14 @@ func (m *MsgRegisterNodeRequest) ValidateBasic() error {
 		return sdkerrors.Wrapf(types.ErrInvalidMessage, "remote_url length cannot be greater than %d chars", 64)
 	}
 
-	remoteURL, err := url.ParseRequestURI(m.RemoteURL)
+	s, err := url.ParseRequestURI(m.RemoteURL)
 	if err != nil {
 		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
 	}
-	if remoteURL.Scheme != "https" {
+	if s.Scheme != "https" {
 		return sdkerrors.Wrap(types.ErrInvalidMessage, "remote_url scheme must be https")
 	}
-	if remoteURL.Port() == "" {
+	if s.Port() == "" {
 		return sdkerrors.Wrap(types.ErrInvalidMessage, "remote_url port cannot be empty")
 	}
 
@@ -108,14 +108,14 @@ func (m *MsgUpdateNodeDetailsRequest) ValidateBasic() error {
 			return sdkerrors.Wrapf(types.ErrInvalidMessage, "remote_url length cannot be greater than %d chars", 64)
 		}
 
-		remoteURL, err := url.ParseRequestURI(m.RemoteURL)
+		s, err := url.ParseRequestURI(m.RemoteURL)
 		if err != nil {
 			return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
 		}
-		if remoteURL.Scheme != "https" {
+		if s.Scheme != "https" {
 			return sdkerrors.Wrap(types.ErrInvalidMessage, "remote_url scheme must be https")
 		}
-		if remoteURL.Port() == "" {
+		if s.Port() == "" {
 			return sdkerrors.Wrap(types.ErrInvalidMessage, "remote_url port cannot be empty")
 		}
 	}
@@ -186,26 +186,21 @@ func (m *MsgStartSessionRequest) ValidateBasic() error {
 		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
 	}
 	if m.Gigabytes == 0 && m.Hours == 0 {
-		return sdkerrors.Wrapf(types.ErrInvalidMessage, "[gigabytes, hours] cannot be empty")
+		return sdkerrors.Wrapf(types.ErrInvalidMessage, "[gigabytes, hours] cannot be zero")
 	}
 	if m.Gigabytes != 0 && m.Hours != 0 {
-		return sdkerrors.Wrapf(types.ErrInvalidMessage, "[gigabytes, hours] cannot be non-empty")
+		return sdkerrors.Wrapf(types.ErrInvalidMessage, "[gigabytes, hours] cannot be non-zero")
 	}
-	if m.Gigabytes != 0 {
-		if m.Gigabytes < 0 {
-			return sdkerrors.Wrap(types.ErrInvalidMessage, "gigabytes cannot be negative")
+	if m.Gigabytes < 0 {
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "gigabytes cannot be negative")
+	}
+	if m.Hours < 0 {
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "hours cannot be negative")
+	}
+	if m.Denom != "" {
+		if err := sdk.ValidateDenom(m.Denom); err != nil {
+			return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
 		}
-	}
-	if m.Hours != 0 {
-		if m.Hours < 0 {
-			return sdkerrors.Wrap(types.ErrInvalidMessage, "hours cannot be negative")
-		}
-	}
-	if m.Denom == "" {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "denom cannot be empty")
-	}
-	if err := sdk.ValidateDenom(m.Denom); err != nil {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
 	}
 
 	return nil

@@ -21,6 +21,9 @@ func (m *MsgCreateAssetRequest) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
 		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
 	}
+	if m.Denom == "" {
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "denom cannot be empty")
+	}
 	if err := sdk.ValidateDenom(m.Denom); err != nil {
 		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
 	}
@@ -53,6 +56,9 @@ func (m *MsgDeleteAssetRequest) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
 		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
 	}
+	if m.Denom == "" {
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "denom cannot be empty")
+	}
 	if err := sdk.ValidateDenom(m.Denom); err != nil {
 		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
 	}
@@ -75,6 +81,9 @@ func (m *MsgUpdateAssetRequest) ValidateBasic() error {
 	}
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
 		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
+	}
+	if m.Denom == "" {
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "denom cannot be empty")
 	}
 	if err := sdk.ValidateDenom(m.Denom); err != nil {
 		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
@@ -108,8 +117,11 @@ func (m *MsgUpdateParamsRequest) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
 		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
 	}
+	if err := m.Params.Validate(); err != nil {
+		return err
+	}
 
-	return m.Params.Validate()
+	return nil
 }
 
 func (m *MsgUpdateParamsRequest) GetSigners() []sdk.AccAddress {

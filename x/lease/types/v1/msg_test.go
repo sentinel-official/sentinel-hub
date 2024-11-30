@@ -114,7 +114,7 @@ func TestMsgRenewLeaseRequest_ValidateBasic(t *testing.T) {
 		{
 			"EmptyDenom",
 			&MsgRenewLeaseRequest{From: base.TestBech32ProvAddr20Bytes, ID: 1, Hours: 24, Denom: base.TestDenomEmpty},
-			true,
+			false,
 		},
 		{
 			"InvalidDenom",
@@ -209,7 +209,7 @@ func TestMsgStartLeaseRequest_ValidateBasic(t *testing.T) {
 		{
 			"EmptyDenom",
 			&MsgStartLeaseRequest{From: base.TestBech32ProvAddr20Bytes, NodeAddress: base.TestBech32NodeAddr20Bytes, Hours: 24, Denom: base.TestDenomEmpty, Renewable: true},
-			true,
+			false,
 		},
 		{
 			"InvalidDenom",

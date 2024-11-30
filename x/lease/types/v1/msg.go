@@ -72,16 +72,15 @@ func (m *MsgRenewLeaseRequest) ValidateBasic() error {
 		return sdkerrors.Wrap(types.ErrInvalidMessage, "id cannot be zero")
 	}
 	if m.Hours == 0 {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "hours cannot be empty")
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "hours cannot be zero")
 	}
 	if m.Hours < 0 {
 		return sdkerrors.Wrap(types.ErrInvalidMessage, "hours cannot be negative")
 	}
-	if m.Denom == "" {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "denom cannot be empty")
-	}
-	if err := sdk.ValidateDenom(m.Denom); err != nil {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
+	if m.Denom != "" {
+		if err := sdk.ValidateDenom(m.Denom); err != nil {
+			return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
+		}
 	}
 
 	return nil
@@ -124,16 +123,15 @@ func (m *MsgStartLeaseRequest) ValidateBasic() error {
 		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
 	}
 	if m.Hours == 0 {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "hours cannot be empty")
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "hours cannot be zero")
 	}
 	if m.Hours < 0 {
 		return sdkerrors.Wrap(types.ErrInvalidMessage, "hours cannot be negative")
 	}
-	if m.Denom == "" {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "denom cannot be empty")
-	}
-	if err := sdk.ValidateDenom(m.Denom); err != nil {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
+	if m.Denom != "" {
+		if err := sdk.ValidateDenom(m.Denom); err != nil {
+			return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
+		}
 	}
 
 	return nil

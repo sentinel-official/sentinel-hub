@@ -81,20 +81,22 @@ func (m *MsgUpdateSessionRequest) ValidateBasic() error {
 	if m.DownloadBytes.IsNil() {
 		return sdkerrors.Wrap(types.ErrInvalidMessage, "download_bytes cannot be nil")
 	}
-	if !m.DownloadBytes.IsPositive() {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "download_bytes must be positive")
+	if m.DownloadBytes.IsNegative() {
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "download_bytes cannot be negative")
 	}
 	if m.UploadBytes.IsNil() {
 		return sdkerrors.Wrap(types.ErrInvalidMessage, "upload_bytes cannot be nil")
 	}
-	if !m.UploadBytes.IsPositive() {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "upload_bytes must be positive")
+	if m.UploadBytes.IsNegative() {
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "upload_bytes cannot be negative")
 	}
 	if m.Duration < 0 {
 		return sdkerrors.Wrap(types.ErrInvalidMessage, "duration cannot be negative")
 	}
-	if m.Signature != nil && len(m.Signature) != 64 {
-		return sdkerrors.Wrapf(types.ErrInvalidMessage, "signature length must be %d bytes", 64)
+	if m.Signature != nil {
+		if len(m.Signature) != 64 {
+			return sdkerrors.Wrapf(types.ErrInvalidMessage, "signature length must be %d bytes", 64)
+		}
 	}
 
 	return nil
