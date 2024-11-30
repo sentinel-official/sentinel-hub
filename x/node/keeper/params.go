@@ -40,12 +40,12 @@ func (k *Keeper) ActiveDuration(ctx sdk.Context) time.Duration {
 }
 
 // MinGigabytePrices retrieves the minimum gigabyte prices parameter from the module's parameters.
-func (k *Keeper) MinGigabytePrices(ctx sdk.Context) sdk.Coins {
+func (k *Keeper) MinGigabytePrices(ctx sdk.Context) sdk.DecCoins {
 	return k.GetParams(ctx).MinGigabytePrices
 }
 
 // MinHourlyPrices retrieves the minimum hourly prices parameter from the module's parameters.
-func (k *Keeper) MinHourlyPrices(ctx sdk.Context) sdk.Coins {
+func (k *Keeper) MinHourlyPrices(ctx sdk.Context) sdk.DecCoins {
 	return k.GetParams(ctx).MinHourlyPrices
 }
 
@@ -75,7 +75,7 @@ func (k *Keeper) StakingShare(ctx sdk.Context) sdkmath.LegacyDec {
 }
 
 // IsValidGigabytePrices checks if the provided gigabyte prices are valid based on the minimum prices defined in the module's parameters.
-func (k *Keeper) IsValidGigabytePrices(ctx sdk.Context, prices sdk.Coins) bool {
+func (k *Keeper) IsValidGigabytePrices(ctx sdk.Context, prices sdk.DecCoins) bool {
 	minPrices := k.MinGigabytePrices(ctx)
 	for _, coin := range minPrices {
 		amount := prices.AmountOf(coin.Denom)
@@ -88,7 +88,7 @@ func (k *Keeper) IsValidGigabytePrices(ctx sdk.Context, prices sdk.Coins) bool {
 }
 
 // IsValidHourlyPrices checks if the provided hourly prices are valid based on the minimum prices defined in the module's parameters.
-func (k *Keeper) IsValidHourlyPrices(ctx sdk.Context, prices sdk.Coins) bool {
+func (k *Keeper) IsValidHourlyPrices(ctx sdk.Context, prices sdk.DecCoins) bool {
 	minPrices := k.MinHourlyPrices(ctx)
 	for _, coin := range minPrices {
 		amount := prices.AmountOf(coin.Denom)

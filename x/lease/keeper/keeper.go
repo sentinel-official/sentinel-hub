@@ -23,6 +23,7 @@ type Keeper struct {
 
 	deposit  expected.DepositKeeper
 	node     expected.NodeKeeper
+	oracle   expected.OracleKeeper
 	plan     expected.PlanKeeper
 	provider expected.ProviderKeeper
 }
@@ -43,6 +44,10 @@ func (k *Keeper) WithDepositKeeper(keeper expected.DepositKeeper) {
 
 func (k *Keeper) WithNodeKeeper(keeper expected.NodeKeeper) {
 	k.node = keeper
+}
+
+func (k *Keeper) WithOracleKeeper(keeper expected.OracleKeeper) {
+	k.oracle = keeper
 }
 
 func (k *Keeper) WithPlanKeeper(keeper expected.PlanKeeper) {

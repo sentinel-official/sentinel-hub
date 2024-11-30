@@ -5,7 +5,7 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
 	base "github.com/sentinel-official/hub/v12/types"
-	nodetypes "github.com/sentinel-official/hub/v12/x/node/types/v2"
+	nodetypes "github.com/sentinel-official/hub/v12/x/node/types/v3"
 	providertypes "github.com/sentinel-official/hub/v12/x/provider/types/v2"
 )
 
@@ -26,6 +26,10 @@ type DepositKeeper interface {
 
 type NodeKeeper interface {
 	GetNode(ctx sdk.Context, addr base.NodeAddress) (nodetypes.Node, bool)
+}
+
+type OracleKeeper interface {
+	GetQuote(ctx sdk.Context, coin sdk.DecCoin) (sdk.Coin, error)
 }
 
 type PlanKeeper interface {

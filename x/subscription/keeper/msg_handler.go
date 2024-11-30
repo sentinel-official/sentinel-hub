@@ -74,17 +74,22 @@ func (k *Keeper) HandleMsgRenewSubscription(ctx sdk.Context, msg *v3.MsgRenewSub
 		return nil, types.NewErrorInvalidPlanStatus(plan.ID, plan.Status)
 	}
 
-	price, found := plan.Price(msg.Denom)
+	basePrice, found := plan.Price(msg.Denom)
 	if !found {
 		return nil, types.NewErrorPriceNotFound(msg.Denom)
+	}
+
+	quotePrice, err := k.GetQuote(ctx, basePrice)
+	if err != nil {
+		return nil, err
 	}
 
 	k.DeleteSubscriptionForInactiveAt(ctx, subscription.InactiveAt, subscription.ID)
 	k.DeleteSubscriptionForRenewalAt(ctx, subscription.RenewalAt(), subscription.ID)
 
 	share := k.ProviderStakingShare(ctx)
-	reward := baseutils.GetProportionOfCoin(price, share)
-	payment := price.Sub(reward)
+	reward := baseutils.GetProportionOfCoin(quotePrice, share)
+	payment := quotePrice.Sub(reward)
 
 	accAddr, err := sdk.AccAddressFromBech32(msg.From)
 	if err != nil {
@@ -108,7 +113,7 @@ func (k *Keeper) HandleMsgRenewSubscription(ctx sdk.Context, msg *v3.MsgRenewSub
 		ID:         subscription.ID,
 		AccAddress: subscription.AccAddress,
 		PlanID:     subscription.PlanID,
-		Price:      price,
+		Price:      quotePrice,
 		Renewable:  subscription.Renewable,
 		Status:     v1base.StatusActive,
 		InactiveAt: ctx.BlockTime().Add(plan.Duration),
@@ -242,20 +247,24 @@ func (k *Keeper) HandleMsgStartSubscription(ctx sdk.Context, msg *v3.MsgStartSub
 		return nil, types.NewErrorInvalidPlanStatus(plan.ID, plan.Status)
 	}
 
-	price, found := plan.Price(msg.Denom)
+	basePrice, found := plan.Price(msg.Denom)
 	if !found {
 		return nil, types.NewErrorPriceNotFound(msg.Denom)
 	}
 
-	share := k.ProviderStakingShare(ctx)
-	reward := baseutils.GetProportionOfCoin(price, share)
-	payment := price.Sub(reward)
+	quotePrice, err := k.GetQuote(ctx, basePrice)
+	if err != nil {
+		return nil, err
+	}
 
 	accAddr, err := sdk.AccAddressFromBech32(msg.From)
 	if err != nil {
 		return nil, err
 	}
 
+	share := k.ProviderStakingShare(ctx)
+
+	reward := baseutils.GetProportionOfCoin(quotePrice, share)
 	if err := k.SendCoinFromAccountToModule(ctx, accAddr, k.feeCollectorName, reward); err != nil {
 		return nil, err
 	}
@@ -265,6 +274,7 @@ func (k *Keeper) HandleMsgStartSubscription(ctx sdk.Context, msg *v3.MsgStartSub
 		return nil, err
 	}
 
+	payment := quotePrice.Sub(reward)
 	if err := k.SendCoin(ctx, accAddr, provAddr.Bytes(), payment); err != nil {
 		return nil, err
 	}
@@ -274,7 +284,7 @@ func (k *Keeper) HandleMsgStartSubscription(ctx sdk.Context, msg *v3.MsgStartSub
 		ID:         count + 1,
 		AccAddress: accAddr.String(),
 		PlanID:     plan.ID,
-		Price:      price,
+		Price:      quotePrice,
 		Renewable:  msg.Renewable,
 		Status:     v1base.StatusActive,
 		InactiveAt: ctx.BlockTime().Add(plan.Duration),

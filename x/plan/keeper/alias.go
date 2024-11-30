@@ -5,7 +5,7 @@ import (
 
 	base "github.com/sentinel-official/hub/v12/types"
 	leasetypes "github.com/sentinel-official/hub/v12/x/lease/types/v1"
-	nodetypes "github.com/sentinel-official/hub/v12/x/node/types/v2"
+	nodetypes "github.com/sentinel-official/hub/v12/x/node/types/v3"
 )
 
 func (k *Keeper) GetLease(ctx sdk.Context, id uint64) (leasetypes.Lease, bool) {

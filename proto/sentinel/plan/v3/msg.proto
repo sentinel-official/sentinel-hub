@@ -20,9 +20,9 @@ message MsgCreatePlanRequest {
     (gogoproto.nullable) = false,
     (gogoproto.stdduration) = true
   ];
-  repeated cosmos.base.v1beta1.Coin prices = 4 [
+  repeated cosmos.base.v1beta1.DecCoin prices = 4 [
     (gogoproto.nullable) = false,
-    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins"
   ];
   bool private = 5;
 }

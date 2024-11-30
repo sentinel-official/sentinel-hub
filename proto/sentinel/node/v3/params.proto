@@ -15,12 +15,12 @@ message Params {
     (gogoproto.nullable) = false,
     (gogoproto.stdduration) = true
   ];
-  repeated cosmos.base.v1beta1.Coin min_gigabyte_prices = 3 [
-    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins",
+  repeated cosmos.base.v1beta1.DecCoin min_gigabyte_prices = 3 [
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins",
     (gogoproto.nullable) = false
   ];
-  repeated cosmos.base.v1beta1.Coin min_hourly_prices = 4 [
-    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins",
+  repeated cosmos.base.v1beta1.DecCoin min_hourly_prices = 4 [
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins",
     (gogoproto.nullable) = false
   ];
   int64 max_session_gigabytes = 5;

@@ -11,7 +11,7 @@ const (
 	flagRemoteURL      = "remote-url"
 )
 
-func GetGigabytePrices(flags *pflag.FlagSet) (sdk.Coins, error) {
+func GetGigabytePrices(flags *pflag.FlagSet) (sdk.DecCoins, error) {
 	s, err := flags.GetString(flagGigabytePrices)
 	if err != nil {
 		return nil, err
@@ -20,10 +20,10 @@ func GetGigabytePrices(flags *pflag.FlagSet) (sdk.Coins, error) {
 		return nil, nil
 	}
 
-	return sdk.ParseCoinsNormalized(s)
+	return sdk.ParseDecCoins(s)
 }
 
-func GetHourlyPrices(flags *pflag.FlagSet) (sdk.Coins, error) {
+func GetHourlyPrices(flags *pflag.FlagSet) (sdk.DecCoins, error) {
 	s, err := flags.GetString(flagHourlyPrices)
 	if err != nil {
 		return nil, err
@@ -32,5 +32,5 @@ func GetHourlyPrices(flags *pflag.FlagSet) (sdk.Coins, error) {
 		return nil, nil
 	}
 
-	return sdk.ParseCoinsNormalized(s)
+	return sdk.ParseDecCoins(s)
 }

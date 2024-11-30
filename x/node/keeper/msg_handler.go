@@ -9,7 +9,6 @@ import (
 	base "github.com/sentinel-official/hub/v12/types"
 	v1base "github.com/sentinel-official/hub/v12/types/v1"
 	"github.com/sentinel-official/hub/v12/x/node/types"
-	"github.com/sentinel-official/hub/v12/x/node/types/v2"
 	"github.com/sentinel-official/hub/v12/x/node/types/v3"
 )
 
@@ -36,7 +35,7 @@ func (k *Keeper) HandleMsgRegisterNode(ctx sdk.Context, msg *v3.MsgRegisterNodeR
 		return nil, err
 	}
 
-	node := v2.Node{
+	node := v3.Node{
 		Address:        nodeAddr.String(),
 		GigabytePrices: msg.GigabytePrices,
 		HourlyPrices:   msg.HourlyPrices,
@@ -207,15 +206,25 @@ func (k *Keeper) HandleMsgStartSession(ctx sdk.Context, msg *v3.MsgStartSessionR
 	)
 
 	if msg.Gigabytes != 0 {
-		session.Price, found = node.GigabytePrice(msg.Denom)
+		basePrice, found := node.GigabytePrice(msg.Denom)
 		if !found {
 			return nil, types.NewErrorPriceNotFound(msg.Denom)
 		}
+
+		session.Price, err = k.GetQuote(ctx, basePrice)
+		if err != nil {
+			return nil, err
+		}
 	}
 	if msg.Hours != 0 {
-		session.Price, found = node.HourlyPrice(msg.Denom)
+		basePrice, found := node.HourlyPrice(msg.Denom)
 		if !found {
 			return nil, types.NewErrorPriceNotFound(msg.Denom)
+		}
+
+		session.Price, err = k.GetQuote(ctx, basePrice)
+		if err != nil {
+			return nil, err
 		}
 	}
 
@@ -266,13 +275,13 @@ func (k *Keeper) HandleMsgUpdateParams(ctx sdk.Context, msg *v3.MsgUpdateParamsR
 	}
 
 	if minGigabytePricesModified || minHourlyPricesModified {
-		k.IterateNodes(ctx, func(_ int, item v2.Node) bool {
+		k.IterateNodes(ctx, func(_ int, item v3.Node) bool {
 			if minGigabytePricesModified {
 				for _, coin := range minGigabytePrices {
 					amount := item.GigabytePrices.AmountOf(coin.Denom)
 					if amount.LT(coin.Amount) {
 						item.GigabytePrices = item.GigabytePrices.Sub(
-							sdk.NewCoin(coin.Denom, amount),
+							sdk.NewDecCoins(sdk.NewDecCoinFromDec(coin.Denom, amount)),
 						).Add(coin)
 					}
 				}
@@ -283,7 +292,7 @@ func (k *Keeper) HandleMsgUpdateParams(ctx sdk.Context, msg *v3.MsgUpdateParamsR
 					amount := item.HourlyPrices.AmountOf(coin.Denom)
 					if amount.LT(coin.Amount) {
 						item.HourlyPrices = item.HourlyPrices.Sub(
-							sdk.NewCoin(coin.Denom, amount),
+							sdk.NewDecCoins(sdk.NewDecCoinFromDec(coin.Denom, amount)),
 						).Add(coin)
 					}
 				}

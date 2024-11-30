@@ -20,7 +20,7 @@ var (
 	_ sdk.Msg = (*MsgStartSessionRequest)(nil)
 )
 
-func NewMsgCreatePlanRequest(from base.ProvAddress, bytes sdkmath.Int, duration time.Duration, prices sdk.Coins, private bool) *MsgCreatePlanRequest {
+func NewMsgCreatePlanRequest(from base.ProvAddress, bytes sdkmath.Int, duration time.Duration, prices sdk.DecCoins, private bool) *MsgCreatePlanRequest {
 	return &MsgCreatePlanRequest{
 		From:     from.String(),
 		Bytes:    bytes,
@@ -54,9 +54,6 @@ func (m *MsgCreatePlanRequest) ValidateBasic() error {
 	}
 	if m.Prices == nil {
 		return sdkerrors.Wrap(types.ErrInvalidMessage, "prices cannot be nil")
-	}
-	if m.Prices.IsAnyNil() {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "prices cannot contain nil")
 	}
 	if !m.Prices.IsValid() {
 		return sdkerrors.Wrap(types.ErrInvalidMessage, "prices must be valid")

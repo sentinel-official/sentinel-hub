@@ -20,3 +20,7 @@ type BankKeeper interface {
 type DistributionKeeper interface {
 	FundCommunityPool(ctx sdk.Context, amount sdk.Coins, sender sdk.AccAddress) error
 }
+
+type OracleKeeper interface {
+	GetQuote(ctx sdk.Context, coin sdk.DecCoin) (sdk.Coin, error)
+}

@@ -27,8 +27,8 @@ type Keeper struct {
 
 func NewKeeper(
 	cdc codec.BinaryCodec, key storetypes.StoreKey, accountKeeper expected.AccountKeeper,
-	bankKeeper expected.BankKeeper, distributionKeeper expected.DistributionKeeper, router *baseapp.MsgServiceRouter,
-	authority, feeCollectorName string,
+	bankKeeper expected.BankKeeper, distributionKeeper expected.DistributionKeeper, oracleKeeper expected.OracleKeeper,
+	router *baseapp.MsgServiceRouter, authority, feeCollectorName string,
 ) Keeper {
 	k := Keeper{
 		Deposit:      depositkeeper.NewKeeper(cdc, key),
@@ -45,11 +45,13 @@ func NewKeeper(
 	k.Lease.WithDepositKeeper(&k.Deposit)
 	k.Lease.WithNodeKeeper(&k.Node)
 	k.Lease.WithPlanKeeper(&k.Plan)
+	k.Lease.WithOracleKeeper(oracleKeeper)
 	k.Lease.WithProviderKeeper(&k.Provider)
 
 	k.Node.WithDepositKeeper(&k.Deposit)
 	k.Node.WithDistributionKeeper(distributionKeeper)
 	k.Node.WithLeaseKeeper(&k.Lease)
+	k.Node.WithOracleKeeper(oracleKeeper)
 	k.Node.WithSessionKeeper(&k.Session)
 
 	k.Plan.WithLeaseKeeper(&k.Lease)
@@ -69,6 +71,7 @@ func NewKeeper(
 
 	k.Subscription.WithBankKeeper(bankKeeper)
 	k.Subscription.WithNodeKeeper(&k.Node)
+	k.Subscription.WithOracleKeeper(oracleKeeper)
 	k.Subscription.WithPlanKeeper(&k.Plan)
 	k.Subscription.WithProviderKeeper(&k.Provider)
 	k.Subscription.WithSessionKeeper(&k.Session)

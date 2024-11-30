@@ -33,6 +33,10 @@ type LeaseKeeper interface {
 	NodeInactivePreHook(ctx sdk.Context, addr base.NodeAddress) error
 }
 
+type OracleKeeper interface {
+	GetQuote(ctx sdk.Context, coin sdk.DecCoin) (sdk.Coin, error)
+}
+
 type SessionKeeper interface {
 	DeleteSession(ctx sdk.Context, id uint64)
 	DeleteSessionForAccount(ctx sdk.Context, addr sdk.AccAddress, id uint64)

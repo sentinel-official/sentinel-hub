@@ -2,11 +2,9 @@ package v3
 
 import (
 	"fmt"
-
-	"github.com/sentinel-official/hub/v12/x/node/types/v2"
 )
 
-func NewGenesisState(nodes []v2.Node, params Params) *GenesisState {
+func NewGenesisState(nodes []Node, params Params) *GenesisState {
 	return &GenesisState{
 		Nodes:  nodes,
 		Params: params,

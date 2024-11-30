@@ -11,7 +11,7 @@ import (
 	v1base "github.com/sentinel-official/hub/v12/types/v1"
 )
 
-func (m *Plan) Price(denom string) (sdk.Coin, bool) {
+func (m *Plan) Price(denom string) (sdk.DecCoin, bool) {
 	for _, v := range m.Prices {
 		if v.Denom == denom {
 			return v, true
@@ -19,7 +19,7 @@ func (m *Plan) Price(denom string) (sdk.Coin, bool) {
 	}
 
 	// If there are no prices and denom is empty, return a zero amount coin and true
-	return sdk.Coin{Amount: sdkmath.ZeroInt()}, m.Prices.Len() == 0 && denom == ""
+	return sdk.DecCoin{Amount: sdkmath.LegacyZeroDec()}, m.Prices.Len() == 0 && denom == ""
 }
 
 func (m *Plan) Validate() error {
@@ -46,9 +46,6 @@ func (m *Plan) Validate() error {
 	}
 	if m.Prices == nil {
 		return fmt.Errorf("prices cannot be nil")
-	}
-	if m.Prices.IsAnyNil() {
-		return fmt.Errorf("prices cannot contain nil")
 	}
 	if !m.Prices.IsValid() {
 		return fmt.Errorf("prices must be valid")

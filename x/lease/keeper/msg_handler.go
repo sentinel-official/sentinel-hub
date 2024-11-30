@@ -102,12 +102,15 @@ func (k *Keeper) HandleMsgRenewLease(ctx sdk.Context, msg *v1.MsgRenewLeaseReque
 		return nil, types.NewErrorInvalidNodeStatus(nodeAddr, node.Status)
 	}
 
-	price, found := node.HourlyPrice(msg.Denom)
+	basePrice, found := node.HourlyPrice(msg.Denom)
 	if !found {
 		return nil, types.NewErrorPriceNotFound(msg.Denom)
 	}
 
-	// TODO: convert the price
+	quotePrice, err := k.GetQuote(ctx, basePrice)
+	if err != nil {
+		return nil, err
+	}
 
 	refund := lease.RefundAmount()
 	if err := k.SubtractDeposit(ctx, provAddr.Bytes(), refund); err != nil {
@@ -130,7 +133,7 @@ func (k *Keeper) HandleMsgRenewLease(ctx sdk.Context, msg *v1.MsgRenewLeaseReque
 		ID:          lease.ID,
 		ProvAddress: lease.ProvAddress,
 		NodeAddress: lease.NodeAddress,
-		Price:       price,
+		Price:       quotePrice,
 		Hours:       0,
 		MaxHours:    msg.Hours,
 		Renewable:   lease.Renewable,
@@ -192,12 +195,15 @@ func (k *Keeper) HandleMsgStartLease(ctx sdk.Context, msg *v1.MsgStartLeaseReque
 		return nil, types.NewErrorInvalidNodeStatus(nodeAddr, node.Status)
 	}
 
-	price, found := node.HourlyPrice(msg.Denom)
+	basePrice, found := node.HourlyPrice(msg.Denom)
 	if !found {
 		return nil, types.NewErrorPriceNotFound(msg.Denom)
 	}
 
-	// TODO: convert the price
+	quotePrice, err := k.GetQuote(ctx, basePrice)
+	if err != nil {
+		return nil, err
+	}
 
 	leaseExists := false
 	k.IterateLeasesForNodeByProvider(ctx, nodeAddr, provAddr, func(_ int, _ v1.Lease) bool {
@@ -214,7 +220,7 @@ func (k *Keeper) HandleMsgStartLease(ctx sdk.Context, msg *v1.MsgStartLeaseReque
 		ID:          count + 1,
 		ProvAddress: provAddr.String(),
 		NodeAddress: nodeAddr.String(),
-		Price:       price,
+		Price:       quotePrice,
 		Hours:       0,
 		MaxHours:    msg.Hours,
 		Renewable:   msg.Renewable,

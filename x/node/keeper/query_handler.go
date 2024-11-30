@@ -12,11 +12,10 @@ import (
 	base "github.com/sentinel-official/hub/v12/types"
 	v1base "github.com/sentinel-official/hub/v12/types/v1"
 	"github.com/sentinel-official/hub/v12/x/node/types"
-	"github.com/sentinel-official/hub/v12/x/node/types/v2"
 	"github.com/sentinel-official/hub/v12/x/node/types/v3"
 )
 
-func (k *Keeper) HandleQueryNode(ctx sdk.Context, req *v2.QueryNodeRequest) (*v2.QueryNodeResponse, error) {
+func (k *Keeper) HandleQueryNode(ctx sdk.Context, req *v3.QueryNodeRequest) (*v3.QueryNodeResponse, error) {
 	addr, err := base.NodeAddressFromBech32(req.Address)
 	if err != nil {
 		return nil, status.Errorf(codes.InvalidArgument, "invalid address %s", req.Address)
@@ -27,12 +26,12 @@ func (k *Keeper) HandleQueryNode(ctx sdk.Context, req *v2.QueryNodeRequest) (*v2
 		return nil, status.Errorf(codes.NotFound, "node does not exist for address %s", req.Address)
 	}
 
-	return &v2.QueryNodeResponse{Node: item}, nil
+	return &v3.QueryNodeResponse{Node: item}, nil
 }
 
-func (k *Keeper) HandleQueryNodes(ctx sdk.Context, req *v2.QueryNodesRequest) (res *v2.QueryNodesResponse, err error) {
+func (k *Keeper) HandleQueryNodes(ctx sdk.Context, req *v3.QueryNodesRequest) (res *v3.QueryNodesResponse, err error) {
 	var (
-		items     []v2.Node
+		items     []v3.Node
 		keyPrefix []byte
 	)
 
@@ -47,7 +46,7 @@ func (k *Keeper) HandleQueryNodes(ctx sdk.Context, req *v2.QueryNodesRequest) (r
 
 	store := prefix.NewStore(k.Store(ctx), keyPrefix)
 	pagination, err := sdkquery.Paginate(store, req.Pagination, func(_, value []byte) error {
-		var item v2.Node
+		var item v3.Node
 		if err := k.cdc.Unmarshal(value, &item); err != nil {
 			return err
 		}
@@ -60,12 +59,12 @@ func (k *Keeper) HandleQueryNodes(ctx sdk.Context, req *v2.QueryNodesRequest) (r
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
-	return &v2.QueryNodesResponse{Nodes: items, Pagination: pagination}, nil
+	return &v3.QueryNodesResponse{Nodes: items, Pagination: pagination}, nil
 }
 
-func (k *Keeper) HandleQueryNodesForPlan(ctx sdk.Context, req *v2.QueryNodesForPlanRequest) (*v2.QueryNodesForPlanResponse, error) {
+func (k *Keeper) HandleQueryNodesForPlan(ctx sdk.Context, req *v3.QueryNodesForPlanRequest) (*v3.QueryNodesForPlanResponse, error) {
 	var (
-		items []v2.Node
+		items []v3.Node
 		store = prefix.NewStore(k.Store(ctx), types.GetNodeForPlanKeyPrefix(req.Id))
 	)
 
@@ -91,7 +90,7 @@ func (k *Keeper) HandleQueryNodesForPlan(ctx sdk.Context, req *v2.QueryNodesForP
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
-	return &v2.QueryNodesForPlanResponse{Nodes: items, Pagination: pagination}, nil
+	return &v3.QueryNodesForPlanResponse{Nodes: items, Pagination: pagination}, nil
 }
 
 func (k *Keeper) HandleQueryParams(ctx sdk.Context, _ *v3.QueryParamsRequest) (*v3.QueryParamsResponse, error) {

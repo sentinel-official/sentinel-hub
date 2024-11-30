@@ -22,9 +22,9 @@ message Plan {
     (gogoproto.nullable) = false,
     (gogoproto.stdduration) = true
   ];
-  repeated cosmos.base.v1beta1.Coin prices = 5 [
+  repeated cosmos.base.v1beta1.DecCoin prices = 5 [
     (gogoproto.nullable) = false,
-    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins"
   ];
   bool private = 6;
   sentinel.types.v1.Status status = 7;

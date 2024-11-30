@@ -269,7 +269,7 @@ func NewKeepers(
 		encCfg.Codec, keys.KV(swaptypes.StoreKey), k.Subspace(swaptypes.ModuleName), k.AccountKeeper, k.BankKeeper,
 	)
 	k.VPNKeeper = vpnkeeper.NewKeeper(
-		encCfg.Codec, keys.KV(vpntypes.StoreKey), k.AccountKeeper, k.BankKeeper, k.DistributionKeeper,
+		encCfg.Codec, keys.KV(vpntypes.StoreKey), k.AccountKeeper, k.BankKeeper, k.DistributionKeeper, &k.OracleKeeper,
 		app.MsgServiceRouter(), govModuleAddr, authtypes.FeeCollectorName,
 	)
 

@@ -12,8 +12,8 @@ import (
 var (
 	DefaultDeposit                   = sdk.NewCoin(sdk.DefaultBondDenom, sdkmath.NewInt(10))
 	DefaultActiveDuration            = 30 * time.Second
-	DefaultMinGigabytePrices         = sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdkmath.NewInt(1)))
-	DefaultMinHourlyPrices           = sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdkmath.NewInt(1)))
+	DefaultMinGigabytePrices         = sdk.NewDecCoins(sdk.NewDecCoin(sdk.DefaultBondDenom, sdkmath.NewInt(1)))
+	DefaultMinHourlyPrices           = sdk.NewDecCoins(sdk.NewDecCoin(sdk.DefaultBondDenom, sdkmath.NewInt(1)))
 	DefaultMaxSessionGigabytes int64 = 10
 	DefaultMinSessionGigabytes int64 = 1
 	DefaultMaxSessionHours     int64 = 10
@@ -120,7 +120,7 @@ func (m *Params) ParamSetPairs() params.ParamSetPairs {
 }
 
 func NewParams(
-	deposit sdk.Coin, activeDuration time.Duration, minGigabytePrices, minHourlyPrices sdk.Coins, maxSessionGigabytes,
+	deposit sdk.Coin, activeDuration time.Duration, minGigabytePrices, minHourlyPrices sdk.DecCoins, maxSessionGigabytes,
 	minSessionGigabytes, maxSessionHours, minSessionHours int64, stakingShare sdkmath.LegacyDec,
 ) Params {
 	return Params{

@@ -42,7 +42,7 @@ func NewErrorInvalidNodeStatus(addr base.NodeAddress, status v1base.Status) erro
 }
 
 // NewErrorInvalidPrices returns an error indicating that the provided prices are invalid.
-func NewErrorInvalidPrices(prices sdk.Coins) error {
+func NewErrorInvalidPrices(prices sdk.DecCoins) error {
 	return sdkerrors.Wrapf(ErrInvalidPrices, "invalid prices %s", prices)
 }
 

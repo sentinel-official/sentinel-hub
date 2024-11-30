@@ -38,7 +38,7 @@ func txCreatePlan() *cobra.Command {
 				return err
 			}
 
-			prices, err := sdk.ParseCoinsNormalized(args[2])
+			prices, err := sdk.ParseDecCoins(args[2])
 			if err != nil {
 				return err
 			}

@@ -7,7 +7,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	base "github.com/sentinel-official/hub/v12/types"
-	nodetypes "github.com/sentinel-official/hub/v12/x/node/types/v2"
+	nodetypes "github.com/sentinel-official/hub/v12/x/node/types/v3"
 	plantypes "github.com/sentinel-official/hub/v12/x/plan/types/v3"
 	sessiontypes "github.com/sentinel-official/hub/v12/x/session/types/v3"
 )
@@ -34,6 +34,10 @@ func (k *Keeper) ProviderStakingShare(ctx sdk.Context) sdkmath.LegacyDec {
 
 func (k *Keeper) GetNode(ctx sdk.Context, addr base.NodeAddress) (nodetypes.Node, bool) {
 	return k.node.GetNode(ctx, addr)
+}
+
+func (k *Keeper) GetQuote(ctx sdk.Context, coin sdk.DecCoin) (sdk.Coin, error) {
+	return k.oracle.GetQuote(ctx, coin)
 }
 
 func (k *Keeper) GetPlan(ctx sdk.Context, id uint64) (plantypes.Plan, bool) {

@@ -25,12 +25,12 @@ func txRegisterNode() *cobra.Command {
 				return err
 			}
 
-			gigabytePrices, err := sdk.ParseCoinsNormalized(args[1])
+			gigabytePrices, err := sdk.ParseDecCoins(args[1])
 			if err != nil {
 				return err
 			}
 
-			hourlyPrices, err := sdk.ParseCoinsNormalized(args[2])
+			hourlyPrices, err := sdk.ParseDecCoins(args[2])
 			if err != nil {
 				return err
 			}

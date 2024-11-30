@@ -19,7 +19,7 @@ var (
 	_ sdk.Msg = (*MsgUpdateParamsRequest)(nil)
 )
 
-func NewMsgRegisterNodeRequest(from sdk.AccAddress, gigabytePrices, hourlyPrices sdk.Coins, remoteURL string) *MsgRegisterNodeRequest {
+func NewMsgRegisterNodeRequest(from sdk.AccAddress, gigabytePrices, hourlyPrices sdk.DecCoins, remoteURL string) *MsgRegisterNodeRequest {
 	return &MsgRegisterNodeRequest{
 		From:           from.String(),
 		GigabytePrices: gigabytePrices,
@@ -38,17 +38,11 @@ func (m *MsgRegisterNodeRequest) ValidateBasic() error {
 	if m.GigabytePrices == nil {
 		return sdkerrors.Wrap(types.ErrInvalidMessage, "gigabyte_prices cannot be nil")
 	}
-	if m.GigabytePrices.IsAnyNil() {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "gigabyte_prices cannot contain nil")
-	}
 	if !m.GigabytePrices.IsValid() {
 		return sdkerrors.Wrap(types.ErrInvalidMessage, "gigabyte_prices must be valid")
 	}
 	if m.HourlyPrices == nil {
 		return sdkerrors.Wrap(types.ErrInvalidMessage, "hourly_prices cannot be nil")
-	}
-	if m.HourlyPrices.IsAnyNil() {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "hourly_prices cannot contain nil")
 	}
 	if !m.HourlyPrices.IsValid() {
 		return sdkerrors.Wrap(types.ErrInvalidMessage, "hourly_prices must be valid")
@@ -83,7 +77,7 @@ func (m *MsgRegisterNodeRequest) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{from.Bytes()}
 }
 
-func NewMsgUpdateNodeDetailsRequest(from base.NodeAddress, gigabytePrices, hourlyPrices sdk.Coins, remoteURL string) *MsgUpdateNodeDetailsRequest {
+func NewMsgUpdateNodeDetailsRequest(from base.NodeAddress, gigabytePrices, hourlyPrices sdk.DecCoins, remoteURL string) *MsgUpdateNodeDetailsRequest {
 	return &MsgUpdateNodeDetailsRequest{
 		From:           from.String(),
 		GigabytePrices: gigabytePrices,
@@ -100,17 +94,11 @@ func (m *MsgUpdateNodeDetailsRequest) ValidateBasic() error {
 		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
 	}
 	if m.GigabytePrices != nil {
-		if m.GigabytePrices.IsAnyNil() {
-			return sdkerrors.Wrap(types.ErrInvalidMessage, "gigabyte_prices cannot contain nil")
-		}
 		if !m.GigabytePrices.IsValid() {
 			return sdkerrors.Wrap(types.ErrInvalidMessage, "gigabyte_prices must be valid")
 		}
 	}
 	if m.HourlyPrices != nil {
-		if m.HourlyPrices.IsAnyNil() {
-			return sdkerrors.Wrap(types.ErrInvalidMessage, "hourly_prices cannot contain nil")
-		}
 		if !m.HourlyPrices.IsValid() {
 			return sdkerrors.Wrap(types.ErrInvalidMessage, "hourly_prices must be valid")
 		}
