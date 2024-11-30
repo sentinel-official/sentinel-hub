@@ -11,18 +11,13 @@ import (
 )
 
 func (m *Lease) DepositAmount() sdk.Coin {
-	return sdk.NewCoin(
-		m.Price.Denom,
-		m.Price.Amount.MulRaw(m.MaxHours),
-	)
+	amount := m.Price.Amount.MulRaw(m.MaxHours)
+	return sdk.Coin{Denom: m.Price.Denom, Amount: amount}
 }
 
 func (m *Lease) RefundAmount() sdk.Coin {
-	hours := m.MaxHours - m.Hours
-	return sdk.NewCoin(
-		m.Price.Denom,
-		m.Price.Amount.MulRaw(hours),
-	)
+	amount := m.Price.Amount.MulRaw(m.MaxHours - m.Hours)
+	return sdk.Coin{Denom: m.Price.Denom, Amount: amount}
 }
 
 func (m *Lease) RenewalAt() time.Time {

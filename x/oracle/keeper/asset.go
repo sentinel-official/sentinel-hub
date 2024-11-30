@@ -120,11 +120,15 @@ func (k *Keeper) GetAssetForPacket(ctx sdk.Context, portID, channelID string, se
 
 // GetQuote returns the quote for a given base coin.
 func (k *Keeper) GetQuote(ctx sdk.Context, coin sdk.DecCoin) (sdk.Coin, error) {
+	if coin.Denom == "" {
+		return sdk.Coin{Amount: sdk.ZeroInt()}, nil
+	}
+
 	asset, found := k.GetAsset(ctx, coin.Denom)
 	if !found {
-		return sdk.Coin{}, types.NewErrorAssetNotFound(coin.Denom)
+		return sdk.Coin{Amount: sdk.ZeroInt()}, types.NewErrorAssetNotFound(coin.Denom)
 	}
 
 	amount := coin.Amount.MulInt(asset.Price).TruncateInt()
-	return sdk.NewCoin(coin.Denom, amount), nil
+	return sdk.Coin{Denom: coin.Denom, Amount: amount}, nil
 }

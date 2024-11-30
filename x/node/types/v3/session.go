@@ -43,7 +43,7 @@ func (m *Session) DepositAmount() sdk.Coin {
 		amount = m.Price.Amount.MulRaw(m.MaxHours)
 	}
 
-	return sdk.NewCoin(m.Price.Denom, amount)
+	return sdk.Coin{Denom: m.Price.Denom, Amount: amount}
 }
 
 func (m *Session) PaymentAmount() sdk.Coin {
@@ -55,7 +55,7 @@ func (m *Session) PaymentAmount() sdk.Coin {
 		amount = m.paymentAmountForDuration()
 	}
 
-	return sdk.NewCoin(m.Price.Denom, amount)
+	return sdk.Coin{Denom: m.Price.Denom, Amount: amount}
 }
 
 func (m *Session) RefundAmount() sdk.Coin {
@@ -66,5 +66,5 @@ func (m *Session) RefundAmount() sdk.Coin {
 		return deposit.Sub(payment)
 	}
 
-	return sdk.NewCoin(m.Price.Denom, sdk.ZeroInt())
+	return sdk.Coin{Denom: m.Price.Denom, Amount: sdk.ZeroInt()}
 }

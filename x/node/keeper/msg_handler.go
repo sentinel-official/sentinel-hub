@@ -193,7 +193,7 @@ func (k *Keeper) HandleMsgStartSession(ctx sdk.Context, msg *v3.MsgStartSessionR
 			ID:            count + 1,
 			AccAddress:    accAddr.String(),
 			NodeAddress:   nodeAddr.String(),
-			Price:         sdk.Coin{},
+			Price:         sdk.Coin{Amount: sdk.ZeroInt()},
 			DownloadBytes: sdkmath.ZeroInt(),
 			UploadBytes:   sdkmath.ZeroInt(),
 			MaxGigabytes:  msg.Gigabytes,
