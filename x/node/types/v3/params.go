@@ -12,8 +12,8 @@ import (
 var (
 	DefaultDeposit                   = sdk.NewCoin(sdk.DefaultBondDenom, sdkmath.NewInt(10))
 	DefaultActiveDuration            = 30 * time.Second
-	DefaultMinGigabytePrices         = sdk.NewDecCoins(sdk.NewDecCoin(sdk.DefaultBondDenom, sdkmath.NewInt(1)))
-	DefaultMinHourlyPrices           = sdk.NewDecCoins(sdk.NewDecCoin(sdk.DefaultBondDenom, sdkmath.NewInt(1)))
+	DefaultMinGigabytePrices         = sdk.NewDecCoins(sdk.NewDecCoinFromDec(sdk.DefaultBondDenom, sdkmath.LegacyMustNewDecFromStr("0.1")))
+	DefaultMinHourlyPrices           = sdk.NewDecCoins(sdk.NewDecCoinFromDec(sdk.DefaultBondDenom, sdkmath.LegacyMustNewDecFromStr("0.1")))
 	DefaultMaxSessionGigabytes int64 = 10
 	DefaultMinSessionGigabytes int64 = 1
 	DefaultMaxSessionHours     int64 = 10
@@ -190,16 +190,13 @@ func validateActiveDuration(v interface{}) error {
 }
 
 func validateMinGigabytePrices(v interface{}) error {
-	value, ok := v.(sdk.Coins)
+	value, ok := v.(sdk.DecCoins)
 	if !ok {
 		return fmt.Errorf("invalid parameter type %T", v)
 	}
 
 	if value == nil {
 		return nil
-	}
-	if value.IsAnyNil() {
-		return fmt.Errorf("min_gigabyte_prices cannot contain nil")
 	}
 	if !value.IsValid() {
 		return fmt.Errorf("min_gigabyte_prices must be valid")
@@ -209,16 +206,13 @@ func validateMinGigabytePrices(v interface{}) error {
 }
 
 func validateMinHourlyPrices(v interface{}) error {
-	value, ok := v.(sdk.Coins)
+	value, ok := v.(sdk.DecCoins)
 	if !ok {
 		return fmt.Errorf("invalid parameter type %T", v)
 	}
 
 	if value == nil {
 		return nil
-	}
-	if value.IsAnyNil() {
-		return fmt.Errorf("min_hourly_prices cannot contain nil")
 	}
 	if !value.IsValid() {
 		return fmt.Errorf("min_hourly_prices must be valid")
