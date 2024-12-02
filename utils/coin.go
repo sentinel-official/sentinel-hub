@@ -7,7 +7,7 @@ import (
 
 func GetProportionOfCoin(coin sdk.Coin, share sdkmath.LegacyDec) sdk.Coin {
 	decAmount := sdkmath.LegacyNewDecFromInt(coin.Amount)
-	amount := decAmount.Mul(share).RoundInt()
+	amount := decAmount.Mul(share).Ceil().TruncateInt()
 
 	return sdk.Coin{
 		Denom:  coin.Denom,

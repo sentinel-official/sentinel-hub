@@ -1,7 +1,6 @@
 package keeper
 
 import (
-	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ibchost "github.com/cosmos/ibc-go/v7/modules/core/24-host"
 	protobuf "github.com/gogo/protobuf/types"
@@ -119,17 +118,18 @@ func (k *Keeper) GetAssetForPacket(ctx sdk.Context, portID, channelID string, se
 	return v, nil
 }
 
-// GetQuote returns the quote for a given base coin.
+// GetQuote retrieves a quote for a given DecCoin, applying asset pricing if available.
 func (k *Keeper) GetQuote(ctx sdk.Context, coin sdk.DecCoin) (sdk.Coin, error) {
-	if coin.Denom == "" {
-		return sdk.Coin{Amount: sdkmath.ZeroInt()}, nil
-	}
+	// Truncate the decimal amount to an integer for the initial amount.
+	amount := coin.Amount.TruncateInt()
 
+	// Retrieve the asset associated with the coin denomination.
 	asset, found := k.GetAsset(ctx, coin.Denom)
-	if !found {
-		return sdk.Coin{Amount: sdkmath.ZeroInt()}, types.NewErrorAssetNotFound(coin.Denom)
+	if found {
+		// Adjust the amount using the asset price if the asset is found.
+		amount = coin.Amount.MulInt(asset.Price).TruncateInt()
 	}
 
-	amount := coin.Amount.MulInt(asset.Price).TruncateInt()
+	// Return the adjusted or original coin amount.
 	return sdk.Coin{Denom: coin.Denom, Amount: amount}, nil
 }
