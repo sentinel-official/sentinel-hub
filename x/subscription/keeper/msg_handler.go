@@ -190,8 +190,8 @@ func (k *Keeper) HandleMsgShareSubscription(ctx sdk.Context, msg *v3.MsgShareSub
 		toAlloc = v2.Allocation{
 			ID:            subscription.ID,
 			Address:       toAddr.String(),
-			GrantedBytes:  sdk.ZeroInt(),
-			UtilisedBytes: sdk.ZeroInt(),
+			GrantedBytes:  sdkmath.ZeroInt(),
+			UtilisedBytes: sdkmath.ZeroInt(),
 		}
 
 		k.SetSubscriptionForAccount(ctx, toAddr, subscription.ID)

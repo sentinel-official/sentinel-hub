@@ -91,7 +91,7 @@ func (k *Keeper) HandleMsgLinkNode(ctx sdk.Context, msg *v3.MsgLinkNodeRequest) 
 	})
 
 	if !leaseExists {
-		return nil, types.NewErrorLeaseNotFound(nodeAddr, provAddr)
+		return nil, types.NewErrorLeaseForNodeByProviderNotFound(nodeAddr, provAddr)
 	}
 
 	k.SetNodeForPlan(ctx, plan.ID, nodeAddr)

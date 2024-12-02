@@ -181,11 +181,12 @@ func (k *Keeper) HandleMsgStartSession(ctx sdk.Context, msg *v3.MsgStartSessionR
 	var (
 		count      = k.GetSessionCount(ctx)
 		inactiveAt = k.GetSessionInactiveAt(ctx)
+		basePrice  = sdk.DecCoin{Amount: sdkmath.LegacyZeroDec()}
 		session    = &v3.Session{
 			ID:            count + 1,
 			AccAddress:    accAddr.String(),
 			NodeAddress:   nodeAddr.String(),
-			Price:         sdk.Coin{Amount: sdk.ZeroInt()},
+			Price:         sdk.Coin{Amount: sdkmath.ZeroInt()},
 			DownloadBytes: sdkmath.ZeroInt(),
 			UploadBytes:   sdkmath.ZeroInt(),
 			MaxGigabytes:  msg.Gigabytes,
@@ -198,26 +199,21 @@ func (k *Keeper) HandleMsgStartSession(ctx sdk.Context, msg *v3.MsgStartSessionR
 	)
 
 	if msg.Gigabytes != 0 {
-		basePrice, found := node.GigabytePrice(msg.Denom)
+		basePrice, found = node.GigabytePrice(msg.Denom)
 		if !found {
 			return nil, types.NewErrorPriceNotFound(msg.Denom)
-		}
-
-		session.Price, err = k.GetQuote(ctx, basePrice)
-		if err != nil {
-			return nil, err
 		}
 	}
 	if msg.Hours != 0 {
-		basePrice, found := node.HourlyPrice(msg.Denom)
+		basePrice, found = node.HourlyPrice(msg.Denom)
 		if !found {
 			return nil, types.NewErrorPriceNotFound(msg.Denom)
 		}
+	}
 
-		session.Price, err = k.GetQuote(ctx, basePrice)
-		if err != nil {
-			return nil, err
-		}
+	session.Price, err = k.GetQuote(ctx, basePrice)
+	if err != nil {
+		return nil, err
 	}
 
 	deposit := session.DepositAmount()

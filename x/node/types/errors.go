@@ -11,14 +11,16 @@ import (
 var (
 	ErrInvalidMessage = sdkerrors.Register(ModuleName, 101, "invalid message")
 
-	ErrDuplicateNode     = sdkerrors.Register(ModuleName, 201, "duplicate node")
-	ErrInvalidGigabytes  = sdkerrors.Register(ModuleName, 202, "invalid gigabytes")
-	ErrInvalidHours      = sdkerrors.Register(ModuleName, 203, "invalid hours")
-	ErrInvalidNodeStatus = sdkerrors.Register(ModuleName, 204, "invalid node status")
-	ErrInvalidPrices     = sdkerrors.Register(ModuleName, 205, "invalid prices")
-	ErrNodeNotFound      = sdkerrors.Register(ModuleName, 206, "node not found")
-	ErrPriceNotFound     = sdkerrors.Register(ModuleName, 207, "price not found")
-	ErrUnauthorized      = sdkerrors.Register(ModuleName, 208, "unauthorized")
+	ErrDuplicateNode        = sdkerrors.Register(ModuleName, 201, "duplicate node")
+	ErrInvalidGigabytes     = sdkerrors.Register(ModuleName, 202, "invalid gigabytes")
+	ErrInvalidHours         = sdkerrors.Register(ModuleName, 203, "invalid hours")
+	ErrInvalidNodeStatus    = sdkerrors.Register(ModuleName, 204, "invalid node status")
+	ErrInvalidPrices        = sdkerrors.Register(ModuleName, 205, "invalid prices")
+	ErrInvalidSessionStatus = sdkerrors.Register(ModuleName, 206, "invalid session status")
+	ErrNodeNotFound         = sdkerrors.Register(ModuleName, 207, "node not found")
+	ErrPriceNotFound        = sdkerrors.Register(ModuleName, 208, "price not found")
+	ErrSessionNotFound      = sdkerrors.Register(ModuleName, 209, "session not found")
+	ErrUnauthorized         = sdkerrors.Register(ModuleName, 210, "unauthorized")
 )
 
 // NewErrorDuplicateNode returns an error indicating that the specified node already exists.
@@ -46,6 +48,11 @@ func NewErrorInvalidPrices(prices sdk.DecCoins) error {
 	return sdkerrors.Wrapf(ErrInvalidPrices, "invalid prices %s", prices)
 }
 
+// NewErrorInvalidSessionStatus returns an error indicating that the provided status is invalid for the session.
+func NewErrorInvalidSessionStatus(id uint64, status v1base.Status) error {
+	return sdkerrors.Wrapf(ErrInvalidSessionStatus, "invalid status %s for session %d", status, id)
+}
+
 // NewErrorNodeNotFound returns an error indicating that the specified node does not exist.
 func NewErrorNodeNotFound(addr base.NodeAddress) error {
 	return sdkerrors.Wrapf(ErrNodeNotFound, "node %s does not exist", addr)
@@ -54,6 +61,11 @@ func NewErrorNodeNotFound(addr base.NodeAddress) error {
 // NewErrorPriceNotFound returns an error indicating that the price for the specified denom does not exist.
 func NewErrorPriceNotFound(denom string) error {
 	return sdkerrors.Wrapf(ErrPriceNotFound, "price for denom %s does not exist", denom)
+}
+
+// NewErrorSessionNotFound returns an error indicating that the specified session does not exist.
+func NewErrorSessionNotFound(id uint64) error {
+	return sdkerrors.Wrapf(ErrSessionNotFound, "session %d does not exist", id)
 }
 
 // NewErrorUnauthorized returns an error indicating that the specified address is not authorized.

@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ibchost "github.com/cosmos/ibc-go/v7/modules/core/24-host"
 	protobuf "github.com/gogo/protobuf/types"
@@ -121,12 +122,12 @@ func (k *Keeper) GetAssetForPacket(ctx sdk.Context, portID, channelID string, se
 // GetQuote returns the quote for a given base coin.
 func (k *Keeper) GetQuote(ctx sdk.Context, coin sdk.DecCoin) (sdk.Coin, error) {
 	if coin.Denom == "" {
-		return sdk.Coin{Amount: sdk.ZeroInt()}, nil
+		return sdk.Coin{Amount: sdkmath.ZeroInt()}, nil
 	}
 
 	asset, found := k.GetAsset(ctx, coin.Denom)
 	if !found {
-		return sdk.Coin{Amount: sdk.ZeroInt()}, types.NewErrorAssetNotFound(coin.Denom)
+		return sdk.Coin{Amount: sdkmath.ZeroInt()}, types.NewErrorAssetNotFound(coin.Denom)
 	}
 
 	amount := coin.Amount.MulInt(asset.Price).TruncateInt()

@@ -35,7 +35,7 @@ func (m *Session) paymentAmountForDuration() sdkmath.Int {
 }
 
 func (m *Session) DepositAmount() sdk.Coin {
-	amount := sdk.ZeroInt()
+	amount := sdkmath.ZeroInt()
 	if m.MaxGigabytes != 0 {
 		amount = m.Price.Amount.MulRaw(m.MaxGigabytes)
 	}
@@ -47,7 +47,7 @@ func (m *Session) DepositAmount() sdk.Coin {
 }
 
 func (m *Session) PaymentAmount() sdk.Coin {
-	amount := sdk.ZeroInt()
+	amount := sdkmath.ZeroInt()
 	if m.MaxGigabytes != 0 {
 		amount = m.paymentAmountForBytes()
 	}
@@ -66,5 +66,5 @@ func (m *Session) RefundAmount() sdk.Coin {
 		return deposit.Sub(payment)
 	}
 
-	return sdk.Coin{Denom: m.Price.Denom, Amount: sdk.ZeroInt()}
+	return sdk.Coin{Denom: m.Price.Denom, Amount: sdkmath.ZeroInt()}
 }

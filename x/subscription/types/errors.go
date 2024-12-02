@@ -17,12 +17,14 @@ var (
 	ErrInvalidAllocation         = sdkerrors.Register(ModuleName, 203, "invalid allocation")
 	ErrInvalidNodeStatus         = sdkerrors.Register(ModuleName, 204, "invalid node status")
 	ErrInvalidPlanStatus         = sdkerrors.Register(ModuleName, 205, "invalid plan status")
-	ErrInvalidSubscriptionStatus = sdkerrors.Register(ModuleName, 206, "invalid subscription status")
-	ErrNodeNotFound              = sdkerrors.Register(ModuleName, 207, "node not found")
-	ErrPlanNotFound              = sdkerrors.Register(ModuleName, 208, "plan not found")
-	ErrPriceNotFound             = sdkerrors.Register(ModuleName, 209, "price not found")
-	ErrSubscriptionNotFound      = sdkerrors.Register(ModuleName, 210, "subscription not found")
-	ErrUnauthorized              = sdkerrors.Register(ModuleName, 211, "unauthorized")
+	ErrInvalidSessionStatus      = sdkerrors.Register(ModuleName, 206, "invalid session status")
+	ErrInvalidSubscriptionStatus = sdkerrors.Register(ModuleName, 207, "invalid subscription status")
+	ErrNodeNotFound              = sdkerrors.Register(ModuleName, 208, "node not found")
+	ErrPlanNotFound              = sdkerrors.Register(ModuleName, 209, "plan not found")
+	ErrPriceNotFound             = sdkerrors.Register(ModuleName, 210, "price not found")
+	ErrSessionNotFound           = sdkerrors.Register(ModuleName, 211, "session not found")
+	ErrSubscriptionNotFound      = sdkerrors.Register(ModuleName, 212, "subscription not found")
+	ErrUnauthorized              = sdkerrors.Register(ModuleName, 213, "unauthorized")
 )
 
 // NewErrorAllocationNotFound returns an error indicating that the specified allocation does not exist.
@@ -50,6 +52,11 @@ func NewErrorInvalidPlanStatus(id uint64, status v1base.Status) error {
 	return sdkerrors.Wrapf(ErrInvalidPlanStatus, "invalid status %s for plan %d", status, id)
 }
 
+// NewErrorInvalidSessionStatus returns an error indicating that the provided status is invalid for the session.
+func NewErrorInvalidSessionStatus(id uint64, status v1base.Status) error {
+	return sdkerrors.Wrapf(ErrInvalidSessionStatus, "invalid status %s for session %d", status, id)
+}
+
 // NewErrorInvalidSubscriptionStatus returns an error indicating that the provided status is invalid for the subscription.
 func NewErrorInvalidSubscriptionStatus(id uint64, status v1base.Status) error {
 	return sdkerrors.Wrapf(ErrInvalidSubscriptionStatus, "invalid status %s for subscription %d", status, id)
@@ -68,6 +75,11 @@ func NewErrorPlanNotFound(id uint64) error {
 // NewErrorPriceNotFound returns an error indicating that the price for the specified denomination does not exist.
 func NewErrorPriceNotFound(denom string) error {
 	return sdkerrors.Wrapf(ErrPriceNotFound, "price for denom %s does not exist", denom)
+}
+
+// NewErrorSessionNotFound returns an error indicating that the specified session does not exist.
+func NewErrorSessionNotFound(id uint64) error {
+	return sdkerrors.Wrapf(ErrSessionNotFound, "session %d does not exist", id)
 }
 
 // NewErrorSubscriptionNotFound returns an error indicating that the specified subscription does not exist.
