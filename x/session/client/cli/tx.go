@@ -1,7 +1,6 @@
 package cli
 
 import (
-	"encoding/hex"
 	"strconv"
 	"time"
 
@@ -49,9 +48,9 @@ func txCancelSession() *cobra.Command {
 
 func txUpdateSession() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "update-session [id] [download-bytes] [upload-bytes] [duration] [signature]",
+		Use:   "update-session [id] [download-bytes] [upload-bytes] [duration]",
 		Short: "Update the details of an existing session",
-		Args:  cobra.ExactArgs(5),
+		Args:  cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -78,7 +77,7 @@ func txUpdateSession() *cobra.Command {
 				return err
 			}
 
-			signature, err := hex.DecodeString(args[4])
+			signature, err := GetSignature(cmd.Flags())
 			if err != nil {
 				return err
 			}
@@ -100,6 +99,7 @@ func txUpdateSession() *cobra.Command {
 	}
 
 	flags.AddTxFlagsToCmd(cmd)
+	cmd.Flags().String(flagSignature, "", "Provide the Base64-encoded client signature to authorize")
 
 	return cmd
 }

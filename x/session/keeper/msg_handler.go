@@ -3,7 +3,6 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	base "github.com/sentinel-official/hub/v12/types"
 	v1base "github.com/sentinel-official/hub/v12/types/v1"
 	"github.com/sentinel-official/hub/v12/x/session/types"
 	"github.com/sentinel-official/hub/v12/x/session/types/v3"
@@ -56,26 +55,15 @@ func (k *Keeper) HandleMsgCancelSession(ctx sdk.Context, msg *v3.MsgCancelSessio
 }
 
 func (k *Keeper) HandleMsgUpdateSession(ctx sdk.Context, msg *v3.MsgUpdateSessionRequest) (*v3.MsgUpdateSessionResponse, error) {
-	fromAddr, err := base.NodeAddressFromBech32(msg.From)
-	if err != nil {
-		return nil, err
-	}
-
 	session, found := k.GetSession(ctx, msg.ID)
 	if !found {
 		return nil, types.NewErrorSessionNotFound(msg.ID)
 	}
+	if msg.From != session.GetNodeAddress() {
+		return nil, types.NewErrorUnauthorized(msg.From)
+	}
 	if session.GetStatus().Equal(v1base.StatusInactive) {
 		return nil, types.NewErrorInvalidSessionStatus(session.GetID(), session.GetStatus())
-	}
-
-	nodeAddr, err := sdk.AccAddressFromBech32(session.GetNodeAddress())
-	if err != nil {
-		return nil, err
-	}
-
-	if !fromAddr.Equals(nodeAddr) {
-		return nil, types.NewErrorUnauthorized(msg.From)
 	}
 
 	if k.ProofVerificationEnabled(ctx) {
