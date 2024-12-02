@@ -11,60 +11,59 @@ import (
 
 // SessionInactivePreHook handles the necessary operations when a session becomes inactive.
 func (k *Keeper) SessionInactivePreHook(ctx sdk.Context, id uint64) error {
-	// Retrieve the session by ID and check if it exists, return an error if not found.
+	// Retrieve the session by ID; return an error if not found.
 	item, found := k.GetSession(ctx, id)
 	if !found {
 		return types.NewErrorSessionNotFound(id)
 	}
 
-	// Validate that the session status is "InactivePending", otherwise return an error.
-	if !item.GetStatus().Equal(v1base.StatusInactivePending) {
-		return types.NewErrorInvalidSessionStatus(item.GetID(), item.GetStatus())
-	}
-
-	// Assert the item to a v3.Session type and proceed only if the assertion is successful.
+	// Assert the retrieved session to the v3.Session type; return nil if the assertion fails.
 	session, ok := item.(*v3.Session)
 	if !ok {
 		return nil
 	}
 
-	// Retrieve the subscription linked to the session, and check if it exists, return an error if not found.
+	// Ensure the session status is "InactivePending"; return an error if it has a different status.
+	if !session.Status.Equal(v1base.StatusInactivePending) {
+		return types.NewErrorInvalidSessionStatus(session.ID, session.Status)
+	}
+
+	// Retrieve the subscription associated with the session; return an error if not found.
 	subscription, found := k.GetSubscription(ctx, session.SubscriptionID)
 	if !found {
 		return types.NewErrorSubscriptionNotFound(session.SubscriptionID)
 	}
 
-	// Convert the account address from Bech32 format, and panic if conversion fails.
-	accAddr, err := sdk.AccAddressFromBech32(item.GetAccAddress())
-	if err != nil {
-		panic(err)
-	}
-
-	// Convert the node address from Bech32 format, return an error if conversion fails.
-	nodeAddr, err := base.NodeAddressFromBech32(item.GetNodeAddress())
+	// Convert the session's account and node addresses from Bech32 format.
+	accAddr, err := sdk.AccAddressFromBech32(session.AccAddress)
 	if err != nil {
 		return err
 	}
 
-	// Retrieve the allocation for the subscription and account, return an error if not found.
+	nodeAddr, err := base.NodeAddressFromBech32(session.NodeAddress)
+	if err != nil {
+		return err
+	}
+
+	// Retrieve the allocation for the subscription and account; return an error if not found.
 	alloc, found := k.GetAllocation(ctx, subscription.ID, accAddr)
 	if !found {
 		return types.NewErrorAllocationNotFound(subscription.ID, accAddr)
 	}
 
-	// Calculate the total utilised bytes by adding download and upload bytes.
+	// Calculate the total utilised bytes as the sum of download and upload bytes.
 	utilisedBytes := session.DownloadBytes.Add(session.UploadBytes)
 
-	// Update the utilised bytes in the allocation, ensuring it does not exceed the granted bytes.
+	// Update the utilised bytes in the allocation; cap it at the granted bytes if it exceeds the limit.
 	alloc.UtilisedBytes = alloc.UtilisedBytes.Add(utilisedBytes)
 	if alloc.UtilisedBytes.GT(alloc.GrantedBytes) {
 		alloc.UtilisedBytes = alloc.GrantedBytes
 	}
 
-	// Update the allocation in the store with the new utilised bytes.
+	// Save the updated allocation in the store.
 	k.SetAllocation(ctx, alloc)
 
-	// Emit an event indicating the allocation update.
+	// Emit an event to log the allocation update.
 	ctx.EventManager().EmitTypedEvent(
 		&v3.EventAllocate{
 			ID:            alloc.ID,
@@ -74,13 +73,10 @@ func (k *Keeper) SessionInactivePreHook(ctx sdk.Context, id uint64) error {
 		},
 	)
 
-	// Delete the session records from the store, including records for account, allocation, node, plan, and subscription.
-	k.DeleteSession(ctx, item.GetID())
-	k.DeleteSessionForAccount(ctx, accAddr, item.GetID())
-	k.DeleteSessionForAllocation(ctx, subscription.ID, accAddr, item.GetID())
-	k.DeleteSessionForNode(ctx, nodeAddr, item.GetID())
-	k.DeleteSessionForPlanByNode(ctx, subscription.PlanID, nodeAddr, item.GetID())
-	k.DeleteSessionForSubscription(ctx, subscription.ID, item.GetID())
+	// Delete the session records associated with allocation, node, plan, and subscription from the store.
+	k.DeleteSessionForAllocation(ctx, subscription.ID, accAddr, session.ID)
+	k.DeleteSessionForPlanByNode(ctx, subscription.PlanID, nodeAddr, session.ID)
+	k.DeleteSessionForSubscription(ctx, subscription.ID, session.ID)
 
 	return nil
 }

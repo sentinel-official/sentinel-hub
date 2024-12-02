@@ -5,6 +5,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
+	base "github.com/sentinel-official/hub/v12/types"
 	v1base "github.com/sentinel-official/hub/v12/types/v1"
 	"github.com/sentinel-official/hub/v12/x/session/types/v3"
 )
@@ -60,7 +61,21 @@ func (k *Keeper) handleInactiveSessions(ctx sdk.Context) {
 			panic(err)
 		}
 
-		// Delete the session from the inactive queue as it is now processed
+		// Convert account address and node address from Bech32 format.
+		accAddr, err := sdk.AccAddressFromBech32(item.GetAccAddress())
+		if err != nil {
+			panic(err)
+		}
+
+		nodeAddr, err := base.NodeAddressFromBech32(item.GetNodeAddress())
+		if err != nil {
+			panic(err)
+		}
+
+		// Delete the session from the inactive queue and associated records.
+		k.DeleteSession(ctx, item.GetID())
+		k.DeleteSessionForAccount(ctx, accAddr, item.GetID())
+		k.DeleteSessionForNode(ctx, nodeAddr, item.GetID())
 		k.DeleteSessionForInactiveAt(ctx, item.GetInactiveAt(), item.GetID())
 
 		// Emit an event indicating the update of the session status to inactive

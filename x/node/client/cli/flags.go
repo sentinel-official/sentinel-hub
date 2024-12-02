@@ -6,8 +6,11 @@ import (
 )
 
 const (
+	flagDenom          = "denom"
 	flagGigabytePrices = "gigabyte-prices"
+	flagGigabytes      = "gigabytes"
 	flagHourlyPrices   = "hourly-prices"
+	flagHours          = "hours"
 	flagRemoteURL      = "remote-url"
 )
 

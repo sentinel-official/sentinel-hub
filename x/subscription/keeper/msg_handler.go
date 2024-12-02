@@ -88,14 +88,13 @@ func (k *Keeper) HandleMsgRenewSubscription(ctx sdk.Context, msg *v3.MsgRenewSub
 	k.DeleteSubscriptionForRenewalAt(ctx, subscription.RenewalAt(), subscription.ID)
 
 	share := k.ProviderStakingShare(ctx)
-	reward := baseutils.GetProportionOfCoin(quotePrice, share)
-	payment := quotePrice.Sub(reward)
 
 	accAddr, err := sdk.AccAddressFromBech32(msg.From)
 	if err != nil {
 		return nil, err
 	}
 
+	reward := baseutils.GetProportionOfCoin(quotePrice, share)
 	if err := k.SendCoinFromAccountToModule(ctx, accAddr, k.feeCollectorName, reward); err != nil {
 		return nil, err
 	}
@@ -105,6 +104,7 @@ func (k *Keeper) HandleMsgRenewSubscription(ctx sdk.Context, msg *v3.MsgRenewSub
 		return nil, err
 	}
 
+	payment := quotePrice.Sub(reward)
 	if err := k.SendCoin(ctx, accAddr, provAddr.Bytes(), payment); err != nil {
 		return nil, err
 	}

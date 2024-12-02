@@ -1,8 +1,6 @@
 package cli
 
 import (
-	"strconv"
-
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
@@ -132,9 +130,9 @@ func txUpdateNodeStatus() *cobra.Command {
 
 func txStartSession() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "start-session [node-addr] [gigabytes] [hours] [denom]",
+		Use:   "start-session [node-addr]",
 		Short: "Start a session with a node",
-		Args:  cobra.ExactArgs(4),
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -146,12 +144,17 @@ func txStartSession() *cobra.Command {
 				return err
 			}
 
-			gigabytes, err := strconv.ParseInt(args[1], 10, 64)
+			gigabytes, err := cmd.Flags().GetInt64(flagGigabytes)
 			if err != nil {
 				return err
 			}
 
-			hours, err := strconv.ParseInt(args[2], 10, 64)
+			hours, err := cmd.Flags().GetInt64(flagHours)
+			if err != nil {
+				return err
+			}
+
+			denom, err := cmd.Flags().GetString(flagDenom)
 			if err != nil {
 				return err
 			}
@@ -161,7 +164,7 @@ func txStartSession() *cobra.Command {
 				nodeAddr,
 				gigabytes,
 				hours,
-				args[3],
+				denom,
 			)
 			if err = msg.ValidateBasic(); err != nil {
 				return err
@@ -172,6 +175,9 @@ func txStartSession() *cobra.Command {
 	}
 
 	flags.AddTxFlagsToCmd(cmd)
+	cmd.Flags().Int64(flagGigabytes, 0, "Specify the number of gigabytes to purchase for the session")
+	cmd.Flags().Int64(flagHours, 0, "Specify the number of hours to purchase for the session")
+	cmd.Flags().String(flagDenom, "", "Specify the token denomination to be used for payment")
 
 	return cmd
 }
