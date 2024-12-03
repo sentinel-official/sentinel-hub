@@ -4,8 +4,6 @@ import (
 	"context"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 
 	"github.com/sentinel-official/hub/v12/x/lease/keeper"
 	"github.com/sentinel-official/hub/v12/x/lease/types/v1"
@@ -28,8 +26,9 @@ func (m *msgServer) MsgEndLease(c context.Context, req *v1.MsgEndLeaseRequest) (
 	return m.HandleMsgEndLease(ctx, req)
 }
 
-func (m *msgServer) MsgRenewLease(_ context.Context, _ *v1.MsgRenewLeaseRequest) (*v1.MsgRenewLeaseResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "")
+func (m *msgServer) MsgRenewLease(c context.Context, req *v1.MsgRenewLeaseRequest) (*v1.MsgRenewLeaseResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+	return m.HandleMsgRenewLease(ctx, req)
 }
 
 func (m *msgServer) MsgStartLease(c context.Context, req *v1.MsgStartLeaseRequest) (*v1.MsgStartLeaseResponse, error) {

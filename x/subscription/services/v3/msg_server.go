@@ -4,8 +4,6 @@ import (
 	"context"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 
 	"github.com/sentinel-official/hub/v12/x/subscription/keeper"
 	"github.com/sentinel-official/hub/v12/x/subscription/types/v3"
@@ -28,8 +26,9 @@ func (m *msgServer) MsgCancelSubscription(c context.Context, req *v3.MsgCancelSu
 	return m.HandleMsgCancelSubscription(ctx, req)
 }
 
-func (m *msgServer) MsgRenewSubscription(_ context.Context, _ *v3.MsgRenewSubscriptionRequest) (*v3.MsgRenewSubscriptionResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "")
+func (m *msgServer) MsgRenewSubscription(c context.Context, req *v3.MsgRenewSubscriptionRequest) (*v3.MsgRenewSubscriptionResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+	return m.HandleMsgRenewSubscription(ctx, req)
 }
 
 func (m *msgServer) MsgShareSubscription(c context.Context, req *v3.MsgShareSubscriptionRequest) (*v3.MsgShareSubscriptionResponse, error) {

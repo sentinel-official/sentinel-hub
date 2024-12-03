@@ -18,13 +18,13 @@ func (k *Keeper) BeginBlock(ctx sdk.Context) {
 
 	portID := k.GetPortID(ctx)
 	if portID == "" {
-		ctx.Logger().Info("PortID is empty, skipping BeginBlock execution")
+		k.Logger(ctx).Info("PortID is empty, skipping BeginBlock execution")
 		return
 	}
 
 	channelID := k.GetChannelID(ctx)
 	if channelID == "" {
-		ctx.Logger().Info("ChannelID is empty, skipping BeginBlock execution")
+		k.Logger(ctx).Info("ChannelID is empty, skipping BeginBlock execution")
 		return
 	}
 
@@ -33,7 +33,7 @@ func (k *Keeper) BeginBlock(ctx sdk.Context) {
 	// Get the channel capability to ensure we have the authority to send packets.
 	channelCap, found := k.capability.GetCapability(ctx, ibchost.ChannelCapabilityPath(portID, channelID))
 	if !found {
-		ctx.Logger().Info("Channel capability not found, skipping BeginBlock execution")
+		k.Logger(ctx).Info("Channel capability not found, skipping BeginBlock execution")
 		return
 	}
 
@@ -53,7 +53,7 @@ func (k *Keeper) BeginBlock(ctx sdk.Context) {
 		// Send the GetProtoRevPool query packet over IBC.
 		sequence, err := k.SendQueryPacket(ctx, channelCap, portID, channelID, uint64(timeout), req)
 		if err != nil {
-			ctx.Logger().Error("Failed to send query packet", "asset", item.Denom, "error", err)
+			k.Logger(ctx).Error("Failed to send query packet", "asset", item.Denom, "error", err)
 			return false
 		}
 

@@ -1,11 +1,14 @@
 package keeper
 
 import (
+	"github.com/cometbft/cometbft/libs/log"
 	"github.com/cosmos/cosmos-sdk/codec"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ibcporttypes "github.com/cosmos/ibc-go/v7/modules/core/05-port/types"
 	ibcexported "github.com/cosmos/ibc-go/v7/modules/core/exported"
+
+	"github.com/sentinel-official/hub/v12/x/oracle/types"
 )
 
 type Keeper struct {
@@ -32,6 +35,10 @@ func NewKeeper(
 
 func (k *Keeper) GetAuthority() string {
 	return k.authority
+}
+
+func (k *Keeper) Logger(ctx sdk.Context) log.Logger {
+	return ctx.Logger().With("module", "x/"+types.ModuleName)
 }
 
 func (k *Keeper) Store(ctx sdk.Context) sdk.KVStore {

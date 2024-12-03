@@ -47,9 +47,9 @@ func txEndLease() *cobra.Command {
 
 func txRenewLease() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "renew-lease [id] [hours] [denom]",
+		Use:   "renew-lease [id] [hours]",
 		Short: "Renew an existing lease for a specified duration",
-		Args:  cobra.ExactArgs(3),
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -66,11 +66,16 @@ func txRenewLease() *cobra.Command {
 				return err
 			}
 
+			denom, err := cmd.Flags().GetString(flagDenom)
+			if err != nil {
+				return err
+			}
+
 			msg := v1.NewMsgRenewLeaseRequest(
 				ctx.FromAddress.Bytes(),
 				id,
 				hours,
-				args[2],
+				denom,
 			)
 			if err = msg.ValidateBasic(); err != nil {
 				return err
@@ -81,15 +86,16 @@ func txRenewLease() *cobra.Command {
 	}
 
 	flags.AddTxFlagsToCmd(cmd)
+	cmd.Flags().String(flagDenom, "", "Specify the payment denomination for the lease")
 
 	return cmd
 }
 
 func txStartLease() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "start-lease [node-addr] [hours] [denom] [renewable]",
+		Use:   "start-lease [node-addr] [hours]",
 		Short: "Start a lease with a node for the specified duration",
-		Args:  cobra.ExactArgs(4),
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -106,7 +112,12 @@ func txStartLease() *cobra.Command {
 				return err
 			}
 
-			renewable, err := strconv.ParseBool(args[3])
+			denom, err := cmd.Flags().GetString(flagDenom)
+			if err != nil {
+				return err
+			}
+
+			renewable, err := cmd.Flags().GetBool(flagRenewable)
 			if err != nil {
 				return err
 			}
@@ -115,7 +126,7 @@ func txStartLease() *cobra.Command {
 				ctx.FromAddress.Bytes(),
 				nodeAddr,
 				hours,
-				args[2],
+				denom,
 				renewable,
 			)
 			if err = msg.ValidateBasic(); err != nil {
@@ -127,15 +138,17 @@ func txStartLease() *cobra.Command {
 	}
 
 	flags.AddTxFlagsToCmd(cmd)
+	cmd.Flags().String(flagDenom, "", "Specify the payment denomination for the lease")
+	cmd.Flags().Bool(flagRenewable, false, "Specify if the lease is renewable")
 
 	return cmd
 }
 
 func txUpdateLease() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "update-lease [id] [renewable]",
+		Use:   "update-lease [id]",
 		Short: "Update the details of an existing lease",
-		Args:  cobra.ExactArgs(2),
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -147,7 +160,7 @@ func txUpdateLease() *cobra.Command {
 				return err
 			}
 
-			renewable, err := strconv.ParseBool(args[1])
+			renewable, err := cmd.Flags().GetBool(flagRenewable)
 			if err != nil {
 				return err
 			}
@@ -166,6 +179,7 @@ func txUpdateLease() *cobra.Command {
 	}
 
 	flags.AddTxFlagsToCmd(cmd)
+	cmd.Flags().Bool(flagRenewable, false, "Specify if the lease is renewable")
 
 	return cmd
 }

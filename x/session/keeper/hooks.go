@@ -12,6 +12,8 @@ import (
 
 // NodeInactivePreHook handles the necessary operations when a node becomes inactive.
 func (k *Keeper) NodeInactivePreHook(ctx sdk.Context, addr base.NodeAddress) error {
+	k.Logger(ctx).Info("Running node inactive pre-hook", "address", addr.String())
+
 	// Iterate through all active sessions associated with the given node address.
 	return k.IterateSessionsForNode(ctx, addr, func(_ int, item v3.Session) (bool, error) {
 		// Skip the session if it is not active.
@@ -45,6 +47,8 @@ func (k *Keeper) NodeInactivePreHook(ctx sdk.Context, addr base.NodeAddress) err
 
 // SubscriptionInactivePendingPreHook handles the necessary operations when a subscription becomes inactive pending.
 func (k *Keeper) SubscriptionInactivePendingPreHook(ctx sdk.Context, id uint64) error {
+	k.Logger(ctx).Info("Running subscription inactive pending pre-hook", "id", id)
+
 	// Iterate through all active sessions associated with the given subscription ID.
 	return k.IterateSessionsForSubscription(ctx, id, func(_ int, item v3.Session) (bool, error) {
 		// Skip the session if it is not active.
@@ -78,6 +82,8 @@ func (k *Keeper) SubscriptionInactivePendingPreHook(ctx sdk.Context, id uint64) 
 
 // PlanUnlinkNodePreHook handles the necessary operations when unlinking a node from a plan.
 func (k *Keeper) PlanUnlinkNodePreHook(ctx sdk.Context, id uint64, addr base.NodeAddress) error {
+	k.Logger(ctx).Info("Running plan unlink node pre-hook", "id", id, "address", addr.String())
+
 	// Iterate through all active sessions associated with the given plan ID and node address.
 	return k.IterateSessionsForPlanByNode(ctx, id, addr, func(_ int, item v3.Session) (bool, error) {
 		// Skip the session if it is not active.

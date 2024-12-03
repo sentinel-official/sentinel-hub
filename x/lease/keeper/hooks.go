@@ -11,6 +11,8 @@ import (
 
 // NodeInactivePreHook is triggered when a node becomes inactive. It ends all leases associated with the specified node address.
 func (k *Keeper) NodeInactivePreHook(ctx sdk.Context, addr base.NodeAddress) error {
+	k.Logger(ctx).Info("Running node inactive pre-hook", "address", addr.String())
+
 	// Iterate through all leases associated with the given node address
 	return k.IterateLeasesForNode(ctx, addr, func(_ int, item v1.Lease) (bool, error) {
 		// Create a message to end the lease
@@ -39,6 +41,8 @@ func (k *Keeper) NodeInactivePreHook(ctx sdk.Context, addr base.NodeAddress) err
 
 // ProviderInactivePreHook is triggered when a provider becomes inactive. It ends all leases associated with the specified provider address.
 func (k *Keeper) ProviderInactivePreHook(ctx sdk.Context, addr base.ProvAddress) error {
+	k.Logger(ctx).Info("Running provider inactive pre-hook", "address", addr.String())
+
 	// Iterate through all leases associated with the given provider address
 	return k.IterateLeasesForProvider(ctx, addr, func(_ int, item v1.Lease) (bool, error) {
 		// Create a message to end the lease

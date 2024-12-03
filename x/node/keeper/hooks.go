@@ -12,6 +12,8 @@ import (
 
 // SessionInactivePreHook handles operations when a session transitions to the inactive state.
 func (k *Keeper) SessionInactivePreHook(ctx sdk.Context, id uint64) error {
+	k.Logger(ctx).Info("Running session inactive pre-hook", "id", id)
+
 	// Retrieve the session by ID and return an error if not found.
 	item, found := k.GetSession(ctx, id)
 	if !found {

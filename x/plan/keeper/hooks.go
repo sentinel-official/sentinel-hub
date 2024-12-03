@@ -13,6 +13,8 @@ import (
 
 // LeaseInactivePreHook handles the necessary operations when a lease becomes inactive.
 func (k *Keeper) LeaseInactivePreHook(ctx sdk.Context, id uint64) error {
+	k.Logger(ctx).Info("Running lease inactive pre-hook", "id", id)
+
 	// Retrieve the lease by ID and check if it exists, return an error if not found.
 	lease, found := k.GetLease(ctx, id)
 	if !found {
@@ -58,6 +60,8 @@ func (k *Keeper) LeaseInactivePreHook(ctx sdk.Context, id uint64) error {
 
 // ProviderInactivePreHook handles the necessary operations when a provider becomes inactive.
 func (k *Keeper) ProviderInactivePreHook(ctx sdk.Context, addr base.ProvAddress) error {
+	k.Logger(ctx).Info("Running provider inactive pre-hook", "address", addr.String())
+
 	// Iterate through all plans associated with the given provider address.
 	return k.IteratePlansForProvider(ctx, addr, func(_ int, item v3.Plan) (bool, error) {
 		// Check if the plan status is active; if not, skip to the next plan.
