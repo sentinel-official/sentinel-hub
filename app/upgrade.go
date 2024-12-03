@@ -6,6 +6,7 @@ import (
 	"time"
 
 	sdkmath "cosmossdk.io/math"
+	v2wasmmigrations "github.com/CosmWasm/wasmd/x/wasm/migrations/v2"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -18,7 +19,7 @@ import (
 	crisistypes "github.com/cosmos/cosmos-sdk/x/crisis/types"
 	distributiontypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	govv1types "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
+	v1govtypes "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
 	"github.com/cosmos/cosmos-sdk/x/group"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	"github.com/cosmos/cosmos-sdk/x/nft"
@@ -61,13 +62,13 @@ func UpgradeHandler(
 			banktypes.ModuleName:         banktypes.ParamKeyTable(),
 			crisistypes.ModuleName:       crisistypes.ParamKeyTable(),
 			distributiontypes.ModuleName: distributiontypes.ParamKeyTable(),
-			govtypes.ModuleName:          govv1types.ParamKeyTable(),
+			govtypes.ModuleName:          v1govtypes.ParamKeyTable(),
 			minttypes.ModuleName:         minttypes.ParamKeyTable(),
 			slashingtypes.ModuleName:     slashingtypes.ParamKeyTable(),
 			stakingtypes.ModuleName:      stakingtypes.ParamKeyTable(),
 
 			// Other subspaces
-			wasmtypes.ModuleName: wasmtypes.ParamKeyTable(),
+			wasmtypes.ModuleName: v2wasmmigrations.ParamKeyTable(),
 		}
 
 		for name, table := range keyTables {
