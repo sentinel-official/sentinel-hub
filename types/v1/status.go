@@ -18,9 +18,14 @@ func (s Status) String() string {
 }
 
 func (s Status) IsValid() bool {
-	return s == StatusActive ||
-		s == StatusInactivePending ||
-		s == StatusInactive
+	switch s {
+	case StatusActive,
+		StatusInactivePending,
+		StatusInactive:
+		return true
+	default:
+		return false
+	}
 }
 
 func (s Status) Equal(v Status) bool {

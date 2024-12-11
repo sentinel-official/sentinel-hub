@@ -62,13 +62,13 @@ func (k *Keeper) handleLeasePayouts(ctx sdk.Context) {
 		}
 
 		// Calculate the staking reward and send it to the module
-		reward := baseutils.GetProportionOfCoin(item.Price, share)
+		reward := baseutils.GetProportionOfCoin(item.QuotePrice, share)
 		if err := k.SendCoinFromDepositToModule(ctx, provAddr.Bytes(), k.feeCollectorName, reward); err != nil {
 			panic(err)
 		}
 
 		// Calculate the remaining payment and send it to the node address
-		payment := item.Price.Sub(reward)
+		payment := item.QuotePrice.Sub(reward)
 		if err := k.SendCoinFromDepositToAccount(ctx, provAddr.Bytes(), nodeAddr.Bytes(), payment); err != nil {
 			panic(err)
 		}
@@ -125,7 +125,7 @@ func (k *Keeper) handleLeaseRenewals(ctx sdk.Context) {
 			From:  item.ProvAddress,
 			ID:    item.ID,
 			Hours: item.MaxHours,
-			Denom: item.Price.Denom,
+			Denom: item.BasePrice.Denom,
 		}
 
 		// Get the appropriate handler for processing the renewal message

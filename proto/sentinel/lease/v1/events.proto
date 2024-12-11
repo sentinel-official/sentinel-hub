@@ -12,7 +12,9 @@ message EventCreate {
   string node_address = 2;
   string prov_address = 3;
   int64 max_hours = 4;
-  string price = 5;
+  string base_price = 5;
+  string quote_price = 6;
+  string renewal_price_policy = 7;
 }
 
 message EventEnd {
@@ -40,7 +42,8 @@ message EventRenew {
   string node_address = 2;
   string prov_address = 3;
   int64 max_hours = 4;
-  string price = 5;
+  string base_price = 5;
+  string quote_price = 6;
 }
 
 message EventUpdate {
@@ -48,6 +51,6 @@ message EventUpdate {
   string node_address = 2;
   string prov_address = 3;
   int64 hours = 4;
-  bool renewable = 5;
+  string renewal_price_policy = 5;
   string payout_at = 6;
 }

@@ -4,6 +4,7 @@ package sentinel.lease.v1;
 import "cosmos/base/v1beta1/coin.proto";
 import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
+import "sentinel/types/v1/renewal.proto";
 
 option go_package = "github.com/sentinel-official/hub/v12/x/lease/types/v1";
 option (gogoproto.equal_all) = false;
@@ -13,15 +14,16 @@ message Lease {
   uint64 id = 1 [(gogoproto.customname) = "ID"];
   string prov_address = 2;
   string node_address = 3;
-  cosmos.base.v1beta1.Coin price = 4 [(gogoproto.nullable) = false];
-  int64 hours = 5;
-  int64 max_hours = 6;
-  bool renewable = 7;
-  google.protobuf.Timestamp inactive_at = 8 [
+  cosmos.base.v1beta1.DecCoin base_price = 4 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin quote_price = 5 [(gogoproto.nullable) = false];
+  int64 hours = 6;
+  int64 max_hours = 7;
+  sentinel.types.v1.RenewalPricePolicy renewal_price_policy = 8;
+  google.protobuf.Timestamp inactive_at = 9 [
     (gogoproto.nullable) = false,
     (gogoproto.stdtime) = true
   ];
-  google.protobuf.Timestamp payout_at = 9 [
+  google.protobuf.Timestamp payout_at = 10 [
     (gogoproto.nullable) = false,
     (gogoproto.stdtime) = true
   ];

@@ -117,7 +117,7 @@ func txStartLease() *cobra.Command {
 				return err
 			}
 
-			renewable, err := cmd.Flags().GetBool(flagRenewable)
+			renewalPricePolicy, err := GetRenewalPricePolicy(cmd.Flags())
 			if err != nil {
 				return err
 			}
@@ -127,7 +127,7 @@ func txStartLease() *cobra.Command {
 				nodeAddr,
 				hours,
 				denom,
-				renewable,
+				renewalPricePolicy,
 			)
 			if err = msg.ValidateBasic(); err != nil {
 				return err
@@ -139,7 +139,7 @@ func txStartLease() *cobra.Command {
 
 	flags.AddTxFlagsToCmd(cmd)
 	cmd.Flags().String(flagDenom, "", "Specify the payment denomination for the lease")
-	cmd.Flags().Bool(flagRenewable, false, "Specify if the lease is renewable")
+	cmd.Flags().String(flagRenewalPricePolicy, "", "Specify the lease renewal price policy")
 
 	return cmd
 }
@@ -160,7 +160,7 @@ func txUpdateLease() *cobra.Command {
 				return err
 			}
 
-			renewable, err := cmd.Flags().GetBool(flagRenewable)
+			renewalPricePolicy, err := GetRenewalPricePolicy(cmd.Flags())
 			if err != nil {
 				return err
 			}
@@ -168,7 +168,7 @@ func txUpdateLease() *cobra.Command {
 			msg := v1.NewMsgUpdateLeaseRequest(
 				ctx.FromAddress.Bytes(),
 				id,
-				renewable,
+				renewalPricePolicy,
 			)
 			if err = msg.ValidateBasic(); err != nil {
 				return err
@@ -179,7 +179,7 @@ func txUpdateLease() *cobra.Command {
 	}
 
 	flags.AddTxFlagsToCmd(cmd)
-	cmd.Flags().Bool(flagRenewable, false, "Specify if the lease is renewable")
+	cmd.Flags().Bool(flagRenewalPricePolicy, false, "Specify the lease renewal price policy")
 
 	return cmd
 }

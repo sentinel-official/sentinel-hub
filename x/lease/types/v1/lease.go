@@ -8,24 +8,33 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	base "github.com/sentinel-official/hub/v12/types"
+	v1base "github.com/sentinel-official/hub/v12/types/v1"
 )
 
 func (m *Lease) DepositAmount() sdk.Coin {
-	amount := m.Price.Amount.MulRaw(m.MaxHours)
-	return sdk.Coin{Denom: m.Price.Denom, Amount: amount}
+	amount := m.QuotePrice.Amount.MulRaw(m.MaxHours)
+	return sdk.Coin{Denom: m.QuotePrice.Denom, Amount: amount}
 }
 
 func (m *Lease) RefundAmount() sdk.Coin {
-	amount := m.Price.Amount.MulRaw(m.MaxHours - m.Hours)
-	return sdk.Coin{Denom: m.Price.Denom, Amount: amount}
+	amount := m.QuotePrice.Amount.MulRaw(m.MaxHours - m.Hours)
+	return sdk.Coin{Denom: m.QuotePrice.Denom, Amount: amount}
 }
 
 func (m *Lease) RenewalAt() time.Time {
-	if m.Renewable {
-		return m.InactiveAt
+	if m.RenewalPricePolicy.Equal(v1base.RenewalPricePolicyUnspecified) {
+		return time.Time{}
 	}
 
-	return time.Time{}
+	return m.InactiveAt
+}
+
+func (m *Lease) ValidateRenewalPolicies(price sdk.DecCoin) error {
+	if err := m.RenewalPricePolicy.Validate(price, m.BasePrice); err != nil {
+		return fmt.Errorf("invalid renewal price policy: %w", err)
+	}
+
+	return nil
 }
 
 func (m *Lease) Validate() error {
@@ -44,10 +53,10 @@ func (m *Lease) Validate() error {
 	if _, err := base.NodeAddressFromBech32(m.NodeAddress); err != nil {
 		return sdkerrors.Wrapf(err, "invalid node_address %s", m.NodeAddress)
 	}
-	if !m.Price.IsValid() {
+	if !m.QuotePrice.IsValid() {
 		return fmt.Errorf("price must be valid")
 	}
-	if m.Price.IsZero() {
+	if m.QuotePrice.IsZero() {
 		return fmt.Errorf("price cannot be zero")
 	}
 	if m.Hours <= 0 {

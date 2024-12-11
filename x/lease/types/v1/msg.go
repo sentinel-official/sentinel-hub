@@ -7,6 +7,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	base "github.com/sentinel-official/hub/v12/types"
+	v1base "github.com/sentinel-official/hub/v12/types/v1"
 	"github.com/sentinel-official/hub/v12/x/lease/types"
 )
 
@@ -95,13 +96,13 @@ func (m *MsgRenewLeaseRequest) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{from.Bytes()}
 }
 
-func NewMsgStartLeaseRequest(from base.ProvAddress, nodeAddr base.NodeAddress, hours int64, denom string, renewable bool) *MsgStartLeaseRequest {
+func NewMsgStartLeaseRequest(from base.ProvAddress, nodeAddr base.NodeAddress, hours int64, denom string, renewalPricePolicy v1base.RenewalPricePolicy) *MsgStartLeaseRequest {
 	return &MsgStartLeaseRequest{
-		From:        from.String(),
-		NodeAddress: nodeAddr.String(),
-		Hours:       hours,
-		Denom:       denom,
-		Renewable:   renewable,
+		From:               from.String(),
+		NodeAddress:        nodeAddr.String(),
+		Hours:              hours,
+		Denom:              denom,
+		RenewalPricePolicy: renewalPricePolicy,
 	}
 }
 
@@ -133,6 +134,9 @@ func (m *MsgStartLeaseRequest) ValidateBasic() error {
 			return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
 		}
 	}
+	if !m.RenewalPricePolicy.IsValid() {
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "renewal price policy must be valid")
+	}
 
 	return nil
 }
@@ -146,11 +150,11 @@ func (m *MsgStartLeaseRequest) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{from.Bytes()}
 }
 
-func NewMsgUpdateLeaseRequest(from base.ProvAddress, id uint64, renewable bool) *MsgUpdateLeaseRequest {
+func NewMsgUpdateLeaseRequest(from base.ProvAddress, id uint64, renewalPricePolicy v1base.RenewalPricePolicy) *MsgUpdateLeaseRequest {
 	return &MsgUpdateLeaseRequest{
-		From:      from.String(),
-		ID:        id,
-		Renewable: renewable,
+		From:               from.String(),
+		ID:                 id,
+		RenewalPricePolicy: renewalPricePolicy,
 	}
 }
 
@@ -163,6 +167,9 @@ func (m *MsgUpdateLeaseRequest) ValidateBasic() error {
 	}
 	if m.ID == 0 {
 		return sdkerrors.Wrap(types.ErrInvalidMessage, "id cannot be zero")
+	}
+	if !m.RenewalPricePolicy.IsValid() {
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "renewal price policy must be valid")
 	}
 
 	return nil

@@ -8,6 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	base "github.com/sentinel-official/hub/v12/types"
+	v1base "github.com/sentinel-official/hub/v12/types/v1"
 )
 
 func TestMsgEndLeaseRequest_ValidateBasic(t *testing.T) {
@@ -178,87 +179,87 @@ func TestMsgStartLeaseRequest_ValidateBasic(t *testing.T) {
 	}{
 		{
 			"ValidMessage",
-			&MsgStartLeaseRequest{From: base.TestBech32ProvAddr20Bytes, NodeAddress: base.TestBech32NodeAddr20Bytes, Hours: 24, Denom: base.TestDenomOne, Renewable: true},
+			&MsgStartLeaseRequest{From: base.TestBech32ProvAddr20Bytes, NodeAddress: base.TestBech32NodeAddr20Bytes, Hours: 24, Denom: base.TestDenomOne, RenewalPricePolicy: v1base.RenewalPricePolicyAlways},
 			false,
 		},
 		{
 			"EmptyFromAddress",
-			&MsgStartLeaseRequest{From: base.TestAddrEmpty, NodeAddress: base.TestBech32NodeAddr20Bytes, Hours: 24, Denom: base.TestDenomOne, Renewable: true},
+			&MsgStartLeaseRequest{From: base.TestAddrEmpty, NodeAddress: base.TestBech32NodeAddr20Bytes, Hours: 24, Denom: base.TestDenomOne, RenewalPricePolicy: v1base.RenewalPricePolicyAlways},
 			true,
 		},
 		{
 			"EmptyNodeAddress",
-			&MsgStartLeaseRequest{From: base.TestBech32ProvAddr20Bytes, NodeAddress: base.TestAddrEmpty, Hours: 24, Denom: base.TestDenomOne, Renewable: true},
+			&MsgStartLeaseRequest{From: base.TestBech32ProvAddr20Bytes, NodeAddress: base.TestAddrEmpty, Hours: 24, Denom: base.TestDenomOne, RenewalPricePolicy: v1base.RenewalPricePolicyAlways},
 			true,
 		},
 		{
 			"InvalidNodeAddressFormat",
-			&MsgStartLeaseRequest{From: base.TestBech32ProvAddr20Bytes, NodeAddress: base.TestAddrInvalid, Hours: 24, Denom: base.TestDenomOne, Renewable: true},
+			&MsgStartLeaseRequest{From: base.TestBech32ProvAddr20Bytes, NodeAddress: base.TestAddrInvalid, Hours: 24, Denom: base.TestDenomOne, RenewalPricePolicy: v1base.RenewalPricePolicyAlways},
 			true,
 		},
 		{
 			"HoursCannotBeZero",
-			&MsgStartLeaseRequest{From: base.TestBech32ProvAddr20Bytes, NodeAddress: base.TestBech32NodeAddr20Bytes, Hours: 0, Denom: base.TestDenomOne, Renewable: true},
+			&MsgStartLeaseRequest{From: base.TestBech32ProvAddr20Bytes, NodeAddress: base.TestBech32NodeAddr20Bytes, Hours: 0, Denom: base.TestDenomOne, RenewalPricePolicy: v1base.RenewalPricePolicyAlways},
 			true,
 		},
 		{
 			"NegativeHours",
-			&MsgStartLeaseRequest{From: base.TestBech32ProvAddr20Bytes, NodeAddress: base.TestBech32NodeAddr20Bytes, Hours: -5, Denom: base.TestDenomOne, Renewable: true},
+			&MsgStartLeaseRequest{From: base.TestBech32ProvAddr20Bytes, NodeAddress: base.TestBech32NodeAddr20Bytes, Hours: -5, Denom: base.TestDenomOne, RenewalPricePolicy: v1base.RenewalPricePolicyAlways},
 			true,
 		},
 		{
 			"EmptyDenom",
-			&MsgStartLeaseRequest{From: base.TestBech32ProvAddr20Bytes, NodeAddress: base.TestBech32NodeAddr20Bytes, Hours: 24, Denom: base.TestDenomEmpty, Renewable: true},
+			&MsgStartLeaseRequest{From: base.TestBech32ProvAddr20Bytes, NodeAddress: base.TestBech32NodeAddr20Bytes, Hours: 24, Denom: base.TestDenomEmpty, RenewalPricePolicy: v1base.RenewalPricePolicyAlways},
 			false,
 		},
 		{
 			"InvalidDenom",
-			&MsgStartLeaseRequest{From: base.TestBech32ProvAddr20Bytes, NodeAddress: base.TestBech32NodeAddr20Bytes, Hours: 24, Denom: base.TestDenomInvalid, Renewable: true},
+			&MsgStartLeaseRequest{From: base.TestBech32ProvAddr20Bytes, NodeAddress: base.TestBech32NodeAddr20Bytes, Hours: 24, Denom: base.TestDenomInvalid, RenewalPricePolicy: v1base.RenewalPricePolicyAlways},
 			true,
 		},
 		{
 			"ValidFromAddress10Bytes",
-			&MsgStartLeaseRequest{From: base.TestBech32ProvAddr10Bytes, NodeAddress: base.TestBech32NodeAddr20Bytes, Hours: 24, Denom: base.TestDenomOne, Renewable: true},
+			&MsgStartLeaseRequest{From: base.TestBech32ProvAddr10Bytes, NodeAddress: base.TestBech32NodeAddr20Bytes, Hours: 24, Denom: base.TestDenomOne, RenewalPricePolicy: v1base.RenewalPricePolicyAlways},
 			false,
 		},
 		{
 			"ValidNodeAddress10Bytes",
-			&MsgStartLeaseRequest{From: base.TestBech32ProvAddr20Bytes, NodeAddress: base.TestBech32NodeAddr10Bytes, Hours: 24, Denom: base.TestDenomOne, Renewable: true},
+			&MsgStartLeaseRequest{From: base.TestBech32ProvAddr20Bytes, NodeAddress: base.TestBech32NodeAddr10Bytes, Hours: 24, Denom: base.TestDenomOne, RenewalPricePolicy: v1base.RenewalPricePolicyAlways},
 			false,
 		},
 		{
 			"ValidFromAddress30Bytes",
-			&MsgStartLeaseRequest{From: base.TestBech32ProvAddr30Bytes, NodeAddress: base.TestBech32NodeAddr20Bytes, Hours: 24, Denom: base.TestDenomOne, Renewable: true},
+			&MsgStartLeaseRequest{From: base.TestBech32ProvAddr30Bytes, NodeAddress: base.TestBech32NodeAddr20Bytes, Hours: 24, Denom: base.TestDenomOne, RenewalPricePolicy: v1base.RenewalPricePolicyAlways},
 			false,
 		},
 		{
 			"MaximumUint64Hours",
-			&MsgStartLeaseRequest{From: base.TestBech32ProvAddr20Bytes, NodeAddress: base.TestBech32NodeAddr20Bytes, Hours: math.MaxInt64, Denom: base.TestDenomOne, Renewable: true},
+			&MsgStartLeaseRequest{From: base.TestBech32ProvAddr20Bytes, NodeAddress: base.TestBech32NodeAddr20Bytes, Hours: math.MaxInt64, Denom: base.TestDenomOne, RenewalPricePolicy: v1base.RenewalPricePolicyAlways},
 			false,
 		},
 		{
 			"InvalidFromAddressAccount",
-			&MsgStartLeaseRequest{From: base.TestBech32AccAddr20Bytes, NodeAddress: base.TestBech32NodeAddr20Bytes, Hours: 24, Denom: base.TestDenomOne, Renewable: true},
+			&MsgStartLeaseRequest{From: base.TestBech32AccAddr20Bytes, NodeAddress: base.TestBech32NodeAddr20Bytes, Hours: 24, Denom: base.TestDenomOne, RenewalPricePolicy: v1base.RenewalPricePolicyAlways},
 			true,
 		},
 		{
 			"InvalidFromAddressEmptyNode",
-			&MsgStartLeaseRequest{From: base.TestBech32ProvAddr20Bytes, NodeAddress: base.TestAddrEmpty, Hours: 24, Denom: base.TestDenomOne, Renewable: true},
+			&MsgStartLeaseRequest{From: base.TestBech32ProvAddr20Bytes, NodeAddress: base.TestAddrEmpty, Hours: 24, Denom: base.TestDenomOne, RenewalPricePolicy: v1base.RenewalPricePolicyAlways},
 			true,
 		},
 		{
 			"LargeValidHours",
-			&MsgStartLeaseRequest{From: base.TestBech32ProvAddr20Bytes, NodeAddress: base.TestBech32NodeAddr20Bytes, Hours: 100000, Denom: base.TestDenomOne, Renewable: true},
+			&MsgStartLeaseRequest{From: base.TestBech32ProvAddr20Bytes, NodeAddress: base.TestBech32NodeAddr20Bytes, Hours: 100000, Denom: base.TestDenomOne, RenewalPricePolicy: v1base.RenewalPricePolicyAlways},
 			false,
 		},
 		{
 			"InvalidAddressFormatAndZeroHours",
-			&MsgStartLeaseRequest{From: base.TestAddrInvalid, NodeAddress: base.TestBech32NodeAddr20Bytes, Hours: 0, Denom: base.TestDenomOne, Renewable: true},
+			&MsgStartLeaseRequest{From: base.TestAddrInvalid, NodeAddress: base.TestBech32NodeAddr20Bytes, Hours: 0, Denom: base.TestDenomOne, RenewalPricePolicy: v1base.RenewalPricePolicyAlways},
 			true,
 		},
 		{
 			"InvalidFromAndNodeAddress",
-			&MsgStartLeaseRequest{From: base.TestAddrInvalid, NodeAddress: base.TestAddrInvalidPrefix, Hours: 24, Denom: base.TestDenomOne, Renewable: true},
+			&MsgStartLeaseRequest{From: base.TestAddrInvalid, NodeAddress: base.TestAddrInvalidPrefix, Hours: 24, Denom: base.TestDenomOne, RenewalPricePolicy: v1base.RenewalPricePolicyAlways},
 			true,
 		},
 	}
@@ -283,62 +284,62 @@ func TestMsgUpdateLeaseRequest_ValidateBasic(t *testing.T) {
 	}{
 		{
 			"ValidMessage",
-			&MsgUpdateLeaseRequest{From: base.TestBech32ProvAddr20Bytes, ID: 1, Renewable: true},
+			&MsgUpdateLeaseRequest{From: base.TestBech32ProvAddr20Bytes, ID: 1, RenewalPricePolicy: v1base.RenewalPricePolicyAlways},
 			false,
 		},
 		{
 			"EmptyFromAddress",
-			&MsgUpdateLeaseRequest{From: base.TestAddrEmpty, ID: 1, Renewable: true},
+			&MsgUpdateLeaseRequest{From: base.TestAddrEmpty, ID: 1, RenewalPricePolicy: v1base.RenewalPricePolicyAlways},
 			true,
 		},
 		{
 			"InvalidIDZero",
-			&MsgUpdateLeaseRequest{From: base.TestBech32ProvAddr20Bytes, ID: 0, Renewable: true},
+			&MsgUpdateLeaseRequest{From: base.TestBech32ProvAddr20Bytes, ID: 0, RenewalPricePolicy: v1base.RenewalPricePolicyAlways},
 			true,
 		},
 		{
 			"InvalidFromAddressFormat",
-			&MsgUpdateLeaseRequest{From: base.TestAddrInvalid, ID: 1, Renewable: true},
+			&MsgUpdateLeaseRequest{From: base.TestAddrInvalid, ID: 1, RenewalPricePolicy: v1base.RenewalPricePolicyAlways},
 			true,
 		},
 		{
 			"InvalidFromAddressPrefix",
-			&MsgUpdateLeaseRequest{From: base.TestAddrInvalidPrefix, ID: 1, Renewable: true},
+			&MsgUpdateLeaseRequest{From: base.TestAddrInvalidPrefix, ID: 1, RenewalPricePolicy: v1base.RenewalPricePolicyAlways},
 			true,
 		},
 		{
 			"ValidFromAddress10Bytes",
-			&MsgUpdateLeaseRequest{From: base.TestBech32ProvAddr10Bytes, ID: 1, Renewable: true},
+			&MsgUpdateLeaseRequest{From: base.TestBech32ProvAddr10Bytes, ID: 1, RenewalPricePolicy: v1base.RenewalPricePolicyAlways},
 			false,
 		},
 		{
 			"ValidFromAddress30Bytes",
-			&MsgUpdateLeaseRequest{From: base.TestBech32ProvAddr30Bytes, ID: 1, Renewable: true},
+			&MsgUpdateLeaseRequest{From: base.TestBech32ProvAddr30Bytes, ID: 1, RenewalPricePolicy: v1base.RenewalPricePolicyAlways},
 			false,
 		},
 		{
 			"MaximumUint64ID",
-			&MsgUpdateLeaseRequest{From: base.TestBech32ProvAddr20Bytes, ID: math.MaxUint64, Renewable: true},
+			&MsgUpdateLeaseRequest{From: base.TestBech32ProvAddr20Bytes, ID: math.MaxUint64, RenewalPricePolicy: v1base.RenewalPricePolicyAlways},
 			false,
 		},
 		{
 			"InvalidFromAddressAccount",
-			&MsgUpdateLeaseRequest{From: base.TestBech32AccAddr20Bytes, ID: 1, Renewable: true},
+			&MsgUpdateLeaseRequest{From: base.TestBech32AccAddr20Bytes, ID: 1, RenewalPricePolicy: v1base.RenewalPricePolicyAlways},
 			true,
 		},
 		{
 			"InvalidFromAddressNode",
-			&MsgUpdateLeaseRequest{From: base.TestBech32NodeAddr20Bytes, ID: 1, Renewable: true},
+			&MsgUpdateLeaseRequest{From: base.TestBech32NodeAddr20Bytes, ID: 1, RenewalPricePolicy: v1base.RenewalPricePolicyAlways},
 			true,
 		},
 		{
 			"ValidFromAddressNonRenewable",
-			&MsgUpdateLeaseRequest{From: base.TestBech32ProvAddr20Bytes, ID: 1, Renewable: false},
+			&MsgUpdateLeaseRequest{From: base.TestBech32ProvAddr20Bytes, ID: 1, RenewalPricePolicy: v1base.RenewalPricePolicyUnspecified},
 			false,
 		},
 		{
 			"ValidFromAddressSmallValidID",
-			&MsgUpdateLeaseRequest{From: base.TestBech32ProvAddr20Bytes, ID: 2, Renewable: true},
+			&MsgUpdateLeaseRequest{From: base.TestBech32ProvAddr20Bytes, ID: 2, RenewalPricePolicy: v1base.RenewalPricePolicyAlways},
 			false,
 		},
 	}

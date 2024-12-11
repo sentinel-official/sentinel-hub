@@ -14,11 +14,12 @@ var (
 	ErrInvalidHours          = sdkerrors.Register(ModuleName, 202, "invalid hours")
 	ErrInvalidNodeStatus     = sdkerrors.Register(ModuleName, 203, "invalid node status")
 	ErrInvalidProviderStatus = sdkerrors.Register(ModuleName, 204, "invalid provider status")
-	ErrLeaseNotFound         = sdkerrors.Register(ModuleName, 205, "lease not found")
-	ErrNodeNotFound          = sdkerrors.Register(ModuleName, 206, "node not found")
-	ErrPriceNotFound         = sdkerrors.Register(ModuleName, 207, "price not found")
-	ErrProviderNotFound      = sdkerrors.Register(ModuleName, 208, "provider not found")
-	ErrUnauthorized          = sdkerrors.Register(ModuleName, 209, "unauthorized")
+	ErrInvalidRenewalPolicy  = sdkerrors.Register(ModuleName, 205, "invalid renewal policy")
+	ErrLeaseNotFound         = sdkerrors.Register(ModuleName, 206, "lease not found")
+	ErrNodeNotFound          = sdkerrors.Register(ModuleName, 207, "node not found")
+	ErrPriceNotFound         = sdkerrors.Register(ModuleName, 208, "price not found")
+	ErrProviderNotFound      = sdkerrors.Register(ModuleName, 209, "provider not found")
+	ErrUnauthorized          = sdkerrors.Register(ModuleName, 210, "unauthorized")
 )
 
 // NewErrorDuplicateLease returns an error indicating that a lease for the specified node and provider already exists.

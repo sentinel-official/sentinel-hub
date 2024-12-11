@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	sdkerrors "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	base "github.com/sentinel-official/hub/v12/types"
@@ -107,6 +108,10 @@ func (k *Keeper) HandleMsgRenewLease(ctx sdk.Context, msg *v1.MsgRenewLeaseReque
 		return nil, types.NewErrorPriceNotFound(msg.Denom)
 	}
 
+	if err := lease.ValidateRenewalPolicies(basePrice); err != nil {
+		return nil, sdkerrors.Wrapf(types.ErrInvalidRenewalPolicy, err.Error())
+	}
+
 	quotePrice, err := k.GetQuote(ctx, basePrice)
 	if err != nil {
 		return nil, err
@@ -130,15 +135,16 @@ func (k *Keeper) HandleMsgRenewLease(ctx sdk.Context, msg *v1.MsgRenewLeaseReque
 	k.DeleteLeaseForRenewalAt(ctx, lease.RenewalAt(), lease.ID)
 
 	lease = v1.Lease{
-		ID:          lease.ID,
-		ProvAddress: lease.ProvAddress,
-		NodeAddress: lease.NodeAddress,
-		Price:       quotePrice,
-		Hours:       0,
-		MaxHours:    msg.Hours,
-		Renewable:   lease.Renewable,
-		InactiveAt:  ctx.BlockTime().Add(msg.GetHours()),
-		PayoutAt:    ctx.BlockTime(),
+		ID:                 lease.ID,
+		ProvAddress:        lease.ProvAddress,
+		NodeAddress:        lease.NodeAddress,
+		BasePrice:          basePrice,
+		QuotePrice:         quotePrice,
+		Hours:              0,
+		MaxHours:           msg.Hours,
+		RenewalPricePolicy: lease.RenewalPricePolicy,
+		InactiveAt:         ctx.BlockTime().Add(msg.GetHours()),
+		PayoutAt:           ctx.BlockTime(),
 	}
 
 	deposit := lease.DepositAmount()
@@ -157,7 +163,8 @@ func (k *Keeper) HandleMsgRenewLease(ctx sdk.Context, msg *v1.MsgRenewLeaseReque
 			NodeAddress: lease.NodeAddress,
 			ProvAddress: lease.ProvAddress,
 			MaxHours:    lease.MaxHours,
-			Price:       lease.Price.String(),
+			BasePrice:   lease.BasePrice.String(),
+			QuotePrice:  lease.QuotePrice.String(),
 		},
 	)
 
@@ -217,15 +224,16 @@ func (k *Keeper) HandleMsgStartLease(ctx sdk.Context, msg *v1.MsgStartLeaseReque
 
 	count := k.GetLeaseCount(ctx)
 	lease := v1.Lease{
-		ID:          count + 1,
-		ProvAddress: provAddr.String(),
-		NodeAddress: nodeAddr.String(),
-		Price:       quotePrice,
-		Hours:       0,
-		MaxHours:    msg.Hours,
-		Renewable:   msg.Renewable,
-		InactiveAt:  ctx.BlockTime().Add(msg.GetHours()),
-		PayoutAt:    ctx.BlockTime(),
+		ID:                 count + 1,
+		ProvAddress:        provAddr.String(),
+		NodeAddress:        nodeAddr.String(),
+		BasePrice:          basePrice,
+		QuotePrice:         quotePrice,
+		Hours:              0,
+		MaxHours:           msg.Hours,
+		RenewalPricePolicy: msg.RenewalPricePolicy,
+		InactiveAt:         ctx.BlockTime().Add(msg.GetHours()),
+		PayoutAt:           ctx.BlockTime(),
 	}
 
 	deposit := lease.DepositAmount()
@@ -243,11 +251,13 @@ func (k *Keeper) HandleMsgStartLease(ctx sdk.Context, msg *v1.MsgStartLeaseReque
 
 	ctx.EventManager().EmitTypedEvent(
 		&v1.EventCreate{
-			ID:          lease.ID,
-			NodeAddress: lease.NodeAddress,
-			ProvAddress: lease.ProvAddress,
-			MaxHours:    lease.MaxHours,
-			Price:       lease.Price.String(),
+			ID:                 lease.ID,
+			NodeAddress:        lease.NodeAddress,
+			ProvAddress:        lease.ProvAddress,
+			MaxHours:           lease.MaxHours,
+			BasePrice:          lease.BasePrice.String(),
+			QuotePrice:         lease.QuotePrice.String(),
+			RenewalPricePolicy: lease.RenewalPricePolicy.String(),
 		},
 	)
 
@@ -267,17 +277,17 @@ func (k *Keeper) HandleMsgUpdateLease(ctx sdk.Context, msg *v1.MsgUpdateLeaseReq
 
 	k.DeleteLeaseForRenewalAt(ctx, lease.RenewalAt(), lease.ID)
 
-	lease.Renewable = msg.Renewable
+	lease.RenewalPricePolicy = msg.RenewalPricePolicy
 
 	k.SetLease(ctx, lease)
 	k.SetLeaseForRenewalAt(ctx, lease.RenewalAt(), lease.ID)
 
 	ctx.EventManager().EmitTypedEvent(
 		&v1.EventUpdate{
-			ID:          lease.ID,
-			NodeAddress: lease.NodeAddress,
-			ProvAddress: lease.ProvAddress,
-			Renewable:   lease.Renewable,
+			ID:                 lease.ID,
+			NodeAddress:        lease.NodeAddress,
+			ProvAddress:        lease.ProvAddress,
+			RenewalPricePolicy: lease.RenewalPricePolicy.String(),
 		},
 	)
 
