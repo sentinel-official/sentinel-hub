@@ -1,10 +1,7 @@
 package v3
 
 import (
-	"time"
-
 	sdkerrors "cosmossdk.io/errors"
-	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	base "github.com/sentinel-official/hub/v12/types"
@@ -20,13 +17,13 @@ var (
 	_ sdk.Msg = (*MsgStartSessionRequest)(nil)
 )
 
-func NewMsgCreatePlanRequest(from base.ProvAddress, bytes sdkmath.Int, duration time.Duration, prices sdk.DecCoins, private bool) *MsgCreatePlanRequest {
+func NewMsgCreatePlanRequest(from base.ProvAddress, gigabytes, hours int64, prices sdk.DecCoins, private bool) *MsgCreatePlanRequest {
 	return &MsgCreatePlanRequest{
-		From:     from.String(),
-		Bytes:    bytes,
-		Duration: duration,
-		Prices:   prices,
-		Private:  private,
+		From:      from.String(),
+		Gigabytes: gigabytes,
+		Hours:     hours,
+		Prices:    prices,
+		Private:   private,
 	}
 }
 
@@ -37,20 +34,17 @@ func (m *MsgCreatePlanRequest) ValidateBasic() error {
 	if _, err := base.ProvAddressFromBech32(m.From); err != nil {
 		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
 	}
-	if m.Bytes.IsNil() {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "bytes cannot be nil")
+	if m.Gigabytes < 0 {
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "gigabytes cannot be negative")
 	}
-	if m.Bytes.IsNegative() {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "bytes cannot be negative")
+	if m.Gigabytes == 0 {
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "gigabytes cannot be zero")
 	}
-	if m.Bytes.IsZero() {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "bytes cannot be zero")
+	if m.Hours < 0 {
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "hours cannot be negative")
 	}
-	if m.Duration == 0 {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "duration cannot be zero")
-	}
-	if m.Duration < 0 {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "duration cannot be negative")
+	if m.Hours == 0 {
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "hours cannot be zero")
 	}
 	if !m.Prices.IsValid() {
 		return sdkerrors.Wrap(types.ErrInvalidMessage, "prices must be valid")

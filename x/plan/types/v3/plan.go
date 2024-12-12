@@ -2,6 +2,7 @@ package v3
 
 import (
 	"fmt"
+	"time"
 
 	sdkerrors "cosmossdk.io/errors"
 	sdkmath "cosmossdk.io/math"
@@ -10,6 +11,14 @@ import (
 	base "github.com/sentinel-official/hub/v12/types"
 	v1base "github.com/sentinel-official/hub/v12/types/v1"
 )
+
+func (m *Plan) GetBytes() sdkmath.Int {
+	return base.Gigabyte.MulRaw(m.Gigabytes)
+}
+
+func (m *Plan) GetDuration() time.Duration {
+	return time.Duration(m.Hours) * time.Hour
+}
 
 func (m *Plan) Price(denom string) (sdk.DecCoin, bool) {
 	for _, v := range m.Prices {
@@ -32,17 +41,17 @@ func (m *Plan) Validate() error {
 	if _, err := base.ProvAddressFromBech32(m.ProvAddress); err != nil {
 		return sdkerrors.Wrapf(err, "invalid prov_address %s", m.ProvAddress)
 	}
-	if m.Bytes.IsNegative() {
-		return fmt.Errorf("bytes cannot be negative")
+	if m.Gigabytes < 0 {
+		return fmt.Errorf("gigabytes cannot be negative")
 	}
-	if m.Bytes.IsZero() {
-		return fmt.Errorf("bytes cannot be zero")
+	if m.Gigabytes == 0 {
+		return fmt.Errorf("gigabytes cannot be zero")
 	}
-	if m.Duration < 0 {
-		return fmt.Errorf("duration cannot be negative")
+	if m.Hours < 0 {
+		return fmt.Errorf("hours cannot be negative")
 	}
-	if m.Duration == 0 {
-		return fmt.Errorf("duration cannot be zero")
+	if m.Hours == 0 {
+		return fmt.Errorf("hours cannot be zero")
 	}
 	if m.Prices == nil {
 		return fmt.Errorf("prices cannot be nil")

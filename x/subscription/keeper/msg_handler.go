@@ -116,7 +116,7 @@ func (k *Keeper) HandleMsgRenewSubscription(ctx sdk.Context, msg *v3.MsgRenewSub
 		Price:      quotePrice,
 		Renewable:  subscription.Renewable,
 		Status:     v1base.StatusActive,
-		InactiveAt: ctx.BlockTime().Add(plan.Duration),
+		InactiveAt: ctx.BlockTime().Add(plan.GetDuration()),
 		StatusAt:   ctx.BlockTime(),
 	}
 
@@ -287,7 +287,7 @@ func (k *Keeper) HandleMsgStartSubscription(ctx sdk.Context, msg *v3.MsgStartSub
 		Price:      quotePrice,
 		Renewable:  msg.Renewable,
 		Status:     v1base.StatusActive,
-		InactiveAt: ctx.BlockTime().Add(plan.Duration),
+		InactiveAt: ctx.BlockTime().Add(plan.GetDuration()),
 		StatusAt:   ctx.BlockTime(),
 	}
 
@@ -319,7 +319,7 @@ func (k *Keeper) HandleMsgStartSubscription(ctx sdk.Context, msg *v3.MsgStartSub
 	alloc := v2.Allocation{
 		ID:            subscription.ID,
 		Address:       subscription.AccAddress,
-		GrantedBytes:  plan.Bytes,
+		GrantedBytes:  plan.GetBytes(),
 		UtilisedBytes: sdkmath.ZeroInt(),
 	}
 

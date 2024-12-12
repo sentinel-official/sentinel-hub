@@ -25,8 +25,8 @@ func (k *Keeper) HandleMsgCreatePlan(ctx sdk.Context, msg *v3.MsgCreatePlanReque
 	plan := v3.Plan{
 		ID:          count + 1,
 		ProvAddress: provAddr.String(),
-		Bytes:       msg.Bytes,
-		Duration:    msg.Duration,
+		Gigabytes:   msg.Gigabytes,
+		Hours:       msg.Hours,
 		Prices:      msg.Prices,
 		Private:     msg.Private,
 		Status:      v1base.StatusInactive,
@@ -41,8 +41,8 @@ func (k *Keeper) HandleMsgCreatePlan(ctx sdk.Context, msg *v3.MsgCreatePlanReque
 		&v3.EventCreate{
 			ID:          plan.ID,
 			ProvAddress: plan.ProvAddress,
-			Bytes:       plan.Bytes.String(),
-			Duration:    plan.Duration,
+			Gigabytes:   plan.Gigabytes,
+			Hours:       plan.Hours,
 			Private:     plan.Private,
 			Prices:      plan.Prices.String(),
 		},

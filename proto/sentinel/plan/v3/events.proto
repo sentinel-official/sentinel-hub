@@ -2,7 +2,6 @@ syntax = "proto3";
 package sentinel.plan.v3;
 
 import "gogoproto/gogo.proto";
-import "google/protobuf/duration.proto";
 import "sentinel/types/v1/status.proto";
 
 option go_package = "github.com/sentinel-official/hub/v12/x/plan/types/v3";
@@ -12,11 +11,8 @@ option (gogoproto.goproto_getters_all) = false;
 message EventCreate {
   uint64 id = 1 [(gogoproto.customname) = "ID"];
   string prov_address = 2;
-  string bytes = 3;
-  google.protobuf.Duration duration = 4 [
-    (gogoproto.nullable) = false,
-    (gogoproto.stdduration) = true
-  ];
+  int64 gigabytes = 3;
+  int64 hours = 4;
   string prices = 5;
   bool private = 6;
 }
