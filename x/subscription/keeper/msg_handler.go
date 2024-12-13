@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	sdkerrors "cosmossdk.io/errors"
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
@@ -31,7 +32,7 @@ func (k *Keeper) HandleMsgCancelSubscription(ctx sdk.Context, msg *v3.MsgCancelS
 	k.DeleteSubscriptionForInactiveAt(ctx, subscription.InactiveAt, subscription.ID)
 	k.DeleteSubscriptionForRenewalAt(ctx, subscription.RenewalAt(), subscription.ID)
 
-	subscription.Renewable = false
+	subscription.RenewalPricePolicy = v1base.RenewalPricePolicyUnspecified
 	subscription.InactiveAt = k.GetInactiveAt(ctx)
 	subscription.Status = v1base.StatusInactivePending
 	subscription.StatusAt = ctx.BlockTime()
@@ -41,13 +42,13 @@ func (k *Keeper) HandleMsgCancelSubscription(ctx sdk.Context, msg *v3.MsgCancelS
 
 	ctx.EventManager().EmitTypedEvent(
 		&v3.EventUpdate{
-			ID:         subscription.ID,
-			PlanID:     subscription.PlanID,
-			AccAddress: subscription.AccAddress,
-			Renewable:  subscription.Renewable,
-			Status:     subscription.Status,
-			InactiveAt: subscription.InactiveAt.String(),
-			StatusAt:   subscription.StatusAt.String(),
+			ID:                 subscription.ID,
+			PlanID:             subscription.PlanID,
+			AccAddress:         subscription.AccAddress,
+			RenewalPricePolicy: subscription.RenewalPricePolicy.String(),
+			Status:             subscription.Status,
+			InactiveAt:         subscription.InactiveAt.String(),
+			StatusAt:           subscription.StatusAt.String(),
 		},
 	)
 
@@ -77,6 +78,10 @@ func (k *Keeper) HandleMsgRenewSubscription(ctx sdk.Context, msg *v3.MsgRenewSub
 	basePrice, found := plan.Price(msg.Denom)
 	if !found {
 		return nil, types.NewErrorPriceNotFound(msg.Denom)
+	}
+
+	if err := subscription.ValidateRenewalPolicies(basePrice); err != nil {
+		return nil, sdkerrors.Wrapf(types.ErrInvalidRenewalPolicy, err.Error())
 	}
 
 	quotePrice, err := k.GetQuote(ctx, basePrice)
@@ -110,14 +115,15 @@ func (k *Keeper) HandleMsgRenewSubscription(ctx sdk.Context, msg *v3.MsgRenewSub
 	}
 
 	subscription = v3.Subscription{
-		ID:         subscription.ID,
-		AccAddress: subscription.AccAddress,
-		PlanID:     subscription.PlanID,
-		Price:      quotePrice,
-		Renewable:  subscription.Renewable,
-		Status:     v1base.StatusActive,
-		InactiveAt: ctx.BlockTime().Add(plan.GetDuration()),
-		StatusAt:   ctx.BlockTime(),
+		ID:                 subscription.ID,
+		AccAddress:         subscription.AccAddress,
+		PlanID:             subscription.PlanID,
+		BasePrice:          basePrice,
+		QuotePrice:         quotePrice,
+		RenewalPricePolicy: subscription.RenewalPricePolicy,
+		Status:             v1base.StatusActive,
+		InactiveAt:         ctx.BlockTime().Add(plan.GetDuration()),
+		StatusAt:           ctx.BlockTime(),
 	}
 
 	k.SetSubscription(ctx, subscription)
@@ -130,7 +136,8 @@ func (k *Keeper) HandleMsgRenewSubscription(ctx sdk.Context, msg *v3.MsgRenewSub
 			PlanID:      subscription.PlanID,
 			AccAddress:  subscription.AccAddress,
 			ProvAddress: provAddr.String(),
-			Price:       subscription.Price.String(),
+			BasePrice:   subscription.BasePrice.String(),
+			QuotePrice:  subscription.QuotePrice.String(),
 		},
 		&v3.EventPay{
 			ID:            subscription.ID,
@@ -281,14 +288,15 @@ func (k *Keeper) HandleMsgStartSubscription(ctx sdk.Context, msg *v3.MsgStartSub
 
 	count := k.GetSubscriptionCount(ctx)
 	subscription := v3.Subscription{
-		ID:         count + 1,
-		AccAddress: accAddr.String(),
-		PlanID:     plan.ID,
-		Price:      quotePrice,
-		Renewable:  msg.Renewable,
-		Status:     v1base.StatusActive,
-		InactiveAt: ctx.BlockTime().Add(plan.GetDuration()),
-		StatusAt:   ctx.BlockTime(),
+		ID:                 count + 1,
+		AccAddress:         accAddr.String(),
+		PlanID:             plan.ID,
+		BasePrice:          basePrice,
+		QuotePrice:         quotePrice,
+		RenewalPricePolicy: msg.RenewalPricePolicy,
+		Status:             v1base.StatusActive,
+		InactiveAt:         ctx.BlockTime().Add(plan.GetDuration()),
+		StatusAt:           ctx.BlockTime(),
 	}
 
 	k.SetSubscriptionCount(ctx, count+1)
@@ -304,7 +312,8 @@ func (k *Keeper) HandleMsgStartSubscription(ctx sdk.Context, msg *v3.MsgStartSub
 			PlanID:      subscription.PlanID,
 			AccAddress:  subscription.AccAddress,
 			ProvAddress: provAddr.String(),
-			Price:       subscription.Price.String(),
+			BasePrice:   subscription.BasePrice.String(),
+			QuotePrice:  subscription.QuotePrice.String(),
 		},
 		&v3.EventPay{
 			ID:            subscription.ID,
@@ -352,17 +361,17 @@ func (k *Keeper) HandleMsgUpdateSubscription(ctx sdk.Context, msg *v3.MsgUpdateS
 
 	k.DeleteSubscriptionForRenewalAt(ctx, subscription.RenewalAt(), subscription.ID)
 
-	subscription.Renewable = msg.Renewable
+	subscription.RenewalPricePolicy = msg.RenewalPricePolicy
 
 	k.SetSubscription(ctx, subscription)
 	k.SetSubscriptionForRenewalAt(ctx, subscription.RenewalAt(), subscription.ID)
 
 	ctx.EventManager().EmitTypedEvent(
 		&v3.EventUpdate{
-			ID:         subscription.ID,
-			PlanID:     subscription.PlanID,
-			AccAddress: subscription.AccAddress,
-			Renewable:  msg.Renewable,
+			ID:                 subscription.ID,
+			PlanID:             subscription.PlanID,
+			AccAddress:         subscription.AccAddress,
+			RenewalPricePolicy: subscription.RenewalPricePolicy.String(),
 		},
 	)
 

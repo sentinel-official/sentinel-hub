@@ -3,6 +3,7 @@ package sentinel.subscription.v3;
 
 import "gogoproto/gogo.proto";
 import "sentinel/subscription/v2/params.proto";
+import "sentinel/types/v1/renewal.proto";
 
 option go_package = "github.com/sentinel-official/hub/v12/x/subscription/types/v3";
 option (gogoproto.equal_all) = false;
@@ -33,13 +34,13 @@ message MsgStartSubscriptionRequest {
   string from = 1;
   uint64 id = 2 [(gogoproto.customname) = "ID"];
   string denom = 3;
-  bool renewable = 4;
+  sentinel.types.v1.RenewalPricePolicy renewal_price_policy = 4;
 }
 
 message MsgUpdateSubscriptionRequest {
   string from = 1;
   uint64 id = 2 [(gogoproto.customname) = "ID"];
-  bool renewable = 3;
+  sentinel.types.v1.RenewalPricePolicy renewal_price_policy = 3;
 }
 
 message MsgStartSessionRequest {

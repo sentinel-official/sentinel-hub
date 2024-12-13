@@ -170,13 +170,13 @@ func (m *MsgUpdatePlanStatusRequest) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{from.Bytes()}
 }
 
-func NewMsgStartSessionRequest(from sdk.AccAddress, id uint64, denom string, renewable bool, nodeAddr base.NodeAddress) *MsgStartSessionRequest {
+func NewMsgStartSessionRequest(from sdk.AccAddress, id uint64, denom string, renewalPricePolicy v1base.RenewalPricePolicy, nodeAddr base.NodeAddress) *MsgStartSessionRequest {
 	return &MsgStartSessionRequest{
-		From:        from.String(),
-		ID:          id,
-		Denom:       denom,
-		Renewable:   renewable,
-		NodeAddress: nodeAddr.String(),
+		From:               from.String(),
+		ID:                 id,
+		Denom:              denom,
+		RenewalPricePolicy: renewalPricePolicy,
+		NodeAddress:        nodeAddr.String(),
 	}
 }
 
@@ -194,6 +194,9 @@ func (m *MsgStartSessionRequest) ValidateBasic() error {
 		if err := sdk.ValidateDenom(m.Denom); err != nil {
 			return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
 		}
+	}
+	if !m.RenewalPricePolicy.IsValid() {
+		return sdkerrors.Wrap(types.ErrInvalidMessage, "renewal_price_policy must be valid")
 	}
 	if m.NodeAddress == "" {
 		return sdkerrors.Wrap(types.ErrInvalidMessage, "node_address cannot be empty")

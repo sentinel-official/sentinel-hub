@@ -140,7 +140,7 @@ func (k *Keeper) handleLeaseRenewals(ctx sdk.Context) {
 		// Execute the handler to process the lease renewal
 		resp, err := handler(cc, msg)
 		if err != nil {
-			k.Logger(cc).Error("Failed to handle lease renewal", "id", item.ID, "error", err)
+			k.Logger(cc).Error("Failed to handle lease renewal", "id", item.ID, "message", err)
 			return false
 		}
 

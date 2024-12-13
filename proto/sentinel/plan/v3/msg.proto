@@ -3,6 +3,7 @@ package sentinel.plan.v3;
 
 import "cosmos/base/v1beta1/coin.proto";
 import "gogoproto/gogo.proto";
+import "sentinel/types/v1/renewal.proto";
 import "sentinel/types/v1/status.proto";
 
 option go_package = "github.com/sentinel-official/hub/v12/x/plan/types/v3";
@@ -42,7 +43,7 @@ message MsgStartSessionRequest {
   string from = 1;
   uint64 id = 2 [(gogoproto.customname) = "ID"];
   string denom = 3;
-  bool renewable = 4;
+  sentinel.types.v1.RenewalPricePolicy renewal_price_policy = 4;
   string node_address = 5;
 }
 

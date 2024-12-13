@@ -179,7 +179,7 @@ func txUpdateLease() *cobra.Command {
 	}
 
 	flags.AddTxFlagsToCmd(cmd)
-	cmd.Flags().Bool(flagRenewalPricePolicy, false, "Specify the lease renewal price policy")
+	cmd.Flags().String(flagRenewalPricePolicy, "", "Specify the lease renewal price policy")
 
 	return cmd
 }

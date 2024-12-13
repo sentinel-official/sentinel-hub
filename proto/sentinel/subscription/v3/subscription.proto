@@ -4,6 +4,7 @@ package sentinel.subscription.v3;
 import "cosmos/base/v1beta1/coin.proto";
 import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
+import "sentinel/types/v1/renewal.proto";
 import "sentinel/types/v1/status.proto";
 
 option go_package = "github.com/sentinel-official/hub/v12/x/subscription/types/v3";
@@ -14,14 +15,15 @@ message Subscription {
   uint64 id = 1 [(gogoproto.customname) = "ID"];
   string acc_address = 2;
   uint64 plan_id = 3 [(gogoproto.customname) = "PlanID"];
-  cosmos.base.v1beta1.Coin price = 4 [(gogoproto.nullable) = false];
-  bool renewable = 5;
-  sentinel.types.v1.Status status = 6;
-  google.protobuf.Timestamp inactive_at = 7 [
+  cosmos.base.v1beta1.DecCoin base_price = 4 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin quote_price = 5 [(gogoproto.nullable) = false];
+  sentinel.types.v1.RenewalPricePolicy renewal_price_policy = 6;
+  sentinel.types.v1.Status status = 7;
+  google.protobuf.Timestamp inactive_at = 8 [
     (gogoproto.nullable) = false,
     (gogoproto.stdtime) = true
   ];
-  google.protobuf.Timestamp status_at = 8 [
+  google.protobuf.Timestamp status_at = 9 [
     (gogoproto.nullable) = false,
     (gogoproto.stdtime) = true
   ];

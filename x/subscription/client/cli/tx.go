@@ -49,9 +49,9 @@ func txCancelSubscription() *cobra.Command {
 
 func txRenewSubscription() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "renew-subscription [id] [denom]",
+		Use:   "renew-subscription [id]",
 		Short: "Renew an existing subscription",
-		Args:  cobra.ExactArgs(2),
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -63,10 +63,15 @@ func txRenewSubscription() *cobra.Command {
 				return err
 			}
 
+			denom, err := cmd.Flags().GetString(flagDenom)
+			if err != nil {
+				return err
+			}
+
 			msg := v3.NewMsgRenewSubscriptionRequest(
 				ctx.FromAddress.Bytes(),
 				id,
-				args[1],
+				denom,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -77,6 +82,7 @@ func txRenewSubscription() *cobra.Command {
 	}
 
 	flags.AddTxFlagsToCmd(cmd)
+	cmd.Flags().String(flagDenom, "", "Specify the payment denomination for the subscription")
 
 	return cmd
 }
@@ -128,9 +134,9 @@ func txShareSubscription() *cobra.Command {
 
 func txStartSubscription() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "start-subscription [id] [denom] [renewable]",
+		Use:   "start-subscription [id]",
 		Short: "Start a subscription for a plan",
-		Args:  cobra.ExactArgs(3),
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -142,7 +148,12 @@ func txStartSubscription() *cobra.Command {
 				return err
 			}
 
-			renewable, err := strconv.ParseBool(args[2])
+			denom, err := cmd.Flags().GetString(flagDenom)
+			if err != nil {
+				return err
+			}
+
+			renewalPricePolicy, err := GetRenewalPricePolicy(cmd.Flags())
 			if err != nil {
 				return err
 			}
@@ -150,8 +161,8 @@ func txStartSubscription() *cobra.Command {
 			msg := v3.NewMsgStartSubscriptionRequest(
 				ctx.FromAddress.Bytes(),
 				id,
-				args[1],
-				renewable,
+				denom,
+				renewalPricePolicy,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -162,15 +173,17 @@ func txStartSubscription() *cobra.Command {
 	}
 
 	flags.AddTxFlagsToCmd(cmd)
+	cmd.Flags().String(flagDenom, "", "Specify the payment denomination for the subscription")
+	cmd.Flags().String(flagRenewalPricePolicy, "", "Specify the subscription renewal price policy")
 
 	return cmd
 }
 
 func txUpdateSubscription() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "update-subscription [id] [renewable]",
+		Use:   "update-subscription [id]",
 		Short: "Update the details of an existing subscription",
-		Args:  cobra.ExactArgs(2),
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -182,7 +195,7 @@ func txUpdateSubscription() *cobra.Command {
 				return err
 			}
 
-			renewable, err := strconv.ParseBool(args[1])
+			renewalPricePolicy, err := GetRenewalPricePolicy(cmd.Flags())
 			if err != nil {
 				return err
 			}
@@ -190,7 +203,7 @@ func txUpdateSubscription() *cobra.Command {
 			msg := v3.NewMsgUpdateSubscriptionRequest(
 				ctx.FromAddress.Bytes(),
 				id,
-				renewable,
+				renewalPricePolicy,
 			)
 			if err = msg.ValidateBasic(); err != nil {
 				return err
@@ -201,6 +214,7 @@ func txUpdateSubscription() *cobra.Command {
 	}
 
 	flags.AddTxFlagsToCmd(cmd)
+	cmd.Flags().String(flagRenewalPricePolicy, "", "Specify the subscription renewal price policy")
 
 	return cmd
 }

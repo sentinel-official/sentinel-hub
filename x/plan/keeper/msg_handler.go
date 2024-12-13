@@ -186,10 +186,10 @@ func (k *Keeper) HandleMsgUpdatePlanStatus(ctx sdk.Context, msg *v3.MsgUpdatePla
 
 func (k *Keeper) HandleMsgStartSession(ctx sdk.Context, msg *v3.MsgStartSessionRequest) (*v3.MsgStartSessionResponse, error) {
 	subscriptionReq := &subscriptiontypes.MsgStartSubscriptionRequest{
-		From:      msg.From,
-		ID:        msg.ID,
-		Denom:     msg.Denom,
-		Renewable: msg.Renewable,
+		From:               msg.From,
+		ID:                 msg.ID,
+		Denom:              msg.Denom,
+		RenewalPricePolicy: msg.RenewalPricePolicy,
 	}
 
 	subscriptionResp, err := k.subscription.HandleMsgStartSubscription(ctx, subscriptionReq)
