@@ -200,7 +200,7 @@ func validateActiveDuration(v interface{}) error {
 }
 
 func validateMinGigabytePrices(v interface{}) error {
-	value, ok := v.(v1base.Prices)
+	value, ok := v.([]v1base.Price)
 	if !ok {
 		return fmt.Errorf("invalid parameter type %T", v)
 	}
@@ -208,7 +208,7 @@ func validateMinGigabytePrices(v interface{}) error {
 	if value == nil {
 		return nil
 	}
-	if !value.IsValid() {
+	if !v1base.Prices(value).IsValid() {
 		return fmt.Errorf("min_gigabyte_prices must be valid")
 	}
 
@@ -216,7 +216,7 @@ func validateMinGigabytePrices(v interface{}) error {
 }
 
 func validateMinHourlyPrices(v interface{}) error {
-	value, ok := v.(v1base.Prices)
+	value, ok := v.([]v1base.Price)
 	if !ok {
 		return fmt.Errorf("invalid parameter type %T", v)
 	}
@@ -224,7 +224,7 @@ func validateMinHourlyPrices(v interface{}) error {
 	if value == nil {
 		return nil
 	}
-	if !value.IsValid() {
+	if !v1base.Prices(value).IsValid() {
 		return fmt.Errorf("min_hourly_prices must be valid")
 	}
 

@@ -86,7 +86,7 @@ func (k *Keeper) HandleMsgRenewSubscription(ctx sdk.Context, msg *v3.MsgRenewSub
 	}
 
 	if err := subscription.ValidateRenewalPolicies(price); err != nil {
-		return nil, sdkerrors.Wrapf(types.ErrInvalidRenewalPolicy, err.Error())
+		return nil, sdkerrors.Wrap(types.ErrInvalidRenewalPolicy, err.Error())
 	}
 
 	k.DeleteSubscriptionForInactiveAt(ctx, subscription.InactiveAt, subscription.ID)

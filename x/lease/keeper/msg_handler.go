@@ -114,7 +114,7 @@ func (k *Keeper) HandleMsgRenewLease(ctx sdk.Context, msg *v1.MsgRenewLeaseReque
 	}
 
 	if err := lease.ValidateRenewalPolicies(price); err != nil {
-		return nil, sdkerrors.Wrapf(types.ErrInvalidRenewalPolicy, err.Error())
+		return nil, sdkerrors.Wrap(types.ErrInvalidRenewalPolicy, err.Error())
 	}
 
 	refund := lease.RefundAmount()
