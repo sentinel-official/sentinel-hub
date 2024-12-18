@@ -1,9 +1,9 @@
 syntax = "proto3";
 package sentinel.node.v3;
 
-import "cosmos/base/v1beta1/coin.proto";
 import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
+import "sentinel/types/v1/price.proto";
 import "sentinel/types/v1/status.proto";
 
 option go_package = "github.com/sentinel-official/hub/v12/x/node/types/v3";
@@ -12,14 +12,8 @@ option (gogoproto.goproto_getters_all) = false;
 
 message Node {
   string address = 1;
-  repeated cosmos.base.v1beta1.DecCoin gigabyte_prices = 2 [
-    (gogoproto.nullable) = false,
-    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins"
-  ];
-  repeated cosmos.base.v1beta1.DecCoin hourly_prices = 3 [
-    (gogoproto.nullable) = false,
-    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins"
-  ];
+  repeated sentinel.types.v1.Price gigabyte_prices = 2 [(gogoproto.nullable) = false];
+  repeated sentinel.types.v1.Price hourly_prices = 3 [(gogoproto.nullable) = false];
   string remote_url = 4 [(gogoproto.customname) = "RemoteURL"];
   google.protobuf.Timestamp inactive_at = 5 [
     (gogoproto.nullable) = false,

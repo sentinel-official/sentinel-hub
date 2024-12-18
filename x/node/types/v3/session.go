@@ -21,14 +21,14 @@ func (m *Session) SetStatus(v v1base.Status)      { m.Status = v }
 func (m *Session) SetUploadBytes(v sdkmath.Int)   { m.UploadBytes = v }
 
 func (m *Session) paymentAmountForBytes() sdkmath.Int {
-	decPrice := m.Price.Amount.ToLegacyDec()
+	decPrice := m.Price.QuoteValue.ToLegacyDec()
 	bytePrice := decPrice.QuoInt(base.Gigabyte)
 	totalBytes := m.DownloadBytes.Add(m.UploadBytes)
 	return bytePrice.MulInt(totalBytes).Ceil().TruncateInt()
 }
 
 func (m *Session) paymentAmountForDuration() sdkmath.Int {
-	decPrice := m.Price.Amount.ToLegacyDec()
+	decPrice := m.Price.QuoteValue.ToLegacyDec()
 	nsPrice := decPrice.QuoInt64(time.Hour.Nanoseconds())
 	nsDuration := m.Duration.Nanoseconds()
 	return nsPrice.MulInt64(nsDuration).Ceil().TruncateInt()
@@ -37,10 +37,10 @@ func (m *Session) paymentAmountForDuration() sdkmath.Int {
 func (m *Session) DepositAmount() sdk.Coin {
 	amount := sdkmath.ZeroInt()
 	if m.MaxGigabytes != 0 {
-		amount = m.Price.Amount.MulRaw(m.MaxGigabytes)
+		amount = m.Price.QuoteValue.MulRaw(m.MaxGigabytes)
 	}
 	if m.MaxHours != 0 {
-		amount = m.Price.Amount.MulRaw(m.MaxHours)
+		amount = m.Price.QuoteValue.MulRaw(m.MaxHours)
 	}
 
 	return sdk.Coin{Denom: m.Price.Denom, Amount: amount}

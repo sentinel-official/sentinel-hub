@@ -12,9 +12,8 @@ message EventCreate {
   string node_address = 2;
   string prov_address = 3;
   int64 max_hours = 4;
-  string base_price = 5;
-  string quote_price = 6;
-  string renewal_price_policy = 7;
+  string price = 5;
+  string renewal_price_policy = 6;
 }
 
 message EventEnd {
@@ -42,8 +41,7 @@ message EventRenew {
   string node_address = 2;
   string prov_address = 3;
   int64 max_hours = 4;
-  string base_price = 5;
-  string quote_price = 6;
+  string price = 5;
 }
 
 message EventUpdate {

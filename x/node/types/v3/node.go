@@ -1,16 +1,23 @@
 package v3
 
 import (
+	"errors"
 	"fmt"
 	"net/url"
 
 	sdkerrors "cosmossdk.io/errors"
-	sdkmath "cosmossdk.io/math"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	base "github.com/sentinel-official/hub/v12/types"
 	v1base "github.com/sentinel-official/hub/v12/types/v1"
 )
+
+func (m *Node) GetGigabytePrices() v1base.Prices {
+	return m.GigabytePrices
+}
+
+func (m *Node) GetHourlyPrices() v1base.Prices {
+	return m.HourlyPrices
+}
 
 func (m *Node) GetAddress() base.NodeAddress {
 	if m.Address == "" {
@@ -32,23 +39,11 @@ func (m *Node) Validate() error {
 	if _, err := base.NodeAddressFromBech32(m.Address); err != nil {
 		return sdkerrors.Wrapf(err, "invalid address %s", m.Address)
 	}
-	if m.GigabytePrices == nil {
-		return fmt.Errorf("gigabyte_prices cannot be nil")
+	if prices := m.GetGigabytePrices(); !prices.IsValid() {
+		return errors.New("gigabyte_prices must be valid")
 	}
-	if m.GigabytePrices.Len() == 0 {
-		return fmt.Errorf("gigabyte_prices cannot be empty")
-	}
-	if !m.GigabytePrices.IsValid() {
-		return fmt.Errorf("gigabyte_prices must be valid")
-	}
-	if m.HourlyPrices == nil {
-		return fmt.Errorf("hourly_prices cannot be nil")
-	}
-	if m.HourlyPrices.Len() == 0 {
-		return fmt.Errorf("hourly_prices cannot be empty")
-	}
-	if !m.HourlyPrices.IsValid() {
-		return fmt.Errorf("hourly_prices must be valid")
+	if prices := m.GetHourlyPrices(); !prices.IsValid() {
+		return errors.New("hourly_prices must be valid")
 	}
 	if m.RemoteURL == "" {
 		return fmt.Errorf("remote_url cannot be empty")
@@ -88,24 +83,30 @@ func (m *Node) Validate() error {
 	return nil
 }
 
-func (m *Node) GigabytePrice(denom string) (sdk.DecCoin, bool) {
-	for _, v := range m.GigabytePrices {
-		if v.Denom == denom {
-			return v, true
-		}
+func (m *Node) GigabytePrice(denom string) (v1base.Price, bool) {
+	prices := m.GetGigabytePrices()
+	if prices.Len() == 0 {
+		return v1base.ZeroPrice(denom), true
 	}
 
-	// If there are no prices and denom is empty, return a zero amount coin and true
-	return sdk.DecCoin{Amount: sdkmath.LegacyZeroDec()}, m.GigabytePrices.Len() == 0 && denom == ""
+	price, found := prices.Find(denom)
+	if !found {
+		return v1base.Price{}, false
+	}
+
+	return price, true
 }
 
-func (m *Node) HourlyPrice(denom string) (sdk.DecCoin, bool) {
-	for _, v := range m.HourlyPrices {
-		if v.Denom == denom {
-			return v, true
-		}
+func (m *Node) HourlyPrice(denom string) (v1base.Price, bool) {
+	prices := m.GetHourlyPrices()
+	if prices.Len() == 0 {
+		return v1base.ZeroPrice(denom), true
 	}
 
-	// If there are no prices and denom is empty, return a zero amount coin and true
-	return sdk.DecCoin{Amount: sdkmath.LegacyZeroDec()}, m.HourlyPrices.Len() == 0 && denom == ""
+	price, found := prices.Find(denom)
+	if !found {
+		return v1base.Price{}, false
+	}
+
+	return price, true
 }

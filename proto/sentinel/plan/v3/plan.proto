@@ -1,9 +1,9 @@
 syntax = "proto3";
 package sentinel.plan.v3;
 
-import "cosmos/base/v1beta1/coin.proto";
 import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
+import "sentinel/types/v1/price.proto";
 import "sentinel/types/v1/status.proto";
 
 option go_package = "github.com/sentinel-official/hub/v12/x/plan/types/v3";
@@ -15,10 +15,7 @@ message Plan {
   string prov_address = 2;
   int64 gigabytes = 3;
   int64 hours = 4;
-  repeated cosmos.base.v1beta1.DecCoin prices = 5 [
-    (gogoproto.nullable) = false,
-    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins"
-  ];
+  repeated sentinel.types.v1.Price prices = 5 [(gogoproto.nullable) = false];
   bool private = 6;
   sentinel.types.v1.Status status = 7;
   google.protobuf.Timestamp status_at = 8 [

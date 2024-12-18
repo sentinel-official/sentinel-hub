@@ -31,13 +31,8 @@ func (k *Keeper) SessionInactivePreHook(ctx sdk.Context, id uint64) error {
 		return types.NewErrorInvalidSessionStatus(session.ID, session.Status)
 	}
 
-	// Convert the session's account and node addresses from Bech32 format.
+	// Convert the session's account address from Bech32 format.
 	accAddr, err := sdk.AccAddressFromBech32(session.AccAddress)
-	if err != nil {
-		return err
-	}
-
-	nodeAddr, err := base.NodeAddressFromBech32(session.NodeAddress)
 	if err != nil {
 		return err
 	}
@@ -49,6 +44,12 @@ func (k *Keeper) SessionInactivePreHook(ctx sdk.Context, id uint64) error {
 	// Calculate the staking reward and transfer it to the fee collector module.
 	reward := baseutils.GetProportionOfCoin(totalPayment, share)
 	if err := k.SendCoinFromDepositToModule(ctx, accAddr, k.feeCollectorName, reward); err != nil {
+		return err
+	}
+
+	// Convert the session's node address from Bech32 format.
+	nodeAddr, err := base.NodeAddressFromBech32(session.NodeAddress)
+	if err != nil {
 		return err
 	}
 

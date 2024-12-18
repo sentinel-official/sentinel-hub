@@ -34,7 +34,7 @@ type LeaseKeeper interface {
 }
 
 type OracleKeeper interface {
-	GetQuote(ctx sdk.Context, coin sdk.DecCoin) (sdk.Coin, error)
+	GetQuotePrice(ctx sdk.Context, price sdk.DecCoin) (sdk.Coin, error)
 }
 
 type SessionKeeper interface {

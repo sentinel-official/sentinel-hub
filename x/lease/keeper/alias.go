@@ -44,8 +44,8 @@ func (k *Keeper) GetNode(ctx sdk.Context, addr base.NodeAddress) (nodetypes.Node
 	return k.node.GetNode(ctx, addr)
 }
 
-func (k *Keeper) GetQuote(ctx sdk.Context, coin sdk.DecCoin) (sdk.Coin, error) {
-	return k.oracle.GetQuote(ctx, coin)
+func (k *Keeper) QuotePriceFunc(ctx sdk.Context, price sdk.DecCoin) (sdk.Coin, error) {
+	return k.oracle.GetQuotePrice(ctx, price)
 }
 
 func (k *Keeper) GetProvider(ctx sdk.Context, addr base.ProvAddress) (providertypes.Provider, bool) {

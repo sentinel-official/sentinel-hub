@@ -17,7 +17,7 @@ var (
 	_ sdk.Msg = (*MsgStartSessionRequest)(nil)
 )
 
-func NewMsgCreatePlanRequest(from base.ProvAddress, gigabytes, hours int64, prices sdk.DecCoins, private bool) *MsgCreatePlanRequest {
+func NewMsgCreatePlanRequest(from base.ProvAddress, gigabytes, hours int64, prices v1base.Prices, private bool) *MsgCreatePlanRequest {
 	return &MsgCreatePlanRequest{
 		From:      from.String(),
 		Gigabytes: gigabytes,
@@ -25,6 +25,10 @@ func NewMsgCreatePlanRequest(from base.ProvAddress, gigabytes, hours int64, pric
 		Prices:    prices,
 		Private:   private,
 	}
+}
+
+func (m *MsgCreatePlanRequest) GetPrices() v1base.Prices {
+	return m.Prices
 }
 
 func (m *MsgCreatePlanRequest) ValidateBasic() error {
@@ -46,7 +50,7 @@ func (m *MsgCreatePlanRequest) ValidateBasic() error {
 	if m.Hours == 0 {
 		return sdkerrors.Wrap(types.ErrInvalidMessage, "hours cannot be zero")
 	}
-	if !m.Prices.IsValid() {
+	if prices := m.GetPrices(); !prices.IsValid() {
 		return sdkerrors.Wrap(types.ErrInvalidMessage, "prices must be valid")
 	}
 

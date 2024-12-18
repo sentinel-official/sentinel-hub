@@ -36,13 +36,8 @@ func (k *Keeper) SessionInactivePreHook(ctx sdk.Context, id uint64) error {
 		return types.NewErrorSubscriptionNotFound(session.SubscriptionID)
 	}
 
-	// Convert the session's account and node addresses from Bech32 format.
+	// Convert the session's account address from Bech32 format.
 	accAddr, err := sdk.AccAddressFromBech32(session.AccAddress)
-	if err != nil {
-		return err
-	}
-
-	nodeAddr, err := base.NodeAddressFromBech32(session.NodeAddress)
 	if err != nil {
 		return err
 	}
@@ -74,6 +69,12 @@ func (k *Keeper) SessionInactivePreHook(ctx sdk.Context, id uint64) error {
 			UtilisedBytes: alloc.UtilisedBytes.String(),
 		},
 	)
+
+	// Convert the session's node address from Bech32 format.
+	nodeAddr, err := base.NodeAddressFromBech32(session.NodeAddress)
+	if err != nil {
+		return err
+	}
 
 	// Delete the session records associated with allocation, node, plan, and subscription from the store.
 	k.DeleteSessionForAllocation(ctx, subscription.ID, accAddr, session.ID)

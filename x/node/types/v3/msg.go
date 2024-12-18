@@ -19,13 +19,21 @@ var (
 	_ sdk.Msg = (*MsgUpdateParamsRequest)(nil)
 )
 
-func NewMsgRegisterNodeRequest(from sdk.AccAddress, gigabytePrices, hourlyPrices sdk.DecCoins, remoteURL string) *MsgRegisterNodeRequest {
+func NewMsgRegisterNodeRequest(from sdk.AccAddress, gigabytePrices, hourlyPrices v1base.Prices, remoteURL string) *MsgRegisterNodeRequest {
 	return &MsgRegisterNodeRequest{
 		From:           from.String(),
 		GigabytePrices: gigabytePrices,
 		HourlyPrices:   hourlyPrices,
 		RemoteURL:      remoteURL,
 	}
+}
+
+func (m *MsgRegisterNodeRequest) GetGigabytePrices() v1base.Prices {
+	return m.GigabytePrices
+}
+
+func (m *MsgRegisterNodeRequest) GetHourlyPrices() v1base.Prices {
+	return m.HourlyPrices
 }
 
 func (m *MsgRegisterNodeRequest) ValidateBasic() error {
@@ -35,10 +43,10 @@ func (m *MsgRegisterNodeRequest) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
 		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
 	}
-	if !m.GigabytePrices.IsValid() {
+	if prices := m.GetGigabytePrices(); !prices.IsValid() {
 		return sdkerrors.Wrap(types.ErrInvalidMessage, "gigabyte_prices must be valid")
 	}
-	if !m.HourlyPrices.IsValid() {
+	if prices := m.GetHourlyPrices(); !prices.IsValid() {
 		return sdkerrors.Wrap(types.ErrInvalidMessage, "hourly_prices must be valid")
 	}
 	if m.RemoteURL == "" {
@@ -71,13 +79,21 @@ func (m *MsgRegisterNodeRequest) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{from.Bytes()}
 }
 
-func NewMsgUpdateNodeDetailsRequest(from base.NodeAddress, gigabytePrices, hourlyPrices sdk.DecCoins, remoteURL string) *MsgUpdateNodeDetailsRequest {
+func NewMsgUpdateNodeDetailsRequest(from base.NodeAddress, gigabytePrices, hourlyPrices v1base.Prices, remoteURL string) *MsgUpdateNodeDetailsRequest {
 	return &MsgUpdateNodeDetailsRequest{
 		From:           from.String(),
 		GigabytePrices: gigabytePrices,
 		HourlyPrices:   hourlyPrices,
 		RemoteURL:      remoteURL,
 	}
+}
+
+func (m *MsgUpdateNodeDetailsRequest) GetGigabytePrices() v1base.Prices {
+	return m.GigabytePrices
+}
+
+func (m *MsgUpdateNodeDetailsRequest) GetHourlyPrices() v1base.Prices {
+	return m.HourlyPrices
 }
 
 func (m *MsgUpdateNodeDetailsRequest) ValidateBasic() error {
@@ -87,10 +103,10 @@ func (m *MsgUpdateNodeDetailsRequest) ValidateBasic() error {
 	if _, err := base.NodeAddressFromBech32(m.From); err != nil {
 		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
 	}
-	if !m.GigabytePrices.IsValid() {
+	if prices := m.GetGigabytePrices(); !prices.IsValid() {
 		return sdkerrors.Wrap(types.ErrInvalidMessage, "gigabyte_prices must be valid")
 	}
-	if !m.HourlyPrices.IsValid() {
+	if prices := m.GetHourlyPrices(); !prices.IsValid() {
 		return sdkerrors.Wrap(types.ErrInvalidMessage, "hourly_prices must be valid")
 	}
 	if m.RemoteURL != "" {

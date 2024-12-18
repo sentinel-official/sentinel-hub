@@ -12,13 +12,13 @@ import (
 )
 
 func (m *Lease) DepositAmount() sdk.Coin {
-	amount := m.QuotePrice.Amount.MulRaw(m.MaxHours)
-	return sdk.Coin{Denom: m.QuotePrice.Denom, Amount: amount}
+	amount := m.Price.QuoteValue.MulRaw(m.MaxHours)
+	return sdk.Coin{Denom: m.Price.Denom, Amount: amount}
 }
 
 func (m *Lease) RefundAmount() sdk.Coin {
-	amount := m.QuotePrice.Amount.MulRaw(m.MaxHours - m.Hours)
-	return sdk.Coin{Denom: m.QuotePrice.Denom, Amount: amount}
+	amount := m.Price.QuoteValue.MulRaw(m.MaxHours - m.Hours)
+	return sdk.Coin{Denom: m.Price.Denom, Amount: amount}
 }
 
 func (m *Lease) RenewalAt() time.Time {
@@ -29,8 +29,8 @@ func (m *Lease) RenewalAt() time.Time {
 	return m.InactiveAt
 }
 
-func (m *Lease) ValidateRenewalPolicies(price sdk.DecCoin) error {
-	if err := m.RenewalPricePolicy.Validate(price, m.BasePrice); err != nil {
+func (m *Lease) ValidateRenewalPolicies(price v1base.Price) error {
+	if err := m.RenewalPricePolicy.Validate(price, m.Price); err != nil {
 		return fmt.Errorf("invalid renewal price policy: %w", err)
 	}
 
@@ -53,11 +53,8 @@ func (m *Lease) Validate() error {
 	if _, err := base.NodeAddressFromBech32(m.NodeAddress); err != nil {
 		return sdkerrors.Wrapf(err, "invalid node_address %s", m.NodeAddress)
 	}
-	if !m.QuotePrice.IsValid() {
+	if !m.Price.IsValid() {
 		return fmt.Errorf("price must be valid")
-	}
-	if m.QuotePrice.IsZero() {
-		return fmt.Errorf("price cannot be zero")
 	}
 	if m.Hours <= 0 {
 		return fmt.Errorf("hours must be greater than zero")

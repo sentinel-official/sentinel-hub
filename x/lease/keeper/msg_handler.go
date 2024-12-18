@@ -103,18 +103,18 @@ func (k *Keeper) HandleMsgRenewLease(ctx sdk.Context, msg *v1.MsgRenewLeaseReque
 		return nil, types.NewErrorInvalidNodeStatus(nodeAddr, node.Status)
 	}
 
-	basePrice, found := node.HourlyPrice(msg.Denom)
+	price, found := node.HourlyPrice(msg.Denom)
 	if !found {
 		return nil, types.NewErrorPriceNotFound(msg.Denom)
 	}
 
-	if err := lease.ValidateRenewalPolicies(basePrice); err != nil {
-		return nil, sdkerrors.Wrapf(types.ErrInvalidRenewalPolicy, err.Error())
-	}
-
-	quotePrice, err := k.GetQuote(ctx, basePrice)
+	price, err = price.UpdateQuoteValue(ctx, k.QuotePriceFunc)
 	if err != nil {
 		return nil, err
+	}
+
+	if err := lease.ValidateRenewalPolicies(price); err != nil {
+		return nil, sdkerrors.Wrapf(types.ErrInvalidRenewalPolicy, err.Error())
 	}
 
 	refund := lease.RefundAmount()
@@ -138,8 +138,7 @@ func (k *Keeper) HandleMsgRenewLease(ctx sdk.Context, msg *v1.MsgRenewLeaseReque
 		ID:                 lease.ID,
 		ProvAddress:        lease.ProvAddress,
 		NodeAddress:        lease.NodeAddress,
-		BasePrice:          basePrice,
-		QuotePrice:         quotePrice,
+		Price:              price,
 		Hours:              0,
 		MaxHours:           msg.Hours,
 		RenewalPricePolicy: lease.RenewalPricePolicy,
@@ -163,8 +162,7 @@ func (k *Keeper) HandleMsgRenewLease(ctx sdk.Context, msg *v1.MsgRenewLeaseReque
 			NodeAddress: lease.NodeAddress,
 			ProvAddress: lease.ProvAddress,
 			MaxHours:    lease.MaxHours,
-			BasePrice:   lease.BasePrice.String(),
-			QuotePrice:  lease.QuotePrice.String(),
+			Price:       lease.Price.String(),
 		},
 	)
 
@@ -202,12 +200,12 @@ func (k *Keeper) HandleMsgStartLease(ctx sdk.Context, msg *v1.MsgStartLeaseReque
 		return nil, types.NewErrorInvalidNodeStatus(nodeAddr, node.Status)
 	}
 
-	basePrice, found := node.HourlyPrice(msg.Denom)
+	price, found := node.HourlyPrice(msg.Denom)
 	if !found {
 		return nil, types.NewErrorPriceNotFound(msg.Denom)
 	}
 
-	quotePrice, err := k.GetQuote(ctx, basePrice)
+	price, err = price.UpdateQuoteValue(ctx, k.QuotePriceFunc)
 	if err != nil {
 		return nil, err
 	}
@@ -227,8 +225,7 @@ func (k *Keeper) HandleMsgStartLease(ctx sdk.Context, msg *v1.MsgStartLeaseReque
 		ID:                 count + 1,
 		ProvAddress:        provAddr.String(),
 		NodeAddress:        nodeAddr.String(),
-		BasePrice:          basePrice,
-		QuotePrice:         quotePrice,
+		Price:              price,
 		Hours:              0,
 		MaxHours:           msg.Hours,
 		RenewalPricePolicy: msg.RenewalPricePolicy,
@@ -255,8 +252,7 @@ func (k *Keeper) HandleMsgStartLease(ctx sdk.Context, msg *v1.MsgStartLeaseReque
 			NodeAddress:        lease.NodeAddress,
 			ProvAddress:        lease.ProvAddress,
 			MaxHours:           lease.MaxHours,
-			BasePrice:          lease.BasePrice.String(),
-			QuotePrice:         lease.QuotePrice.String(),
+			Price:              lease.Price.String(),
 			RenewalPricePolicy: lease.RenewalPricePolicy.String(),
 		},
 	)

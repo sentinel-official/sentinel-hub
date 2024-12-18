@@ -75,31 +75,32 @@ func (k *Keeper) HandleMsgRenewSubscription(ctx sdk.Context, msg *v3.MsgRenewSub
 		return nil, types.NewErrorInvalidPlanStatus(plan.ID, plan.Status)
 	}
 
-	basePrice, found := plan.Price(msg.Denom)
+	price, found := plan.Price(msg.Denom)
 	if !found {
 		return nil, types.NewErrorPriceNotFound(msg.Denom)
 	}
 
-	if err := subscription.ValidateRenewalPolicies(basePrice); err != nil {
-		return nil, sdkerrors.Wrapf(types.ErrInvalidRenewalPolicy, err.Error())
-	}
-
-	quotePrice, err := k.GetQuote(ctx, basePrice)
+	price, err := price.UpdateQuoteValue(ctx, k.QuotePriceFunc)
 	if err != nil {
 		return nil, err
+	}
+
+	if err := subscription.ValidateRenewalPolicies(price); err != nil {
+		return nil, sdkerrors.Wrapf(types.ErrInvalidRenewalPolicy, err.Error())
 	}
 
 	k.DeleteSubscriptionForInactiveAt(ctx, subscription.InactiveAt, subscription.ID)
 	k.DeleteSubscriptionForRenewalAt(ctx, subscription.RenewalAt(), subscription.ID)
 
 	share := k.ProviderStakingShare(ctx)
+	totalPayment := price.QuotePrice()
 
 	accAddr, err := sdk.AccAddressFromBech32(msg.From)
 	if err != nil {
 		return nil, err
 	}
 
-	reward := baseutils.GetProportionOfCoin(quotePrice, share)
+	reward := baseutils.GetProportionOfCoin(totalPayment, share)
 	if err := k.SendCoinFromAccountToModule(ctx, accAddr, k.feeCollectorName, reward); err != nil {
 		return nil, err
 	}
@@ -109,7 +110,7 @@ func (k *Keeper) HandleMsgRenewSubscription(ctx sdk.Context, msg *v3.MsgRenewSub
 		return nil, err
 	}
 
-	payment := quotePrice.Sub(reward)
+	payment := totalPayment.Sub(reward)
 	if err := k.SendCoin(ctx, accAddr, provAddr.Bytes(), payment); err != nil {
 		return nil, err
 	}
@@ -118,8 +119,7 @@ func (k *Keeper) HandleMsgRenewSubscription(ctx sdk.Context, msg *v3.MsgRenewSub
 		ID:                 subscription.ID,
 		AccAddress:         subscription.AccAddress,
 		PlanID:             subscription.PlanID,
-		BasePrice:          basePrice,
-		QuotePrice:         quotePrice,
+		Price:              price,
 		RenewalPricePolicy: subscription.RenewalPricePolicy,
 		Status:             v1base.StatusActive,
 		InactiveAt:         ctx.BlockTime().Add(plan.GetDuration()),
@@ -136,8 +136,7 @@ func (k *Keeper) HandleMsgRenewSubscription(ctx sdk.Context, msg *v3.MsgRenewSub
 			PlanID:      subscription.PlanID,
 			AccAddress:  subscription.AccAddress,
 			ProvAddress: provAddr.String(),
-			BasePrice:   subscription.BasePrice.String(),
-			QuotePrice:  subscription.QuotePrice.String(),
+			Price:       subscription.Price.String(),
 		},
 		&v3.EventPay{
 			ID:            subscription.ID,
@@ -254,12 +253,12 @@ func (k *Keeper) HandleMsgStartSubscription(ctx sdk.Context, msg *v3.MsgStartSub
 		return nil, types.NewErrorInvalidPlanStatus(plan.ID, plan.Status)
 	}
 
-	basePrice, found := plan.Price(msg.Denom)
+	price, found := plan.Price(msg.Denom)
 	if !found {
 		return nil, types.NewErrorPriceNotFound(msg.Denom)
 	}
 
-	quotePrice, err := k.GetQuote(ctx, basePrice)
+	price, err := price.UpdateQuoteValue(ctx, k.QuotePriceFunc)
 	if err != nil {
 		return nil, err
 	}
@@ -269,9 +268,22 @@ func (k *Keeper) HandleMsgStartSubscription(ctx sdk.Context, msg *v3.MsgStartSub
 		return nil, err
 	}
 
-	share := k.ProviderStakingShare(ctx)
+	count := k.GetSubscriptionCount(ctx)
+	subscription := v3.Subscription{
+		ID:                 count + 1,
+		AccAddress:         accAddr.String(),
+		PlanID:             plan.ID,
+		Price:              price,
+		RenewalPricePolicy: msg.RenewalPricePolicy,
+		Status:             v1base.StatusActive,
+		InactiveAt:         ctx.BlockTime().Add(plan.GetDuration()),
+		StatusAt:           ctx.BlockTime(),
+	}
 
-	reward := baseutils.GetProportionOfCoin(quotePrice, share)
+	share := k.ProviderStakingShare(ctx)
+	totalPayment := price.QuotePrice()
+
+	reward := baseutils.GetProportionOfCoin(totalPayment, share)
 	if err := k.SendCoinFromAccountToModule(ctx, accAddr, k.feeCollectorName, reward); err != nil {
 		return nil, err
 	}
@@ -281,22 +293,9 @@ func (k *Keeper) HandleMsgStartSubscription(ctx sdk.Context, msg *v3.MsgStartSub
 		return nil, err
 	}
 
-	payment := quotePrice.Sub(reward)
+	payment := totalPayment.Sub(reward)
 	if err := k.SendCoin(ctx, accAddr, provAddr.Bytes(), payment); err != nil {
 		return nil, err
-	}
-
-	count := k.GetSubscriptionCount(ctx)
-	subscription := v3.Subscription{
-		ID:                 count + 1,
-		AccAddress:         accAddr.String(),
-		PlanID:             plan.ID,
-		BasePrice:          basePrice,
-		QuotePrice:         quotePrice,
-		RenewalPricePolicy: msg.RenewalPricePolicy,
-		Status:             v1base.StatusActive,
-		InactiveAt:         ctx.BlockTime().Add(plan.GetDuration()),
-		StatusAt:           ctx.BlockTime(),
 	}
 
 	k.SetSubscriptionCount(ctx, count+1)
@@ -312,8 +311,7 @@ func (k *Keeper) HandleMsgStartSubscription(ctx sdk.Context, msg *v3.MsgStartSub
 			PlanID:      subscription.PlanID,
 			AccAddress:  subscription.AccAddress,
 			ProvAddress: provAddr.String(),
-			BasePrice:   subscription.BasePrice.String(),
-			QuotePrice:  subscription.QuotePrice.String(),
+			Price:       subscription.Price.String(),
 		},
 		&v3.EventPay{
 			ID:            subscription.ID,
@@ -413,22 +411,20 @@ func (k *Keeper) HandleMsgStartSession(ctx sdk.Context, msg *v3.MsgStartSessionR
 		return nil, types.NewErrorInvalidAllocation(subscription.ID, accAddr)
 	}
 
-	var (
-		count      = k.GetSessionCount(ctx)
-		inactiveAt = k.GetSessionInactiveAt(ctx)
-		session    = &v3.Session{
-			ID:             count + 1,
-			AccAddress:     accAddr.String(),
-			NodeAddress:    nodeAddr.String(),
-			SubscriptionID: subscription.ID,
-			DownloadBytes:  sdkmath.ZeroInt(),
-			UploadBytes:    sdkmath.ZeroInt(),
-			Duration:       0,
-			Status:         v1base.StatusActive,
-			InactiveAt:     inactiveAt,
-			StatusAt:       ctx.BlockTime(),
-		}
-	)
+	count := k.GetSessionCount(ctx)
+	inactiveAt := k.GetSessionInactiveAt(ctx)
+	session := &v3.Session{
+		ID:             count + 1,
+		AccAddress:     accAddr.String(),
+		NodeAddress:    nodeAddr.String(),
+		SubscriptionID: subscription.ID,
+		DownloadBytes:  sdkmath.ZeroInt(),
+		UploadBytes:    sdkmath.ZeroInt(),
+		Duration:       0,
+		Status:         v1base.StatusActive,
+		InactiveAt:     inactiveAt,
+		StatusAt:       ctx.BlockTime(),
+	}
 
 	k.SetSessionCount(ctx, count+1)
 	k.SetSession(ctx, session)

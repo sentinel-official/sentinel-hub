@@ -6,7 +6,6 @@ import (
 
 	sdkerrors "cosmossdk.io/errors"
 	sdkmath "cosmossdk.io/math"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	base "github.com/sentinel-official/hub/v12/types"
 	v1base "github.com/sentinel-official/hub/v12/types/v1"
@@ -20,15 +19,22 @@ func (m *Plan) GetDuration() time.Duration {
 	return time.Duration(m.Hours) * time.Hour
 }
 
-func (m *Plan) Price(denom string) (sdk.DecCoin, bool) {
-	for _, v := range m.Prices {
-		if v.Denom == denom {
-			return v, true
-		}
+func (m *Plan) GetPrices() v1base.Prices {
+	return m.Prices
+}
+
+func (m *Plan) Price(denom string) (v1base.Price, bool) {
+	prices := m.GetPrices()
+	if prices.Len() == 0 {
+		return v1base.ZeroPrice(denom), true
 	}
 
-	// If there are no prices and denom is empty, return a zero amount coin and true
-	return sdk.DecCoin{Amount: sdkmath.LegacyZeroDec()}, m.Prices.Len() == 0 && denom == ""
+	price, found := prices.Find(denom)
+	if !found {
+		return v1base.Price{}, false
+	}
+
+	return price, true
 }
 
 func (m *Plan) Validate() error {
@@ -53,10 +59,7 @@ func (m *Plan) Validate() error {
 	if m.Hours == 0 {
 		return fmt.Errorf("hours cannot be zero")
 	}
-	if m.Prices == nil {
-		return fmt.Errorf("prices cannot be nil")
-	}
-	if !m.Prices.IsValid() {
+	if prices := m.GetPrices(); !prices.IsValid() {
 		return fmt.Errorf("prices must be valid")
 	}
 	if !m.Status.IsOneOf(v1base.StatusActive, v1base.StatusInactive) {

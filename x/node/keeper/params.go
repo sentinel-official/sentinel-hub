@@ -6,6 +6,7 @@ import (
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
+	v1base "github.com/sentinel-official/hub/v12/types/v1"
 	"github.com/sentinel-official/hub/v12/x/node/types"
 	"github.com/sentinel-official/hub/v12/x/node/types/v3"
 )
@@ -40,12 +41,12 @@ func (k *Keeper) ActiveDuration(ctx sdk.Context) time.Duration {
 }
 
 // MinGigabytePrices retrieves the minimum gigabyte prices parameter from the module's parameters.
-func (k *Keeper) MinGigabytePrices(ctx sdk.Context) sdk.DecCoins {
+func (k *Keeper) MinGigabytePrices(ctx sdk.Context) v1base.Prices {
 	return k.GetParams(ctx).MinGigabytePrices
 }
 
 // MinHourlyPrices retrieves the minimum hourly prices parameter from the module's parameters.
-func (k *Keeper) MinHourlyPrices(ctx sdk.Context) sdk.DecCoins {
+func (k *Keeper) MinHourlyPrices(ctx sdk.Context) v1base.Prices {
 	return k.GetParams(ctx).MinHourlyPrices
 }
 
@@ -75,15 +76,18 @@ func (k *Keeper) StakingShare(ctx sdk.Context) sdkmath.LegacyDec {
 }
 
 // IsValidGigabytePrices checks if the provided gigabyte prices are valid based on the minimum prices defined in the module's parameters.
-func (k *Keeper) IsValidGigabytePrices(ctx sdk.Context, prices sdk.DecCoins) bool {
+func (k *Keeper) IsValidGigabytePrices(ctx sdk.Context, prices v1base.Prices) bool {
 	if prices.Len() == 0 {
 		return true
 	}
 
 	minPrices := k.MinGigabytePrices(ctx)
-	for _, coin := range minPrices {
-		amount := prices.AmountOf(coin.Denom)
-		if amount.LT(coin.Amount) {
+	for _, price := range minPrices {
+		baseValue, quoteValue := prices.AmountOf(price.Denom)
+		if !baseValue.IsZero() && baseValue.LT(price.BaseValue) {
+			return false
+		}
+		if !quoteValue.IsZero() && quoteValue.LT(price.QuoteValue) {
 			return false
 		}
 	}
@@ -92,15 +96,18 @@ func (k *Keeper) IsValidGigabytePrices(ctx sdk.Context, prices sdk.DecCoins) boo
 }
 
 // IsValidHourlyPrices checks if the provided hourly prices are valid based on the minimum prices defined in the module's parameters.
-func (k *Keeper) IsValidHourlyPrices(ctx sdk.Context, prices sdk.DecCoins) bool {
+func (k *Keeper) IsValidHourlyPrices(ctx sdk.Context, prices v1base.Prices) bool {
 	if prices.Len() == 0 {
 		return true
 	}
 
 	minPrices := k.MinHourlyPrices(ctx)
-	for _, coin := range minPrices {
-		amount := prices.AmountOf(coin.Denom)
-		if amount.LT(coin.Amount) {
+	for _, price := range minPrices {
+		baseValue, quoteValue := prices.AmountOf(price.Denom)
+		if !baseValue.IsZero() && baseValue.LT(price.BaseValue) {
+			return false
+		}
+		if !quoteValue.IsZero() && quoteValue.LT(price.QuoteValue) {
 			return false
 		}
 	}

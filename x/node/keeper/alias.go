@@ -49,8 +49,8 @@ func (k *Keeper) SubtractDeposit(ctx sdk.Context, addr sdk.AccAddress, coin sdk.
 	return k.deposit.SubtractDeposit(ctx, addr, sdk.NewCoins(coin))
 }
 
-func (k *Keeper) GetQuote(ctx sdk.Context, coin sdk.DecCoin) (sdk.Coin, error) {
-	return k.oracle.GetQuote(ctx, coin)
+func (k *Keeper) QuotePriceFunc(ctx sdk.Context, price sdk.DecCoin) (sdk.Coin, error) {
+	return k.oracle.GetQuotePrice(ctx, price)
 }
 
 func (k *Keeper) DeleteSession(ctx sdk.Context, id uint64) {

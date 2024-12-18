@@ -7,13 +7,15 @@ import (
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	params "github.com/cosmos/cosmos-sdk/x/params/types"
+
+	v1base "github.com/sentinel-official/hub/v12/types/v1"
 )
 
 var (
 	DefaultDeposit                   = sdk.NewCoin(sdk.DefaultBondDenom, sdkmath.NewInt(10))
 	DefaultActiveDuration            = 30 * time.Second
-	DefaultMinGigabytePrices         = sdk.NewDecCoins(sdk.NewDecCoinFromDec(sdk.DefaultBondDenom, sdkmath.LegacyMustNewDecFromStr("0.1")))
-	DefaultMinHourlyPrices           = sdk.NewDecCoins(sdk.NewDecCoinFromDec(sdk.DefaultBondDenom, sdkmath.LegacyMustNewDecFromStr("0.1")))
+	DefaultMinGigabytePrices         = v1base.Prices{{Denom: sdk.DefaultBondDenom, BaseValue: sdkmath.LegacyMustNewDecFromStr("0.1"), QuoteValue: sdkmath.NewInt(10)}}
+	DefaultMinHourlyPrices           = v1base.Prices{{Denom: sdk.DefaultBondDenom, BaseValue: sdkmath.LegacyMustNewDecFromStr("0.1"), QuoteValue: sdkmath.NewInt(10)}}
 	DefaultMaxSessionGigabytes int64 = 10
 	DefaultMinSessionGigabytes int64 = 1
 	DefaultMaxSessionHours     int64 = 10
@@ -36,6 +38,14 @@ var (
 var (
 	_ params.ParamSet = (*Params)(nil)
 )
+
+func (m *Params) GetMinGigabytePrices() v1base.Prices {
+	return m.MinGigabytePrices
+}
+
+func (m *Params) GetMinHourlyPrices() v1base.Prices {
+	return m.MinHourlyPrices
+}
 
 func (m *Params) Validate() error {
 	if err := validateDeposit(m.Deposit); err != nil {
@@ -120,8 +130,8 @@ func (m *Params) ParamSetPairs() params.ParamSetPairs {
 }
 
 func NewParams(
-	deposit sdk.Coin, activeDuration time.Duration, minGigabytePrices, minHourlyPrices sdk.DecCoins, maxSessionGigabytes,
-	minSessionGigabytes, maxSessionHours, minSessionHours int64, stakingShare sdkmath.LegacyDec,
+	deposit sdk.Coin, activeDuration time.Duration, minGigabytePrices, minHourlyPrices v1base.Prices,
+	maxSessionGigabytes, minSessionGigabytes, maxSessionHours, minSessionHours int64, stakingShare sdkmath.LegacyDec,
 ) Params {
 	return Params{
 		Deposit:             deposit,
@@ -190,7 +200,7 @@ func validateActiveDuration(v interface{}) error {
 }
 
 func validateMinGigabytePrices(v interface{}) error {
-	value, ok := v.(sdk.DecCoins)
+	value, ok := v.(v1base.Prices)
 	if !ok {
 		return fmt.Errorf("invalid parameter type %T", v)
 	}
@@ -206,7 +216,7 @@ func validateMinGigabytePrices(v interface{}) error {
 }
 
 func validateMinHourlyPrices(v interface{}) error {
-	value, ok := v.(sdk.DecCoins)
+	value, ok := v.(v1base.Prices)
 	if !ok {
 		return fmt.Errorf("invalid parameter type %T", v)
 	}

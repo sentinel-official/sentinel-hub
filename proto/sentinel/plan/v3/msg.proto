@@ -1,8 +1,8 @@
 syntax = "proto3";
 package sentinel.plan.v3;
 
-import "cosmos/base/v1beta1/coin.proto";
 import "gogoproto/gogo.proto";
+import "sentinel/types/v1/price.proto";
 import "sentinel/types/v1/renewal.proto";
 import "sentinel/types/v1/status.proto";
 
@@ -14,10 +14,7 @@ message MsgCreatePlanRequest {
   string from = 1;
   int64 gigabytes = 2;
   int64 hours = 3;
-  repeated cosmos.base.v1beta1.DecCoin prices = 4 [
-    (gogoproto.nullable) = false,
-    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins"
-  ];
+  repeated sentinel.types.v1.Price prices = 4 [(gogoproto.nullable) = false];
   bool private = 5;
 }
 

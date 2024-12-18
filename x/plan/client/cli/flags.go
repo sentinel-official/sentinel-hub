@@ -1,8 +1,9 @@
 package cli
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/spf13/pflag"
+
+	v1base "github.com/sentinel-official/hub/v12/types/v1"
 )
 
 const (
@@ -10,7 +11,7 @@ const (
 	flagPrivate = "private"
 )
 
-func GetPrices(flags *pflag.FlagSet) (sdk.DecCoins, error) {
+func GetPrices(flags *pflag.FlagSet) (v1base.Prices, error) {
 	s, err := flags.GetString(flagPrices)
 	if err != nil {
 		return nil, err
@@ -19,7 +20,7 @@ func GetPrices(flags *pflag.FlagSet) (sdk.DecCoins, error) {
 		return nil, nil
 	}
 
-	return sdk.ParseDecCoins(s)
+	return v1base.NewPricesFromString(s)
 }
 
 func GetPrivate(flags *pflag.FlagSet) (bool, error) {

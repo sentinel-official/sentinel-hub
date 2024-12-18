@@ -118,18 +118,18 @@ func (k *Keeper) GetAssetForPacket(ctx sdk.Context, portID, channelID string, se
 	return v, nil
 }
 
-// GetQuote retrieves a quote for a given DecCoin, applying asset pricing if available.
-func (k *Keeper) GetQuote(ctx sdk.Context, coin sdk.DecCoin) (sdk.Coin, error) {
-	// Truncate the decimal amount to an integer for the initial amount.
-	amount := coin.Amount.TruncateInt()
-
+// GetQuotePrice retrieves a quote for a given DecCoin, applying asset pricing if available.
+// If the asset for the given denomination is not found, it returns an error.
+func (k *Keeper) GetQuotePrice(ctx sdk.Context, basePrice sdk.DecCoin) (sdk.Coin, error) {
 	// Retrieve the asset associated with the coin denomination.
-	asset, found := k.GetAsset(ctx, coin.Denom)
-	if found {
-		// Adjust the amount using the asset price if the asset is found.
-		amount = coin.Amount.MulInt(asset.Price).TruncateInt()
+	asset, found := k.GetAsset(ctx, basePrice.Denom)
+	if !found {
+		return sdk.Coin{Amount: sdk.ZeroInt()}, types.NewErrorAssetNotFound(basePrice.Denom)
 	}
 
-	// Return the adjusted or original coin amount.
-	return sdk.Coin{Denom: coin.Denom, Amount: amount}, nil
+	// Calculate the quote price by multiplying the base price with the asset's price.
+	amount := basePrice.Amount.MulInt(asset.Price).TruncateInt()
+
+	// Return the resulting coin with the same denomination as the base price.
+	return sdk.Coin{Denom: basePrice.Denom, Amount: amount}, nil
 }

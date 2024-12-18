@@ -20,8 +20,7 @@ message EventCreate {
   uint64 plan_id = 2 [(gogoproto.customname) = "PlanID"];
   string acc_address = 3;
   string prov_address = 4;
-  string base_price = 5;
-  string quote_price = 6;
+  string price = 5;
 }
 
 message EventCreateSession {
@@ -45,8 +44,7 @@ message EventRenew {
   uint64 plan_id = 2 [(gogoproto.customname) = "PlanID"];
   string acc_address = 3;
   string prov_address = 4;
-  string base_price = 5;
-  string quote_price = 6;
+  string price = 5;
 }
 
 message EventUpdate {

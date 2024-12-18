@@ -2,7 +2,6 @@ package types
 
 import (
 	sdkerrors "cosmossdk.io/errors"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	base "github.com/sentinel-official/hub/v12/types"
 	v1base "github.com/sentinel-official/hub/v12/types/v1"
@@ -44,7 +43,7 @@ func NewErrorInvalidNodeStatus(addr base.NodeAddress, status v1base.Status) erro
 }
 
 // NewErrorInvalidPrices returns an error indicating that the provided prices are invalid.
-func NewErrorInvalidPrices(prices sdk.DecCoins) error {
+func NewErrorInvalidPrices(prices v1base.Prices) error {
 	return sdkerrors.Wrapf(ErrInvalidPrices, "invalid prices %s", prices)
 }
 

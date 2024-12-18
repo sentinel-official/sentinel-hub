@@ -44,7 +44,7 @@ func (k *Keeper) HandleMsgCreatePlan(ctx sdk.Context, msg *v3.MsgCreatePlanReque
 			Gigabytes:   plan.Gigabytes,
 			Hours:       plan.Hours,
 			Private:     plan.Private,
-			Prices:      plan.Prices.String(),
+			Prices:      plan.GetPrices().String(),
 		},
 	)
 

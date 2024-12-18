@@ -101,7 +101,7 @@ func (k *Keeper) handleSubscriptionRenewals(ctx sdk.Context) {
 		msg := &v3.MsgRenewSubscriptionRequest{
 			From:  item.AccAddress,
 			ID:    item.ID,
-			Denom: item.BasePrice.Denom,
+			Denom: item.Price.Denom,
 		}
 
 		// Get the appropriate handler for processing the renewal message
