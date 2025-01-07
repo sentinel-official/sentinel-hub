@@ -13,9 +13,14 @@ import (
 type QuotePriceFunc func(ctx sdk.Context, basePrice sdk.DecCoin) (sdk.Coin, error)
 
 func NewPriceFromString(s string) (Price, error) {
+	s = strings.TrimSpace(s)
+	if len(s) == 0 {
+		return Price{}, errors.New("empty string")
+	}
+
 	parts := strings.Split(s, ";")
 	if len(parts) != 3 {
-		return Price{}, errors.New("invalid format: expected BaseValue;QuoteValue;Denom")
+		return Price{}, errors.New("invalid format")
 	}
 
 	baseValue, err := sdkmath.LegacyNewDecFromStr(parts[0])
@@ -149,6 +154,11 @@ func (p Price) UpdateQuoteValue(ctx sdk.Context, fn QuotePriceFunc) (Price, erro
 type Prices []Price
 
 func NewPricesFromString(s string) (Prices, error) {
+	s = strings.TrimSpace(s)
+	if len(s) == 0 {
+		return nil, nil
+	}
+
 	parts := strings.Split(s, ",")
 
 	prices := make(Prices, len(parts))
