@@ -3,6 +3,8 @@ package expected
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+
+	"github.com/sentinel-official/hub/v12/x/session/types/v3"
 )
 
 type AccountKeeper interface {
@@ -20,8 +22,10 @@ type DepositKeeper interface {
 
 type NodeKeeper interface {
 	SessionInactivePreHook(ctx sdk.Context, id uint64) error
+	UpdateSessionMaxValues(ctx sdk.Context, session v3.Session) error
 }
 
 type SubscriptionKeeper interface {
 	SessionInactivePreHook(ctx sdk.Context, id uint64) error
+	UpdateSessionMaxValues(ctx sdk.Context, session v3.Session) error
 }

@@ -41,6 +41,9 @@ func (k *Keeper) HandleQuerySessions(ctx sdk.Context, req *v3.QuerySessionsReque
 		if err := k.cdc.UnmarshalInterface(value, &v); err != nil {
 			return err
 		}
+		if err := k.UpdateMaxValues(ctx, v); err != nil {
+			return err
+		}
 
 		item, err := codectypes.NewAnyWithValue(v)
 		if err != nil {

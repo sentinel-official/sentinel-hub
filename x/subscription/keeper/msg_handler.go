@@ -8,6 +8,7 @@ import (
 	base "github.com/sentinel-official/hub/v12/types"
 	v1base "github.com/sentinel-official/hub/v12/types/v1"
 	baseutils "github.com/sentinel-official/hub/v12/utils"
+	sessiontypes "github.com/sentinel-official/hub/v12/x/session/types/v3"
 	"github.com/sentinel-official/hub/v12/x/subscription/types"
 	"github.com/sentinel-official/hub/v12/x/subscription/types/v2"
 	"github.com/sentinel-official/hub/v12/x/subscription/types/v3"
@@ -414,16 +415,21 @@ func (k *Keeper) HandleMsgStartSession(ctx sdk.Context, msg *v3.MsgStartSessionR
 	count := k.GetSessionCount(ctx)
 	inactiveAt := k.GetSessionInactiveAt(ctx)
 	session := &v3.Session{
-		ID:             count + 1,
-		AccAddress:     accAddr.String(),
-		NodeAddress:    nodeAddr.String(),
+		BaseSession: &sessiontypes.BaseSession{
+			ID:            count + 1,
+			AccAddress:    accAddr.String(),
+			NodeAddress:   nodeAddr.String(),
+			DownloadBytes: sdkmath.ZeroInt(),
+			UploadBytes:   sdkmath.ZeroInt(),
+			MaxBytes:      sdkmath.ZeroInt(),
+			Duration:      0,
+			MaxDuration:   0,
+			Status:        v1base.StatusActive,
+			InactiveAt:    inactiveAt,
+			StartAt:       ctx.BlockTime(),
+			StatusAt:      ctx.BlockTime(),
+		},
 		SubscriptionID: subscription.ID,
-		DownloadBytes:  sdkmath.ZeroInt(),
-		UploadBytes:    sdkmath.ZeroInt(),
-		Duration:       0,
-		Status:         v1base.StatusActive,
-		InactiveAt:     inactiveAt,
-		StatusAt:       ctx.BlockTime(),
 	}
 
 	k.SetSessionCount(ctx, count+1)

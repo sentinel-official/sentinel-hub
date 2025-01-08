@@ -7,57 +7,60 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	base "github.com/sentinel-official/hub/v12/types"
-	v1base "github.com/sentinel-official/hub/v12/types/v1"
+	sessiontypes "github.com/sentinel-official/hub/v12/x/session/types/v3"
 )
 
-func (m *Session) GetDownloadBytes() sdkmath.Int { return m.DownloadBytes }
-func (m *Session) GetUploadBytes() sdkmath.Int   { return m.UploadBytes }
+var _ sessiontypes.Session = (*Session)(nil)
 
-func (m *Session) SetDownloadBytes(v sdkmath.Int) { m.DownloadBytes = v }
-func (m *Session) SetDuration(v time.Duration)    { m.Duration = v }
-func (m *Session) SetInactiveAt(v time.Time)      { m.InactiveAt = v }
-func (m *Session) SetStatusAt(v time.Time)        { m.StatusAt = v }
-func (m *Session) SetStatus(v v1base.Status)      { m.Status = v }
-func (m *Session) SetUploadBytes(v sdkmath.Int)   { m.UploadBytes = v }
-
+// paymentAmountForBytes calculates the payment amount based on data usage.
 func (m *Session) paymentAmountForBytes() sdkmath.Int {
 	decPrice := m.Price.QuoteValue.ToLegacyDec()
 	bytePrice := decPrice.QuoInt(base.Gigabyte)
 	totalBytes := m.DownloadBytes.Add(m.UploadBytes)
+
 	return bytePrice.MulInt(totalBytes).Ceil().TruncateInt()
 }
 
+// paymentAmountForDuration calculates the payment amount based on session duration.
 func (m *Session) paymentAmountForDuration() sdkmath.Int {
 	decPrice := m.Price.QuoteValue.ToLegacyDec()
 	nsPrice := decPrice.QuoInt64(time.Hour.Nanoseconds())
 	nsDuration := m.Duration.Nanoseconds()
+
 	return nsPrice.MulInt64(nsDuration).Ceil().TruncateInt()
 }
 
+// DepositAmount calculates the deposit amount based on maximum allowed bytes and duration.
 func (m *Session) DepositAmount() sdk.Coin {
 	amount := sdkmath.ZeroInt()
-	if m.MaxGigabytes != 0 {
-		amount = m.Price.QuoteValue.MulRaw(m.MaxGigabytes)
+
+	if !m.MaxBytes.IsZero() {
+		gigabytes := m.MaxBytes.Quo(base.Gigabyte)
+		amount = m.Price.QuoteValue.Mul(gigabytes)
 	}
-	if m.MaxHours != 0 {
-		amount = m.Price.QuoteValue.MulRaw(m.MaxHours)
+	if m.MaxDuration != 0 {
+		hours := int64(m.MaxDuration / time.Hour)
+		amount = m.Price.QuoteValue.MulRaw(hours)
 	}
 
 	return sdk.Coin{Denom: m.Price.Denom, Amount: amount}
 }
 
+// PaymentAmount calculates the total payment amount based on usage and duration.
 func (m *Session) PaymentAmount() sdk.Coin {
 	amount := sdkmath.ZeroInt()
-	if m.MaxGigabytes != 0 {
+
+	if !m.MaxBytes.IsZero() {
 		amount = m.paymentAmountForBytes()
 	}
-	if m.MaxHours != 0 {
+	if m.MaxDuration != 0 {
 		amount = m.paymentAmountForDuration()
 	}
 
 	return sdk.Coin{Denom: m.Price.Denom, Amount: amount}
 }
 
+// RefundAmount calculates the refund amount as the difference between deposit and payment.
 func (m *Session) RefundAmount() sdk.Coin {
 	deposit := m.DepositAmount()
 	payment := m.PaymentAmount()
