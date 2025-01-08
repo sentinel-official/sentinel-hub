@@ -11,11 +11,11 @@ import (
 	v1base "github.com/sentinel-official/hub/v12/types/v1"
 )
 
-func (m *Plan) GetBytes() sdkmath.Int {
+func (m *Plan) GetGigabytes() sdkmath.Int {
 	return base.Gigabyte.MulRaw(m.Gigabytes)
 }
 
-func (m *Plan) GetDuration() time.Duration {
+func (m *Plan) GetHours() time.Duration {
 	return time.Duration(m.Hours) * time.Hour
 }
 
