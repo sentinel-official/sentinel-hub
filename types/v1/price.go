@@ -76,7 +76,7 @@ func (p Price) Copy() Price {
 }
 
 func (p Price) String() string {
-	return fmt.Sprintf("%s;%s;%s", p.BaseValue.String(), p.QuoteValue.String(), p.Denom)
+	return fmt.Sprintf("%s;%s;%s", p.BaseValue, p.QuoteValue, p.Denom)
 }
 
 func (p Price) IsEqual(v Price) bool {

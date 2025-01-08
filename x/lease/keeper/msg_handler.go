@@ -49,8 +49,8 @@ func (k *Keeper) HandleMsgEndLease(ctx sdk.Context, msg *v1.MsgEndLeaseRequest) 
 	k.DeleteLease(ctx, lease.ID)
 	k.DeleteLeaseForNodeByProvider(ctx, nodeAddr, provAddr, lease.ID)
 	k.DeleteLeaseForProvider(ctx, provAddr, lease.ID)
-	k.DeleteLeaseForInactiveAt(ctx, lease.InactiveAt, lease.ID)
-	k.DeleteLeaseForPayoutAt(ctx, lease.PayoutAt, lease.ID)
+	k.DeleteLeaseForInactiveAt(ctx, lease.InactiveAt(), lease.ID)
+	k.DeleteLeaseForPayoutAt(ctx, lease.PayoutAt(), lease.ID)
 	k.DeleteLeaseForRenewalAt(ctx, lease.RenewalAt(), lease.ID)
 
 	ctx.EventManager().EmitTypedEvent(
@@ -130,8 +130,8 @@ func (k *Keeper) HandleMsgRenewLease(ctx sdk.Context, msg *v1.MsgRenewLeaseReque
 		},
 	)
 
-	k.DeleteLeaseForInactiveAt(ctx, lease.InactiveAt, lease.ID)
-	k.DeleteLeaseForPayoutAt(ctx, lease.PayoutAt, lease.ID)
+	k.DeleteLeaseForInactiveAt(ctx, lease.InactiveAt(), lease.ID)
+	k.DeleteLeaseForPayoutAt(ctx, lease.PayoutAt(), lease.ID)
 	k.DeleteLeaseForRenewalAt(ctx, lease.RenewalAt(), lease.ID)
 
 	lease = v1.Lease{
@@ -142,8 +142,7 @@ func (k *Keeper) HandleMsgRenewLease(ctx sdk.Context, msg *v1.MsgRenewLeaseReque
 		Hours:              0,
 		MaxHours:           msg.Hours,
 		RenewalPricePolicy: lease.RenewalPricePolicy,
-		InactiveAt:         ctx.BlockTime().Add(msg.GetHours()),
-		PayoutAt:           ctx.BlockTime(),
+		StartAt:            ctx.BlockTime(),
 	}
 
 	deposit := lease.DepositAmount()
@@ -152,8 +151,8 @@ func (k *Keeper) HandleMsgRenewLease(ctx sdk.Context, msg *v1.MsgRenewLeaseReque
 	}
 
 	k.SetLease(ctx, lease)
-	k.SetLeaseForInactiveAt(ctx, lease.InactiveAt, lease.ID)
-	k.SetLeaseForPayoutAt(ctx, lease.PayoutAt, lease.ID)
+	k.SetLeaseForInactiveAt(ctx, lease.InactiveAt(), lease.ID)
+	k.SetLeaseForPayoutAt(ctx, lease.PayoutAt(), lease.ID)
 	k.SetLeaseForRenewalAt(ctx, lease.RenewalAt(), lease.ID)
 
 	ctx.EventManager().EmitTypedEvent(
@@ -229,8 +228,7 @@ func (k *Keeper) HandleMsgStartLease(ctx sdk.Context, msg *v1.MsgStartLeaseReque
 		Hours:              0,
 		MaxHours:           msg.Hours,
 		RenewalPricePolicy: msg.RenewalPricePolicy,
-		InactiveAt:         ctx.BlockTime().Add(msg.GetHours()),
-		PayoutAt:           ctx.BlockTime(),
+		StartAt:            ctx.BlockTime(),
 	}
 
 	deposit := lease.DepositAmount()
@@ -242,8 +240,8 @@ func (k *Keeper) HandleMsgStartLease(ctx sdk.Context, msg *v1.MsgStartLeaseReque
 	k.SetLease(ctx, lease)
 	k.SetLeaseForNodeByProvider(ctx, nodeAddr, provAddr, lease.ID)
 	k.SetLeaseForProvider(ctx, provAddr, lease.ID)
-	k.SetLeaseForInactiveAt(ctx, lease.InactiveAt, lease.ID)
-	k.SetLeaseForPayoutAt(ctx, lease.PayoutAt, lease.ID)
+	k.SetLeaseForInactiveAt(ctx, lease.InactiveAt(), lease.ID)
+	k.SetLeaseForPayoutAt(ctx, lease.PayoutAt(), lease.ID)
 	k.SetLeaseForRenewalAt(ctx, lease.RenewalAt(), lease.ID)
 
 	ctx.EventManager().EmitTypedEvent(
