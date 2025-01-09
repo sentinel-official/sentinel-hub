@@ -33,16 +33,17 @@ func NewPriceFromString(s string) (Price, error) {
 		return Price{}, errors.New("invalid quote value")
 	}
 
-	denom := parts[2]
-	if err := sdk.ValidateDenom(denom); err != nil {
-		return Price{}, fmt.Errorf("invalid denomination: %w", err)
-	}
-
-	return Price{
-		Denom:      denom,
+	price := Price{
+		Denom:      parts[2],
 		BaseValue:  baseValue,
 		QuoteValue: quoteValue,
-	}, nil
+	}
+
+	if err := price.Validate(); err != nil {
+		return Price{}, fmt.Errorf("invalid price: %w", err)
+	}
+
+	return price, nil
 }
 
 func ZeroPrice(denom string) Price {
@@ -85,15 +86,22 @@ func (p Price) IsEqual(v Price) bool {
 		p.QuoteValue.Equal(v.QuoteValue)
 }
 
-func (p Price) IsValid() bool {
-	if sdk.ValidateDenom(p.Denom) != nil {
-		return false
+func (p Price) Validate() error {
+	if err := sdk.ValidateDenom(p.Denom); err != nil {
+		return fmt.Errorf("invalid denom: %w", err)
 	}
-	if p.BaseValue.IsNegative() || p.QuoteValue.IsNegative() {
-		return false
+	if p.BaseValue.IsNegative() {
+		return errors.New("base value cannot be negative")
+	}
+	if p.QuoteValue.IsNegative() {
+		return errors.New("quote value cannot be negative")
 	}
 
-	return true
+	return nil
+}
+
+func (p Price) IsValid() bool {
+	return p.Validate() == nil
 }
 
 func (p Price) negative() Price {
@@ -106,7 +114,7 @@ func (p Price) negative() Price {
 
 func (p Price) Add(v Price) Price {
 	if p.Denom != v.Denom {
-		panic(errors.New("denominations do not match"))
+		panic(errors.New("denoms do not match"))
 	}
 
 	return Price{
@@ -118,7 +126,7 @@ func (p Price) Add(v Price) Price {
 
 func (p Price) Sub(v Price) Price {
 	if p.Denom != v.Denom {
-		panic(errors.New("denominations do not match"))
+		panic(errors.New("denoms do not match"))
 	}
 
 	return Price{
@@ -216,17 +224,21 @@ func (p Prices) IsSorted() bool {
 	return true
 }
 
-func (p Prices) IsValid() bool {
+func (p Prices) Validate() error {
 	for i := 0; i < len(p); i++ {
 		if i > 0 && p[i].Denom <= p[i-1].Denom {
-			return false
+			return errors.New("denoms must be sorted")
 		}
-		if !p[i].IsValid() {
-			return false
+		if err := p[i].Validate(); err != nil {
+			return fmt.Errorf("invalid price: %w", err)
 		}
 	}
 
-	return true
+	return nil
+}
+
+func (p Prices) IsValid() bool {
+	return p.Validate() == nil
 }
 
 func (p Prices) Len() int {
