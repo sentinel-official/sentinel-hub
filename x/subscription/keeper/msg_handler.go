@@ -401,6 +401,10 @@ func (k *Keeper) HandleMsgStartSession(ctx sdk.Context, msg *v3.MsgStartSessionR
 		return nil, types.NewErrorInvalidNodeStatus(nodeAddr, node.Status)
 	}
 
+	if !k.HasNodeForPlan(ctx, subscription.PlanID, nodeAddr) {
+		return nil, types.NewErrorNodeForPlanNotFound(subscription.PlanID, nodeAddr)
+	}
+
 	accAddr, err := sdk.AccAddressFromBech32(msg.From)
 	if err != nil {
 		return nil, err

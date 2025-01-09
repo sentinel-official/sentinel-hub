@@ -36,6 +36,10 @@ func (k *Keeper) GetNode(ctx sdk.Context, addr base.NodeAddress) (nodetypes.Node
 	return k.node.GetNode(ctx, addr)
 }
 
+func (k *Keeper) HasNodeForPlan(ctx sdk.Context, id uint64, addr base.NodeAddress) bool {
+	return k.node.HasNodeForPlan(ctx, id, addr)
+}
+
 func (k *Keeper) QuotePriceFunc(ctx sdk.Context, price sdk.DecCoin) (sdk.Coin, error) {
 	return k.oracle.GetQuotePrice(ctx, price)
 }

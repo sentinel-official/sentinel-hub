@@ -35,6 +35,7 @@ type ProviderKeeper interface {
 }
 
 type NodeKeeper interface {
+	HasNodeForPlan(ctx sdk.Context, id uint64, addr base.NodeAddress) bool
 	GetNode(ctx sdk.Context, addr base.NodeAddress) (nodetypes.Node, bool)
 }
 
