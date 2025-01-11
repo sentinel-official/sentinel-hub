@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/sentinel-official/hub/v12/x/session/types/v3"
@@ -27,6 +28,14 @@ func (k *Keeper) SessionInactivePreHook(ctx sdk.Context, id uint64) error {
 		return err
 	}
 	if err := k.subscription.SessionInactivePreHook(ctx, id); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (k *Keeper) SessionUpdatePreHook(ctx sdk.Context, id uint64, currBytes sdkmath.Int) error {
+	if err := k.subscription.SessionUpdatePreHook(ctx, id, currBytes); err != nil {
 		return err
 	}
 

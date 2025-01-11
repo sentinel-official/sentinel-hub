@@ -12,6 +12,8 @@ import (
 type Session interface {
 	proto.Message
 
+	Bytes() sdkmath.Int
+
 	GetID() uint64
 	GetAccAddress() string
 	GetNodeAddress() string
@@ -37,6 +39,10 @@ type Session interface {
 	SetInactiveAt(v time.Time)
 	SetStartAt(v time.Time)
 	SetStatusAt(v time.Time)
+}
+
+func (m *BaseSession) Bytes() sdkmath.Int {
+	return m.GetDownloadBytes().Add(m.GetUploadBytes())
 }
 
 func (m *BaseSession) GetID() uint64                 { return m.ID }

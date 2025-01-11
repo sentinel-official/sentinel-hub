@@ -59,6 +59,10 @@ func NewMsgUpdateSessionRequest(from base.NodeAddress, id uint64, downloadBytes,
 	}
 }
 
+func (m *MsgUpdateSessionRequest) Bytes() sdkmath.Int {
+	return m.DownloadBytes.Add(m.UploadBytes)
+}
+
 func (m *MsgUpdateSessionRequest) Proof() *Proof {
 	return &Proof{
 		ID:            m.ID,

@@ -1,6 +1,7 @@
 package expected
 
 import (
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
@@ -27,5 +28,6 @@ type NodeKeeper interface {
 
 type SubscriptionKeeper interface {
 	SessionInactivePreHook(ctx sdk.Context, id uint64) error
+	SessionUpdatePreHook(ctx sdk.Context, id uint64, currBytes sdkmath.Int) error
 	UpdateSessionMaxValues(ctx sdk.Context, session v3.Session) error
 }
