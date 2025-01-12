@@ -34,7 +34,8 @@ func (k *Keeper) UpdateSessionMaxValues(ctx sdk.Context, session sessiontypes.Se
 	}
 
 	// Calculate the maximum allowable session bytes and duration
-	maxBytes := alloc.GrantedBytes.Sub(alloc.UtilisedBytes)
+	diffBytes := alloc.GrantedBytes.Sub(alloc.UtilisedBytes)
+	maxBytes := s.Bytes().Add(diffBytes)
 	maxDuration := subscription.InactiveAt.Sub(s.StartAt)
 
 	// Update the session with calculated max bytes and duration
