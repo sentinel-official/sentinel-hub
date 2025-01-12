@@ -34,7 +34,7 @@ func NewKeeper(
 		Deposit:      depositkeeper.NewKeeper(cdc, key),
 		Lease:        leasekeeper.NewKeeper(cdc, key, router, authority, feeCollectorName),
 		Node:         nodekeeper.NewKeeper(cdc, key, router, authority, feeCollectorName),
-		Plan:         plankeeper.NewKeeper(cdc, key),
+		Plan:         plankeeper.NewKeeper(cdc, key, router),
 		Provider:     providerkeeper.NewKeeper(cdc, key, router, authority),
 		Session:      sessionkeeper.NewKeeper(cdc, key, router, authority, feeCollectorName),
 		Subscription: subscriptionkeeper.NewKeeper(cdc, key, router, authority, feeCollectorName),

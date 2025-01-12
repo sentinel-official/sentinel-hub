@@ -26,10 +26,11 @@ type Keeper struct {
 	subscription expected.SubscriptionKeeper
 }
 
-func NewKeeper(cdc codec.BinaryCodec, key storetypes.StoreKey) Keeper {
+func NewKeeper(cdc codec.BinaryCodec, key storetypes.StoreKey, router *baseapp.MsgServiceRouter) Keeper {
 	return Keeper{
-		cdc: cdc,
-		key: key,
+		cdc:    cdc,
+		key:    key,
+		router: router,
 	}
 }
 
