@@ -128,19 +128,6 @@ func (s *NodeSubscription) Validate() error {
 	return nil
 }
 
-func (s *NodeSubscription) GetNodeAddress() base.NodeAddress {
-	if s.NodeAddress == "" {
-		return nil
-	}
-
-	addr, err := base.NodeAddressFromBech32(s.NodeAddress)
-	if err != nil {
-		panic(err)
-	}
-
-	return addr
-}
-
 func (s *PlanSubscription) Type() SubscriptionType {
 	return TypePlan
 }

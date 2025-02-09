@@ -10,32 +10,6 @@ import (
 	v1base "github.com/sentinel-official/hub/v12/types/v1"
 )
 
-func (m *Session) GetAddress() sdk.AccAddress {
-	if m.Address == "" {
-		return nil
-	}
-
-	addr, err := sdk.AccAddressFromBech32(m.Address)
-	if err != nil {
-		panic(err)
-	}
-
-	return addr
-}
-
-func (m *Session) GetNodeAddress() base.NodeAddress {
-	if m.NodeAddress == "" {
-		return nil
-	}
-
-	addr, err := base.NodeAddressFromBech32(m.NodeAddress)
-	if err != nil {
-		panic(err)
-	}
-
-	return addr
-}
-
 func (m *Session) Validate() error {
 	if m.ID == 0 {
 		return fmt.Errorf("id cannot be zero")

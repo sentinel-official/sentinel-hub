@@ -12,19 +12,6 @@ import (
 	v1base "github.com/sentinel-official/hub/v12/types/v1"
 )
 
-func (m *Node) GetAddress() base.NodeAddress {
-	if m.Address == "" {
-		return nil
-	}
-
-	addr, err := base.NodeAddressFromBech32(m.Address)
-	if err != nil {
-		panic(err)
-	}
-
-	return addr
-}
-
 func (m *Node) Validate() error {
 	if m.Address == "" {
 		return fmt.Errorf("address cannot be empty")

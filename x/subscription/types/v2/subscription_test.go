@@ -237,42 +237,6 @@ func TestBaseSubscription_Validate(t *testing.T) {
 	}
 }
 
-func TestNodeSubscription_GetNodeAddress(t *testing.T) {
-	type fields struct {
-		NodeAddress string
-	}
-	tests := []struct {
-		name   string
-		fields fields
-		want   base.NodeAddress
-	}{
-		{
-			"node_address empty",
-			fields{
-				NodeAddress: base.TestAddrEmpty,
-			},
-			nil,
-		},
-		{
-			"node_address 20 bytes",
-			fields{
-				NodeAddress: base.TestBech32NodeAddr20Bytes,
-			},
-			base.NodeAddress{0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x20},
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			s := &NodeSubscription{
-				NodeAddress: tt.fields.NodeAddress,
-			}
-			if got := s.GetNodeAddress(); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("GetNodeAddress() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
 func TestNodeSubscription_Type(t *testing.T) {
 	v := &NodeSubscription{}
 	require.Equal(t, TypeNode, v.Type())

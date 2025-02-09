@@ -12,42 +12,6 @@ import (
 	v1base "github.com/sentinel-official/hub/v12/types/v1"
 )
 
-func TestNode_GetAddress(t *testing.T) {
-	type fields struct {
-		Address string
-	}
-	tests := []struct {
-		name   string
-		fields fields
-		want   base.NodeAddress
-	}{
-		{
-			"address empty",
-			fields{
-				Address: base.TestAddrEmpty,
-			},
-			nil,
-		},
-		{
-			"address 20 bytes",
-			fields{
-				Address: base.TestBech32NodeAddr20Bytes,
-			},
-			base.NodeAddress{0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x20},
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			m := &Node{
-				Address: tt.fields.Address,
-			}
-			if got := m.GetAddress(); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("GetAddress() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
 func TestNode_GigabytePrice(t *testing.T) {
 	type fields struct {
 		GigabytePrices sdk.Coins

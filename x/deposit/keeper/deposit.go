@@ -9,8 +9,13 @@ import (
 
 // SetDeposit stores a deposit in the module's KVStore.
 func (k *Keeper) SetDeposit(ctx sdk.Context, deposit v1.Deposit) {
+	addr, err := sdk.AccAddressFromBech32(deposit.Address)
+	if err != nil {
+		panic(err)
+	}
+
 	store := k.Store(ctx)
-	key := types.DepositKey(deposit.GetAddress())
+	key := types.DepositKey(addr)
 	value := k.cdc.MustMarshal(&deposit)
 
 	store.Set(key, value)
