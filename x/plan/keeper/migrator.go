@@ -61,7 +61,7 @@ func (k *Migrator) migratePlans(ctx sdk.Context) {
 			ProvAddress: item.ProviderAddress,
 			Gigabytes:   item.Gigabytes,
 			Hours:       int64(item.Duration / time.Hour),
-			Prices:      []v1base.Price{},
+			Prices:      v1base.NewPricesFromCoins(item.Prices...),
 			Status:      item.Status,
 			StatusAt:    item.StatusAt,
 		}

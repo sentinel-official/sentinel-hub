@@ -77,8 +77,8 @@ func (k *Migrator) migrateNodes(ctx sdk.Context) {
 
 		node := v3.Node{
 			Address:        item.Address,
-			GigabytePrices: nil,
-			HourlyPrices:   nil,
+			GigabytePrices: v1base.NewPricesFromCoins(item.GigabytePrices...),
+			HourlyPrices:   v1base.NewPricesFromCoins(item.HourlyPrices...),
 			RemoteURL:      item.RemoteURL,
 			InactiveAt:     item.InactiveAt,
 			Status:         item.Status,
