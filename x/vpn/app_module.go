@@ -144,10 +144,15 @@ func (am AppModule) EndBlock(_ sdk.Context, _ abcitypes.RequestEndBlock) []abcit
 	return nil
 }
 
-func (am AppModule) ConsensusVersion() uint64 { return 3 }
+func (am AppModule) ConsensusVersion() uint64 { return 4 }
 
 func (am AppModule) RegisterInvariants(_ sdk.InvariantRegistry) {}
 
 func (am AppModule) RegisterServices(configurator sdkmodule.Configurator) {
 	services.RegisterServices(configurator, am.keeper)
+
+	m := keeper.NewMigrator(am.keeper)
+	if err := configurator.RegisterMigration(types.ModuleName, 3, m.Migrate); err != nil {
+		panic(err)
+	}
 }
