@@ -5,21 +5,11 @@ import (
 
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	params "github.com/cosmos/cosmos-sdk/x/params/types"
 )
 
 var (
 	DefaultDeposit      = sdk.NewCoin(sdk.DefaultBondDenom, sdkmath.NewInt(1000))
 	DefaultStakingShare = sdkmath.LegacyNewDecWithPrec(1, 1)
-)
-
-var (
-	KeyDeposit      = []byte("Deposit")
-	KeyStakingShare = []byte("StakingShare")
-)
-
-var (
-	_ params.ParamSet = (*Params)(nil)
 )
 
 func (m *Params) Validate() error {
@@ -31,21 +21,6 @@ func (m *Params) Validate() error {
 	}
 
 	return nil
-}
-
-func (m *Params) ParamSetPairs() params.ParamSetPairs {
-	return params.ParamSetPairs{
-		{
-			Key:         KeyDeposit,
-			Value:       &m.Deposit,
-			ValidatorFn: validateDeposit,
-		},
-		{
-			Key:         KeyStakingShare,
-			Value:       &m.StakingShare,
-			ValidatorFn: validateStakingShare,
-		},
-	}
 }
 
 func NewParams(deposit sdk.Coin, stakingShare sdkmath.LegacyDec) Params {
@@ -60,10 +35,6 @@ func DefaultParams() Params {
 		Deposit:      DefaultDeposit,
 		StakingShare: DefaultStakingShare,
 	}
-}
-
-func ParamsKeyTable() params.KeyTable {
-	return params.NewKeyTable().RegisterParamSet(&Params{})
 }
 
 func validateDeposit(v interface{}) error {

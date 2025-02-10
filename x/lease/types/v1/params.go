@@ -4,23 +4,12 @@ import (
 	"fmt"
 
 	sdkmath "cosmossdk.io/math"
-	params "github.com/cosmos/cosmos-sdk/x/params/types"
 )
 
 var (
 	DefaultMaxLeaseHours int64 = 10
 	DefaultMinLeaseHours int64 = 1
 	DefaultStakingShare        = sdkmath.LegacyNewDecWithPrec(1, 1)
-)
-
-var (
-	KeyMaxLeaseHours = []byte("MaxLeaseHours")
-	KeyMinLeaseHours = []byte("MinLeaseHours")
-	KeyStakingShare  = []byte("StakingShare")
-)
-
-var (
-	_ params.ParamSet = (*Params)(nil)
 )
 
 func (m *Params) Validate() error {
@@ -37,26 +26,6 @@ func (m *Params) Validate() error {
 	return nil
 }
 
-func (m *Params) ParamSetPairs() params.ParamSetPairs {
-	return params.ParamSetPairs{
-		{
-			Key:         KeyMaxLeaseHours,
-			Value:       &m.MaxLeaseHours,
-			ValidatorFn: validateMaxLeaseHours,
-		},
-		{
-			Key:         KeyMinLeaseHours,
-			Value:       &m.MinLeaseHours,
-			ValidatorFn: validateMinLeaseHours,
-		},
-		{
-			Key:         KeyStakingShare,
-			Value:       &m.StakingShare,
-			ValidatorFn: validateStakingShare,
-		},
-	}
-}
-
 func NewParams(maxLeaseHours, minLeaseHours int64, stakingShare sdkmath.LegacyDec) Params {
 	return Params{
 		MaxLeaseHours: maxLeaseHours,
@@ -71,10 +40,6 @@ func DefaultParams() Params {
 		DefaultMinLeaseHours,
 		DefaultStakingShare,
 	)
-}
-
-func ParamsKeyTable() params.KeyTable {
-	return params.NewKeyTable().RegisterParamSet(&Params{})
 }
 
 func validateMaxLeaseHours(v interface{}) error {

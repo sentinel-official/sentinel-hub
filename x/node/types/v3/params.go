@@ -6,7 +6,6 @@ import (
 
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	params "github.com/cosmos/cosmos-sdk/x/params/types"
 
 	v1base "github.com/sentinel-official/hub/v12/types/v1"
 )
@@ -21,22 +20,6 @@ var (
 	DefaultMaxSessionHours     int64 = 10
 	DefaultMinSessionHours     int64 = 1
 	DefaultStakingShare              = sdkmath.LegacyNewDecWithPrec(1, 1)
-)
-
-var (
-	KeyDeposit             = []byte("Deposit")
-	KeyActiveDuration      = []byte("ActiveDuration")
-	KeyMinGigabytePrices   = []byte("MinGigabytePrices")
-	KeyMinHourlyPrices     = []byte("MinHourlyPrices")
-	KeyMaxSessionGigabytes = []byte("MaxSessionGigabytes")
-	KeyMinSessionGigabytes = []byte("MinSessionGigabytes")
-	KeyMaxSessionHours     = []byte("MaxSessionHours")
-	KeyMinSessionHours     = []byte("MinSessionHours")
-	KeyStakingShare        = []byte("StakingShare")
-)
-
-var (
-	_ params.ParamSet = (*Params)(nil)
 )
 
 func (m *Params) GetMinGigabytePrices() v1base.Prices {
@@ -79,56 +62,6 @@ func (m *Params) Validate() error {
 	return nil
 }
 
-func (m *Params) ParamSetPairs() params.ParamSetPairs {
-	return params.ParamSetPairs{
-		{
-			Key:         KeyDeposit,
-			Value:       &m.Deposit,
-			ValidatorFn: validateDeposit,
-		},
-		{
-			Key:         KeyActiveDuration,
-			Value:       &m.ActiveDuration,
-			ValidatorFn: validateActiveDuration,
-		},
-		{
-			Key:         KeyMinGigabytePrices,
-			Value:       &m.MinGigabytePrices,
-			ValidatorFn: validateMinGigabytePrices,
-		},
-		{
-			Key:         KeyMinHourlyPrices,
-			Value:       &m.MinHourlyPrices,
-			ValidatorFn: validateMinHourlyPrices,
-		},
-		{
-			Key:         KeyMaxSessionGigabytes,
-			Value:       &m.MaxSessionGigabytes,
-			ValidatorFn: validateMaxSessionGigabytes,
-		},
-		{
-			Key:         KeyMinSessionGigabytes,
-			Value:       &m.MinSessionGigabytes,
-			ValidatorFn: validateMinSessionGigabytes,
-		},
-		{
-			Key:         KeyMaxSessionHours,
-			Value:       &m.MaxSessionHours,
-			ValidatorFn: validateMaxSessionHours,
-		},
-		{
-			Key:         KeyMinSessionHours,
-			Value:       &m.MinSessionHours,
-			ValidatorFn: validateMinSessionHours,
-		},
-		{
-			Key:         KeyStakingShare,
-			Value:       &m.StakingShare,
-			ValidatorFn: validateStakingShare,
-		},
-	}
-}
-
 func NewParams(
 	deposit sdk.Coin, activeDuration time.Duration, minGigabytePrices, minHourlyPrices v1base.Prices,
 	maxSessionGigabytes, minSessionGigabytes, maxSessionHours, minSessionHours int64, stakingShare sdkmath.LegacyDec,
@@ -158,10 +91,6 @@ func DefaultParams() Params {
 		DefaultMinSessionHours,
 		DefaultStakingShare,
 	)
-}
-
-func ParamsKeyTable() params.KeyTable {
-	return params.NewKeyTable().RegisterParamSet(&Params{})
 }
 
 func validateDeposit(v interface{}) error {

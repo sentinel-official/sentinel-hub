@@ -3,20 +3,10 @@ package v2
 import (
 	"fmt"
 	"time"
-
-	params "github.com/cosmos/cosmos-sdk/x/params/types"
 )
 
 var (
 	DefaultStatusChangeDelay = 2 * time.Minute
-)
-
-var (
-	KeyStatusChangeDelay = []byte("StatusChangeDelay")
-)
-
-var (
-	_ params.ParamSet = (*Params)(nil)
 )
 
 func (m *Params) Validate() error {
@@ -25,16 +15,6 @@ func (m *Params) Validate() error {
 	}
 
 	return nil
-}
-
-func (m *Params) ParamSetPairs() params.ParamSetPairs {
-	return params.ParamSetPairs{
-		{
-			Key:         KeyStatusChangeDelay,
-			Value:       &m.StatusChangeDelay,
-			ValidatorFn: validateStatusChangeDelay,
-		},
-	}
 }
 
 func NewParams(statusChangeDelay time.Duration) Params {
@@ -47,10 +27,6 @@ func DefaultParams() Params {
 	return Params{
 		StatusChangeDelay: DefaultStatusChangeDelay,
 	}
-}
-
-func ParamsKeyTable() params.KeyTable {
-	return params.NewKeyTable().RegisterParamSet(&Params{})
 }
 
 func validateStatusChangeDelay(v interface{}) error {
