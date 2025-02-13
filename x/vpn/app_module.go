@@ -30,7 +30,6 @@ import (
 	v2subscriptiontypes "github.com/sentinel-official/hub/v12/x/subscription/types/v2"
 	v3subscriptiontypes "github.com/sentinel-official/hub/v12/x/subscription/types/v3"
 	"github.com/sentinel-official/hub/v12/x/vpn/client/cli"
-	"github.com/sentinel-official/hub/v12/x/vpn/expected"
 	"github.com/sentinel-official/hub/v12/x/vpn/keeper"
 	"github.com/sentinel-official/hub/v12/x/vpn/migrations"
 	"github.com/sentinel-official/hub/v12/x/vpn/services"
@@ -102,12 +101,12 @@ func (amb AppModuleBasic) ValidateGenesis(jsonCodec codec.JSONCodec, _ client.Tx
 type AppModule struct {
 	AppModuleBasic
 	cdc     codec.Codec
-	account expected.AccountKeeper
-	bank    expected.BankKeeper
+	account keeper.AccountKeeper
+	bank    keeper.BankKeeper
 	keeper  keeper.Keeper
 }
 
-func NewAppModule(cdc codec.Codec, account expected.AccountKeeper, bank expected.BankKeeper, k keeper.Keeper) AppModule {
+func NewAppModule(cdc codec.Codec, account keeper.AccountKeeper, bank keeper.BankKeeper, k keeper.Keeper) AppModule {
 	return AppModule{
 		cdc:     cdc,
 		account: account,
